@@ -1,0 +1,538 @@
+---
+asianux3Guest:
+  :description: Asianux Server 3 (32-bit)
+  :architecture: i386
+  :since: 4.0
+asianux3_64Guest:
+  :description: Asianux Server 3 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+asianux4Guest:
+  :description: Asianux Server 4 (32-bit)
+  :architecture: i386
+  :since: 4.0
+asianux4_64Guest:
+  :description: Asianux Server 4 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+asianux5_64Guest:
+  :description: Asianux Server 5 (64-bit)
+  :architecture: x86_64
+  :since: 6.0
+centos6_64Guest:
+  :description: CentOS 6 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+centos64Guest:
+  :description: CentOS 4/5 (64-bit)
+  :architecture: x86_64
+  :since: 6.1
+  :osfamily: Redhat
+  :name: CentOS
+centos6Guest:
+  :description: CentOS 6 (32-bit)
+  :architecture: i386
+  :since: 6.5
+  :osfamily: Redhat
+  :name: CentOS
+  :major: 6
+centos7_64Guest:
+  :description: CentOS 7 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+  :osfamily: Redhat
+  :name: CentOS
+  :major: 7
+centos7Guest:
+  :description: CentOS 7 (32-bit)
+  :architecture: i386
+  :since: 6.5
+  :osfamily: Redhat
+  :name: CentOS
+  :major: 7
+centosGuest:
+  :description: CentOS 4/5 (32-bit)
+  :architecture: i386
+  :since: 4.1
+  :osfamily: Redhat
+  :name: CentOS
+coreos64Guest:
+  :description: CoreOS Linux (64-bit)
+  :architecture: x86_64
+  :osfamily: Coreos
+  :name: CoreOS
+  :since: 6.0
+darwin10Guest:
+  :description: Apple Mac OS X 10.6 (32-bit)
+  :architecture: i386
+  :since: 5.0
+darwin10_64Guest:
+  :description: Apple Mac OS X 10.6 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+darwin11Guest:
+  :description: Apple Mac OS X 10.7 (32-bit)
+  :architecture: i386
+  :since: 5.0
+darwin11_64Guest:
+  :description: Apple Mac OS X 10.7 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+darwin12_64Guest:
+  :description: Mac OS 10.8 (64-bit)
+  :architecture: x86_64
+  :since: 5.5
+darwin13_64Guest:
+  :description: Mac OS 10.9 (64-bit)
+  :architecture: x86_64
+  :since: 5.5
+darwin14_64Guest:
+  :description: Mac OS 10.10 (64-bit)
+  :architecture: x86_64
+  :since: 6.0
+darwin15_64Guest:
+  :description: Mac OS 10.11 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+darwin16_64Guest:
+  :description: Mac OS 10.12 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+darwin64Guest:
+  :description: Apple Mac OS X 10.5 (64-bit)
+  :architecture: x86_64
+  :since: 4.5
+darwinGuest:
+  :description: Apple Mac OS X 10.5 (32-bit)
+  :architecture: i386
+debian10Guest:
+  :description: Debian GNU/Linux 10 (32-bit)
+  :architecture: i386
+  :since: 6.5
+debian10_64Guest:
+  :description: Debian GNU/Linux 10 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+debian4Guest:
+  :description: Debian GNU/Linux 4 (32-bit)
+  :architecture: i386
+  :since: 4.0
+debian4_64Guest:
+  :description: Debian GNU/Linux 5 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+debian5Guest:
+  :description: Debian GNU/Linux 5 (32-bit)
+  :architecture: i386
+  :since: 4.0
+debian5_64Guest:
+  :description: Debian GNU/Linux 5 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+debian6Guest:
+  :description: Debian GNU/Linux 6 (32-bit)
+  :architecture: i386
+  :since: 5.0
+debian6_64Guest:
+  :description: Debian GNU/Linux 6 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+debian7Guest:
+  :description: Debian GNU/Linux 7 (32-bit)
+  :architecture: i386
+  :since: 5.5
+debian7_64Guest:
+  :description: Debian GNU/Linux 7 (64-bit)
+  :architecture: x86_64
+  :since: 5.5
+debian8Guest:
+  :description: Debian GNU/Linux 8 (32-bit)
+  :architecture: i386
+  :since: 6.0
+debian8_64Guest:
+  :description: Debian GNU/Linux 8 (64-bit)
+  :architecture: x86_64
+  :since: 6.0
+debian9Guest:
+  :description: Debian GNU/Linux 9 (32-bit)
+  :architecture: i386
+  :since: 6.5
+debian9_64Guest:
+  :description: Debian GNU/Linux 9 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+dosGuest:
+  :description: Microsoft MS-DOS
+eComStation2Guest:
+  :description: Serenity Systems eComStation 2.0
+  :since: 6.0
+eComStationGuest:
+  :description: Serenity Systems eComStation 1.x
+  :since: 4.1
+
+fedora64Guest:
+  :description: Fedora Linux (64-bit)
+  :architecture: x86_64
+  :since: 5.1
+fedoraGuest:
+  :description: Fedora Linux
+  :since: 5.1
+freebsd64Guest:
+  :description: FreeBSD (64-bit)
+  :architecture: x86_64
+freebsdGuest:
+  :description: FreeBSD (32-bit)
+  :architecture: i386
+genericLinuxGuest:
+  :description: Other Linux
+  :since: 5.5
+mandrakeGuest:
+  :description: Mandrake Linux
+  :since: 5.5
+mandriva64Guest:
+  :description: Mandriva Linux (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+mandrivaGuest:
+  :description: Mandriva Linux (32-bit)
+  :architecture: i386
+  :since: 4.0
+netware4Guest:
+  :description: Novell NetWare 4
+netware5Guest:
+  :description: Novell NetWare 5.1
+netware6Guest:
+  :description: Novell NetWare 6.x
+nld9Guest:
+  :description: Novell Linux Desktop 9
+oesGuest:
+  :description: Novell Open Enterprise Server
+openServer5Guest:
+  :description: SCO OpenServer 5
+  :since: 4.0
+openServer6Guest:
+  :description: SCO OpenServer 6
+  :since: 4.0
+opensuse64Guest:
+  :description: SUSE OpenSUSE Linux (64-bit)
+  :architecture: x86_64
+  :since: 5.1
+opensuseGuest:
+  :description: SUSE OpenSUSE (32-bit)
+  :architecture: i386
+  :since: 5.1
+oracleLinux6_64Guest:
+  :description: Oracle Linux 6 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+oracleLinux64Guest:
+  :description: Oracle Linux 4/5 (64-bit)
+  :architecture: x86_64
+  :since: 4.1
+oracleLinux6Guest:
+  :description: Oracle Linux 6 (32-bit)
+  :architecture: i386
+  :since: 6.5
+oracleLinux7_64Guest:
+  :description: Oracle Linux 7 (64-bit)
+  :architecture: x86_64
+  :since: 6.5
+oracleLinux7Guest:
+  :description: Oracle Linux 7 (32-bit)
+  :architecture: i386
+  :since: 6.5
+oracleLinuxGuest:
+  :description: Oracle Linux 4/5 (32-bit)
+  :architecture: i386
+  :since: 4.1
+
+os2Guest:
+  :description: IBM OS/2
+other24xLinux64Guest:
+  :description: Other 2.4.x Linux (64-bit)
+  :architecture: x86_64
+other24xLinuxGuest:
+  :description: Other 2.4.x Linux (32-bit)
+  :architecture: i386
+other26xLinux64Guest:
+  :description: Other 2.6.x Linux (64-bit)
+  :architecture: x86_64
+other26xLinuxGuest:
+  :description: Other 2.6.x Linux (32-bit)
+  :architecture: i386
+other3xLinux64Guest:
+  :description: Other Linux 3.x Guest (64-bit)
+  :architecture: x86_64
+  :since: 5.5
+other3xLinuxGuest:
+  :description: Other Linux 3.x Guest
+  :since: 5.5
+otherGuest:
+  :description: Other (32-bit)
+  :architecture: i386
+otherGuest64:
+  :description: Other (64-bit)
+  :architecture: x86_64
+otherLinux64Guest:
+  :description: Other Linux (64-bit)
+  :architecture: x86_64
+otherLinuxGuest:
+  :description: Other Linux (32-bit)
+  :architecture: i386
+redhatGuest:
+  :description: Red Hat Linux 2.1
+rhel2Guest:
+  :description: Red Hat Enterprise Linux 2.1
+rhel3Guest:
+  :description: Red Hat Enterprise Linux 3 (32-bit)
+  :architecture: i386
+rhel3_64Guest:
+  :description: Red Hat Enterprise Linux 3 (64-bit)
+  :architecture: x86_64
+rhel4Guest:
+  :description: Red Hat Enterprise Linux 4 (32-bit)
+  :architecture: i386
+rhel4_64Guest:
+  :description: Red Hat Enterprise Linux 4 (64-bit)
+  :architecture: x86_64
+rhel5Guest:
+  :description: Red Hat Enterprise Linux 5 (32-bit)
+  :architecture: i386
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 5
+  :since: 2.5
+rhel5_64Guest:
+  :description: Red Hat Enterprise Linux 5 (64-bit)
+  :architecture: x86_64
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 5
+  :since: 2.5
+rhel6Guest:
+  :description: Red Hat Enterprise Linux 6 (32-bit)
+  :architecture: i386
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 6
+  :since: 4.0
+rhel6_64Guest:
+  :description: Red Hat Enterprise Linux 6 (64-bit)
+  :architecture: x86_64
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 6
+  :since: 4.0
+rhel7Guest:
+  :description: Red Hat Enterprise Linux 7 (32-bit)
+  :architecture: i386
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 7
+  :since: 5.5
+rhel7_64Guest:
+  :description: Red Hat Enterprise Linux 7 (64-bit)
+  :architecture: x86_64
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 7
+  :since: 5.5
+sjdsGuest:
+  :description: Sun Java Desktop System
+sles10Guest:
+  :description: SUSE Linux Enterprise 10 (32-bit)
+  :architecture: i386
+  :since: 2.5
+sles10_64Guest:
+  :description: SUSE Linux Enterprise 10 (64-bit)
+  :architecture: x86_64
+  :since: 2.5
+sles11Guest:
+  :description: SUSE Linux Enterprise 11 (32-bit)
+  :architecture: i386
+  :osfamily: Suse
+  :name: SLES
+  :major: 11
+  :since: 4.0
+sles11_64Guest:
+  :description: SUSE Linux Enterprise 11 (64-bit)
+  :architecture: x86_64
+  :osfamily: Suse
+  :name: SLES
+  :major: 11
+  :since: 4.0
+sles12Guest:
+  :description: SUSE Linux Enterprise 12 (32-bit)
+  :architecture: i386
+  :osfamily: Suse
+  :name: SLES
+  :major: 12
+  :since: 5.5
+sles12_64Guest:
+  :description: SUSE Linux Enterprise 12 (64-bit)
+  :architecture: x86_64
+  :osfamily: Suse
+  :name: SLES
+  :major: 12
+  :since: 5.5
+sles64Guest:
+  :description: SUSE Linux Enterprise 8/9 (64-bit)
+  :architecture: x86_64
+slesGuest:
+  :description: SUSE Linux Enterprise 8/9 (32-bit)
+  :architecture: i386
+solaris10Guest:
+  :description: Oracle Solaris 10 (32-bit)
+  :architecture: i386
+solaris10_64Guest:
+  :description: Oracle Solaris 10 (64-bit)
+  :architecture: x86_64
+solaris11_64Guest:
+  :description: Oracle Solaris 11 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+solaris6Guest:
+  :description: Sun Microsystems Solaris 6
+solaris7Guest:
+  :description: Sun Microsystems Solaris 7
+solaris8Guest:
+  :description: Sun Microsystems Solaris 8
+solaris9Guest:
+  :description: Sun Microsystems Solaris 9
+suse64Guest:
+  :description: Suse Linux (64-bit)
+  :architecture: x86_64
+suseGuest:
+  :description: Suse Linux (32-bit)
+  :architecture: i386
+turboLinux64Guest:
+  :description: Turbolinux (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+turboLinuxGuest:
+  :description: Turbolinux (32-bit)
+  :architecture: i386
+ubuntu64Guest:
+  :description: Ubuntu Linux (64-bit)
+  :architecture: x86_64
+ubuntuGuest:
+  :description: Ubuntu Linux (32-bit)
+  :architecture: i386
+unixWare7Guest:
+  :description: SCO UnixWare 7
+  :since: 4.0
+vmkernel5Guest:
+  :description: VMware ESXi 5.x
+  :since: 5.0
+vmkernel6Guest:
+  :description: VMware ESXi 6.x
+  :since: 6.0
+vmkernelGuest:
+  :description: VMware ESX 4.x
+  :since: 5.0
+vmwarePhoton64Guest:
+  :description: VMware Photon (64 bit)
+  :since: 6.5
+
+win2000AdvServGuest:
+  :description: Microsoft Windows 2000 Advanced Server
+win2000ProGuest:
+  :description: Microsoft Windows 2000 Professional
+win2000ServGuest:
+  :description: Microsoft Windows 2000 Server
+win31Guest:
+  :description: Microsoft Windows 3.1
+win95Guest:
+  :description: Microsoft Windows 95
+win98Guest:
+  :description: Microsoft Windows 98
+winLonghorn64Guest:
+  :description: Microsoft Windows Longhorn (64-bit)
+  :architecture: x86_64
+  :since: 2.5
+winLonghornGuest:
+  :description: Microsoft Windows Longhorn (32-bit)
+  :architecture: i386
+  :since: 2.5
+winMeGuest:
+  :description: Microsoft Windows Millenium Edition
+winNTGuest:
+  :description: Microsoft Windows NT
+winNetBusinessGuest:
+  :description: Microsoft Windows Small Business Server 2003
+winNetDatacenter64Guest:
+  :description: Microsoft Windows Server 2003 Datacenter Edition (64-bit)
+  :architecture: x86_64
+  :since: 2.5
+winNetDatacenterGuest:
+  :description: Microsoft Windows Server 2003 Datacenter Edition (32-bit)
+  :architecture: i386
+  :since: 2.5
+winNetEnterprise64Guest:
+  :description: Microsoft Windows Server 2003 Enterprise Edition (64-bit)
+  :architecture: x86_64
+winNetEnterpriseGuest:
+  :description: Microsoft Windows Server 2003 Enterprise Edition (32-bit)
+  :architecture: i386
+winNetStandard64Guest:
+  :description: Microsoft Windows Server 2003 Standard Edition (64-bit)
+  :architecture: x86_64
+winNetStandardGuest:
+  :description: Microsoft Windows Server 2003 Standard Edition (32-bit)
+  :architecture: i386
+winNetWebGuest:
+  :description: Microsoft Windows Server 2003 Web Edition (32-bit)
+  :architecture: i386
+winVista64Guest:
+  :description: Microsoft Windows Vista (64-bit)
+  :architecture: x86_64
+winVistaGuest:
+  :description: Microsoft Windows Vista (32-bit)
+  :architecture: i386
+winXPHomeGuest:
+  :description: Microsoft Windows XP Home Edition
+winXPPro64Guest:
+  :description: Microsoft Windows XP Professional (64-bit)
+  :architecture: x86_64
+winXPProGuest:
+  :description: Microsoft Windows XP Professional (32-bit)
+  :architecture: i386
+windows7Guest:
+  :description: Microsoft Windows 7 (32-bit)
+  :architecture: i386
+  :since: 4.0
+windows7Server64Guest:
+  :description: Microsoft Windows Server 2008 R2 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+windows7_64Guest:
+  :description: Microsoft Windows 7 (64-bit)
+  :architecture: x86_64
+  :since: 4.0
+windows8Guest:
+  :description: Microsoft Windows 8 (32-bit)
+  :architecture: i386
+  :since: 5.0
+windows8Server64Guest:
+  :description: Microsoft Windows Server 2012 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+windows8_64Guest:
+  :description: Microsoft Windows 8 (64-bit)
+  :architecture: x86_64
+  :since: 5.0
+windows9Guest:
+  :description: Microsoft Windows 10 (32-bit)
+  :architecture: i386
+  :since: 6.0
+windows9Server64Guest:
+  :description: Microsoft Windows 10 Server (64 bit)
+  :architecture: x86_64
+  :since: 6.0
+windows9_64Guest:
+  :description: Microsoft Windows 10 (64-bit)
+  :architecture: x86_64
+  :since: 6.0
+windowsHyperVGuest:
+  :description: Microsoft Windows Hyper-V
+  :since: 5.5

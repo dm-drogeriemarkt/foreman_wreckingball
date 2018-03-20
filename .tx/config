@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[foreman.foreman_wreckingball]
+file_filter = locale/<lang>/foreman_wreckingball.edit.po
+source_file = locale/foreman_wreckingball.pot
+source_lang = en
+type = PO
