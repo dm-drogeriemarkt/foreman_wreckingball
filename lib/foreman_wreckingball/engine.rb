@@ -1,3 +1,6 @@
+require 'dynflow'
+require 'foreman-tasks'
+
 module ForemanWreckingball
   class Engine < ::Rails::Engine
     engine_name 'foreman_wreckingball'
