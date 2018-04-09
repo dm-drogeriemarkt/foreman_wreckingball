@@ -14,7 +14,7 @@ module ForemanWreckingball
       end.group_by do |status|
         status
       end.each_with_object({}) do |(status, items), hash|
-        hash[status]=items.size
+        hash[status] = items.size
       end
       {
         :ok => count[HostStatus::Global::OK] || 0,

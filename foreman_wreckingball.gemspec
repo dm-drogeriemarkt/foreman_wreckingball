@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'foreman-tasks', '~> 0.9.6'
   s.add_dependency 'dynflow', '~> 0.8.34'
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'rubocop', '0.52.1'
 end

@@ -14,7 +14,14 @@ module ForemanWreckingball
 
       @data = statuses.map do |status|
         host_association = status.host_association
-        hosts = Host.authorized(:view_hosts, Host).joins(host_association).includes(host_association).joins(:vmware_facet).includes(host_association => :host).includes(:environment).preload(:owner).order(:name)
+        hosts = Host.authorized(:view_hosts, Host)
+                    .joins(host_association)
+                    .includes(host_association)
+                    .joins(:vmware_facet)
+                    .includes(host_association => :host)
+                    .includes(:environment)
+                    .preload(:owner)
+                    .order(:name)
         {
           name: status.status_name,
           hosts: hosts,
@@ -32,7 +39,7 @@ module ForemanWreckingball
     end
 
     def remediate
-      raise Foreman::Exception.new('VMware Status can not be remediated.') unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
+      raise Foreman::Exception, 'VMware Status can not be remediated.' unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
       flash[:success] = _('Remediate VM task for %s was successfully scheduled.') % @host
       task = ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Host::RemediateVmwareOperatingsystem, @host)
       redirect_to(foreman_tasks_task_path(task.id))

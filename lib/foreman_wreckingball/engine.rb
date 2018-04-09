@@ -10,7 +10,7 @@ module ForemanWreckingball
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
     config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
 
-    initializer "foreman_wreckingball.register_paths" do |app|
+    initializer 'foreman_wreckingball.register_paths' do |_app|
       ::ForemanTasks.dynflow.config.eager_load_paths.concat(%W[#{ForemanWreckingball::Engine.root}/app/lib/actions])
     end
 
@@ -40,9 +40,9 @@ module ForemanWreckingball
         ]
 
         menu :top_menu, :wreckingball_status_dashboard, :url_hash => { :controller => :'foreman_wreckingball/hosts', :action => :status_dashboard },
-          :caption => N_('VMware Status'),
-          :parent => :hosts_menu,
-          :after => :hosts
+                                                        :caption => N_('VMware Status'),
+                                                        :parent => :hosts_menu,
+                                                        :after => :hosts
 
         register_custom_status(ForemanWreckingball::ToolsStatus)
         register_custom_status(ForemanWreckingball::OperatingsystemStatus)
@@ -56,7 +56,7 @@ module ForemanWreckingball
       end
     end
 
-    initializer 'foreman_wreckingball.dynflow_world', :before => 'foreman_tasks.initialize_dynflow' do |app|
+    initializer 'foreman_wreckingball.dynflow_world', :before => 'foreman_tasks.initialize_dynflow' do |_app|
       ::ForemanTasks.dynflow.require!
     end
 
@@ -74,11 +74,11 @@ module ForemanWreckingball
           Fog::Compute::Vsphere::Host.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Host)
           Fog::Compute::Vsphere::Real.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Real)
         end
-      rescue => e
+      rescue StandardError => e
         Rails.logger.warn "ForemanWreckingball: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
       end
 
-      #load 'foreman_wreckingball/scheduled_jobs.rb'
+      # load 'foreman_wreckingball/scheduled_jobs.rb'
     end
 
     initializer 'foreman_wreckingball.register_gettext', after: :load_config_initializers do |_app|

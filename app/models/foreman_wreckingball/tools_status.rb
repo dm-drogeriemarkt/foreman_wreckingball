@@ -40,7 +40,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && !host.build? && !!host.vmware_facet
+      host && !host.build? && host.vmware_facet
     end
   end
 end

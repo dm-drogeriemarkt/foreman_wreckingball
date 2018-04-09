@@ -13,16 +13,16 @@ module ForemanWreckingball
         delete_removed_clusters
         create_new_clusters
       end
-    logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters")
+      logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters")
     end
 
     def delete_removed_clusters
       delete_query = ::ForemanWreckingball::VmwareCluster.where(:compute_resource => compute_resource).where.not(:name => cluster_names)
-      if ActiveRecord::Base.connection.adapter_name.downcase.starts_with? 'mysql'
-        counters[:deleted] = ::ForemanWreckingball::VmwareCluster.where(:id => delete_query.pluck(:id)).delete_all
-      else
-        counters[:deleted] = delete_query.delete_all
-      end
+      counters[:deleted] = if ActiveRecord::Base.connection.adapter_name.downcase.starts_with? 'mysql'
+                             ::ForemanWreckingball::VmwareCluster.where(:id => delete_query.pluck(:id)).delete_all
+                           else
+                             delete_query.delete_all
+                           end
     end
 
     def create_new_clusters

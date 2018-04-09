@@ -13,7 +13,7 @@ module VsphereOsIdentifiers
     end
 
     def ==(other)
-      other.class == self.class && other.id == self.id
+      other.class == self.class && other.id == id
     end
   end
 end
