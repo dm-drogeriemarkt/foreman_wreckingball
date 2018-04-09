@@ -9,17 +9,19 @@ module ForemanWreckingball
     end
 
     def refresh_vmware_facet!
-      facet = self.vmware_facet || self.build_vmware_facet
+      facet = vmware_facet || build_vmware_facet
       facet.refresh!
       facet.persisted? && facet.refresh_statuses
     end
 
     def queue_vmware_facet_refresh
-      ForemanTasks.delay(
-        ::Actions::ForemanWreckingball::Host::RefreshVmwareFacet,
-        { :start_at => Time.now + 5.minutes },
-        self
-      ) if managed? && compute? && provider == 'VMware'
+      if managed? && compute? && provider == 'VMware'
+        ForemanTasks.delay(
+          ::Actions::ForemanWreckingball::Host::RefreshVmwareFacet,
+          { :start_at => Time.now.utc + 5.minutes },
+          self
+        )
+      end
       true
     end
   end

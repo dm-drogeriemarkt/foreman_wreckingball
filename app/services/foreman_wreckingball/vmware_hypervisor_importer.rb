@@ -15,7 +15,7 @@ module ForemanWreckingball
       compute_resource.vmware_clusters.each do |cluster|
         import_hypervisors(cluster)
       end
-      logger.info("Import hypervisors for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} hypervisors")
+      logger.info("Import hypervisors for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} hypervisors") # rubocop:disable Metrics/LineLength
     end
 
     def import_hypervisors(cluster)
@@ -30,7 +30,11 @@ module ForemanWreckingball
       counter = host.vmware_hypervisor_facet ? :updated : :added
 
       ipaddress6 = hypervisor.ipaddress6
-      ipaddress6 = nil if (IPAddr.new('fe80::/10').include?(ipaddress6) rescue false)
+      ipaddress6 = nil if begin
+                             IPAddr.new('fe80::/10').include?(ipaddress6)
+                           rescue StandardError
+                             false
+                           end
 
       hostname = hypervisor.hostname
       domainname = hypervisor.domainname
@@ -74,7 +78,7 @@ module ForemanWreckingball
     def find_host_for_hypervisor(hypervisor)
       name = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name(hypervisor.name)
       hostname = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name([hypervisor.hostname, hypervisor.domainname].join('.'))
-      hostname = nil unless hostname.present?
+      hostname = nil if hostname.blank?
       katello_name = katello_hypervisor_hostname(hostname || name)
       katello_uuid = katello_hypervisor_hostname(hypervisor.uuid)
 

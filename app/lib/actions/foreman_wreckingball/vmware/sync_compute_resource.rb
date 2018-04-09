@@ -18,9 +18,7 @@ module Actions
               :compute_resource => compute_resource.reload
             ).import!
 
-            compute_resource.hosts.each do |host|
-              host.refresh_vmware_facet!
-            end
+            compute_resource.hosts.each(&:refresh_vmware_facet!)
           end
         end
 

@@ -20,7 +20,7 @@ module VsphereOsIdentifiers
     found = all
 
     selectors.each do |selector, value|
-      next unless selectors.has_key?(selector)
+      next unless selectors.key?(selector)
       found.select! { |os| os.public_send(selector) && os.public_send(selector) == value }
     end
     found

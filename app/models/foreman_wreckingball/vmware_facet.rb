@@ -7,10 +7,10 @@ module ForemanWreckingball
     enum :tools_state => VALID_GUEST_STATUSES
 
     belongs_to :vmware_cluster, :class_name => '::ForemanWreckingball::VmwareCluster',
-      :inverse_of => :vmware_facets
+                                :inverse_of => :vmware_facets
 
     has_many :vmware_hypervisor_facets, :class_name => '::ForemanWreckingball::VmwareHypervisorFacet', :through => :vmware_cluster,
-      :inverse_of => :vmware_facets
+                                        :inverse_of => :vmware_facets
 
     validates_lengths_from_database
 
@@ -32,7 +32,7 @@ module ForemanWreckingball
     def refresh!
       vm = host.compute_object
       return unless vm
-      self.update(
+      update(
         :vmware_cluster => ::ForemanWreckingball::VmwareCluster.find_by(:name => vm.cluster, :compute_resource => host.compute_resource),
         :cpus => vm.cpus,
         :corespersocket => vm.corespersocket,

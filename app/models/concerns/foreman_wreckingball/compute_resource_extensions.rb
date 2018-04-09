@@ -5,7 +5,7 @@ module ForemanWreckingball
 
     included do
       has_many :vmware_clusters, :class_name => 'ForemanWreckingball::VmwareCluster',
-        :inverse_of => :compute_resource, :dependent => :destroy
+                                 :inverse_of => :compute_resource, :dependent => :destroy
     end
 
     def action_input_key

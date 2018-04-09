@@ -42,7 +42,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && !!host.vmware_facet && host.vmware_facet.try(:cpu_hot_add?)
+      host && host.vmware_facet && host.vmware_facet.try(:cpu_hot_add?)
     end
 
     def performance_degration?

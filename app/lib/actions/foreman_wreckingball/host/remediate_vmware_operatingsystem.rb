@@ -49,11 +49,9 @@ module Actions
             output[:new_operatingsytem] = desired_os.description
             output[:new_operatingsytem_id] = desired_os.id
 
-            vm.vm_reconfig_hardware({'guestId' => desired_os.id})
+            vm.vm_reconfig_hardware('guestId' => desired_os.id)
 
-            if initially_powered_on
-              vm.start
-            end
+            vm.start if initially_powered_on
 
             state = host.refresh_vmware_facet!
             output[:state] = state

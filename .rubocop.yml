@@ -1,3 +1,11 @@
+AllCops:
+  TargetRubyVersion: 2.2
+  TargetRailsVersion: 4.2
+  Exclude:
+    - '*.spec'
+    - 'Rakefile'
+    - 'app/lib/fog_extensions/**/*'
+
 Rails:
   Enabled: true
 
@@ -5,19 +13,71 @@ Rails:
 Style/Documentation:
   Enabled: false
 
-# Force before_filter until upgrade to Rails 4
-Rails/ActionFilter:
-  EnforcedStyle: filter
-
 Metrics/MethodLength:
-  Max: 20
+  Max: 40
 
 Metrics/LineLength:
-  Max: 111 # TODO: discuss and set this
+  Max: 190
 
-Style/Next:
+Style/WordArray:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Lint/BooleanSymbol:
+  Enabled: false
+
+Style/MultilineBlockChain:
   Enabled: false
 
 # Support both ruby19 and hash_rockets
 Style/HashSyntax:
+  EnforcedStyle: no_mixed_keys
+
+Metrics/AbcSize:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+Performance/FixedSize:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/BlockLength:
+  Max: 35
+  Exclude:
+    - 'test/**/*'
+
+Metrics/ClassLength:
+  Max: 200
+  Exclude:
+    - 'test/**/*'
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'test/**/*'
+    - 'app/controllers/concerns/foreman/**/*'
+
+Style/SignalException:
+  Exclude:
+    - 'app/lib/actions/**/*'

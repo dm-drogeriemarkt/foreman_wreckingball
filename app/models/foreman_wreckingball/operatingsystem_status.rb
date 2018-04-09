@@ -46,14 +46,13 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && !!host.vmware_facet
+      host && host.vmware_facet
     end
 
     def os_matches_identifier?
       guest_id = host.vmware_facet.guest_id
       vsphere_os = VsphereOsIdentifiers.lookup(guest_id)
       return true unless vsphere_os
-      os = host.operatingsystem
       return true unless host.operatingsystem && host.architecture
       return false if vsphere_os.architecture && vsphere_os.architecture != host.architecture.name
       return false if vsphere_os.osfamily && vsphere_os.osfamily != host.operatingsystem.family
