@@ -9,7 +9,8 @@ module ForemanWreckingball
     belongs_to :vmware_cluster, :class_name => '::ForemanWreckingball::VmwareCluster',
                                 :inverse_of => :vmware_facets
 
-    has_many :vmware_hypervisor_facets, :class_name => '::ForemanWreckingball::VmwareHypervisorFacet', :through => :vmware_cluster,
+    has_many :vmware_hypervisor_facets, :class_name => '::ForemanWreckingball::VmwareHypervisorFacet',
+                                        :through => :vmware_cluster,
                                         :inverse_of => :vmware_facets
 
     validates_lengths_from_database

@@ -12,7 +12,7 @@ module ForemanWreckingball
                :inverse_of => :vmware_clusters
     has_many :vmware_facets,
              :class_name => '::ForemanWreckingball::VmwareFacet',
-             :inverse_of => :vmware_clusters,
+             :inverse_of => :vmware_cluster,
              :dependent => :nullify
 
     validates_lengths_from_database
