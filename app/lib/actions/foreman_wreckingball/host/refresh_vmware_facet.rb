@@ -2,17 +2,17 @@ module Actions
   module ForemanWreckingball
     module Host
       class RefreshVmwareFacet < Actions::EntryAction
+        middleware.use Actions::Middleware::KeepCurrentUser
+
         def plan(host)
           action_subject(host)
           plan_self
         end
 
         def run
-          User.as_anonymous_admin do
-            host = ::Host.find(input[:host][:id])
-            state = host.refresh_vmware_facet!
-            output[:state] = state
-          end
+          host = ::Host.find(input[:host][:id])
+          state = host.refresh_vmware_facet!
+          output[:state] = state
         end
 
         def rescue_strategy
