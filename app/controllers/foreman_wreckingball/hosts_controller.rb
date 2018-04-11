@@ -34,14 +34,18 @@ module ForemanWreckingball
 
     def refresh_status_dashboard
       flash[:success] = _('Refresh Compute Resource data task was successfully scheduled.')
-      task = ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
+      task = User.as_anonymous_admin do
+        ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
+      end
       redirect_to(foreman_tasks_task_path(task.id))
     end
 
     def remediate
       raise Foreman::Exception, 'VMware Status can not be remediated.' unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
       flash[:success] = _('Remediate VM task for %s was successfully scheduled.') % @host
-      task = ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Host::RemediateVmwareOperatingsystem, @host)
+      task = User.as_anonymous_admin do
+        ::ForemanTasks.async_task(@status.class.remediate_action, @host)
+      end
       redirect_to(foreman_tasks_task_path(task.id))
     end
 

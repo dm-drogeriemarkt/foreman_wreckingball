@@ -16,11 +16,13 @@ module ForemanWreckingball
 
     def queue_vmware_facet_refresh
       if managed? && compute? && provider == 'VMware'
-        ForemanTasks.delay(
-          ::Actions::ForemanWreckingball::Host::RefreshVmwareFacet,
-          { :start_at => Time.now.utc + 5.minutes },
-          self
-        )
+        User.as_anonymous_admin do
+          ForemanTasks.delay(
+            ::Actions::ForemanWreckingball::Host::RefreshVmwareFacet,
+            { :start_at => Time.now.utc + 5.minutes },
+            self
+          )
+        end
       end
       true
     end
