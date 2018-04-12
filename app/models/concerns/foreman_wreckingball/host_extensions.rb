@@ -1,6 +1,7 @@
 module ForemanWreckingball
   module HostExtensions
     extend ActiveSupport::Concern
+    include ForemanTasks::Concerns::ActionSubject
 
     included do
       has_one :vmware_tools_status_object,
