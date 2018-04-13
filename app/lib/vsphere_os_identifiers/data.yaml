@@ -436,103 +436,163 @@ vmwarePhoton64Guest:
 
 win2000AdvServGuest:
   :description: Microsoft Windows 2000 Advanced Server
+  :name: windows
 win2000ProGuest:
   :description: Microsoft Windows 2000 Professional
+  :name: windows
 win2000ServGuest:
   :description: Microsoft Windows 2000 Server
+  :name: windows
 win31Guest:
   :description: Microsoft Windows 3.1
+  :name: windows
 win95Guest:
   :description: Microsoft Windows 95
+  :name: windows
 win98Guest:
   :description: Microsoft Windows 98
+  :name: windows
 winLonghorn64Guest:
   :description: Microsoft Windows Longhorn (64-bit)
   :architecture: x86_64
   :since: 2.5
+  :name: windows
 winLonghornGuest:
   :description: Microsoft Windows Longhorn (32-bit)
   :architecture: i386
   :since: 2.5
+  :name: windows
 winMeGuest:
   :description: Microsoft Windows Millenium Edition
+  :name: windows
 winNTGuest:
   :description: Microsoft Windows NT
+  :name: windows
 winNetBusinessGuest:
   :description: Microsoft Windows Small Business Server 2003
+  :name: windows
 winNetDatacenter64Guest:
   :description: Microsoft Windows Server 2003 Datacenter Edition (64-bit)
-  :architecture: x86_64
+  :architecture: x64
   :since: 2.5
+  :name: windows
 winNetDatacenterGuest:
   :description: Microsoft Windows Server 2003 Datacenter Edition (32-bit)
   :architecture: i386
   :since: 2.5
+  :name: windows
 winNetEnterprise64Guest:
   :description: Microsoft Windows Server 2003 Enterprise Edition (64-bit)
   :architecture: x86_64
+  :name: windows
 winNetEnterpriseGuest:
   :description: Microsoft Windows Server 2003 Enterprise Edition (32-bit)
   :architecture: i386
+  :name: windows
 winNetStandard64Guest:
   :description: Microsoft Windows Server 2003 Standard Edition (64-bit)
   :architecture: x86_64
+  :name: windows
 winNetStandardGuest:
   :description: Microsoft Windows Server 2003 Standard Edition (32-bit)
   :architecture: i386
+  :name: windows
 winNetWebGuest:
   :description: Microsoft Windows Server 2003 Web Edition (32-bit)
   :architecture: i386
+  :name: windows
 winVista64Guest:
   :description: Microsoft Windows Vista (64-bit)
   :architecture: x86_64
+  :name: windows
 winVistaGuest:
   :description: Microsoft Windows Vista (32-bit)
   :architecture: i386
+  :name: windows
 winXPHomeGuest:
   :description: Microsoft Windows XP Home Edition
+  :name: windows
 winXPPro64Guest:
   :description: Microsoft Windows XP Professional (64-bit)
   :architecture: x86_64
+  :name: windows
 winXPProGuest:
   :description: Microsoft Windows XP Professional (32-bit)
   :architecture: i386
+  :name: windows
 windows7Guest:
   :description: Microsoft Windows 7 (32-bit)
   :architecture: i386
+  :major: 6
+  :name: windows
+  :osfamily: Windows
   :since: 4.0
 windows7Server64Guest:
-  :description: Microsoft Windows Server 2008 R2 (64-bit)
-  :architecture: x86_64
+  :description: Microsoft Windows Server 2008/2008 R2 (64-bit)
+  :architecture: x64
+  :major: 6
+  :name: windows
+  :osfamily: Windows
+  :release:
+    - 2008
+    - 2008 R2
   :since: 4.0
 windows7_64Guest:
   :description: Microsoft Windows 7 (64-bit)
-  :architecture: x86_64
+  :architecture: x64
+  :major: 6
+  :name: windows
+  :osfamily: Windows
   :since: 4.0
 windows8Guest:
   :description: Microsoft Windows 8 (32-bit)
   :architecture: i386
+  :major: 6
+  :name: windows
+  :osfamily: Windows
   :since: 5.0
 windows8Server64Guest:
-  :description: Microsoft Windows Server 2012 (64-bit)
-  :architecture: x86_64
+  :description: Microsoft Windows Server 2012/2012 R2 (64-bit)
+  :architecture: x64
+  :major: 6
+  :name: windows
+  :osfamily: Windows
+  :release:
+    - 2012
+    - 2012 R2
   :since: 5.0
 windows8_64Guest:
   :description: Microsoft Windows 8 (64-bit)
-  :architecture: x86_64
+  :architecture: x64
+  :major: 6
+  :name: windows
+  :osfamily: Windows
   :since: 5.0
 windows9Guest:
   :description: Microsoft Windows 10 (32-bit)
   :architecture: i386
+  :major: 10
+  :name: windows
+  :osfamily: Windows
   :since: 6.0
 windows9Server64Guest:
-  :description: Microsoft Windows 10 Server (64 bit)
-  :architecture: x86_64
+  :description: Microsoft Windows Server 2016/2016 R2 (64 bit)
+  :architecture: x64
+  :major: 10
+  :name: windows
+  :osfamily: Windows
+  :release:
+    - 2016
+    - 2016 R2
   :since: 6.0
 windows9_64Guest:
   :description: Microsoft Windows 10 (64-bit)
-  :architecture: x86_64
+  :architecture: x64
+  :major: 10
+  :name: windows
+  :osfamily: Windows
   :since: 6.0
 windowsHyperVGuest:
   :description: Microsoft Windows Hyper-V
+  :name: windows
   :since: 5.5

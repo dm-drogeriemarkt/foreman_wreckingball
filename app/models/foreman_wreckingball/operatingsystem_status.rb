@@ -58,6 +58,7 @@ module ForemanWreckingball
       return false if vsphere_os.osfamily && vsphere_os.osfamily != host.operatingsystem.family
       return false if vsphere_os.name && vsphere_os.name != host.operatingsystem.name
       return false if vsphere_os.major && vsphere_os.major != host.operatingsystem.major.to_i
+      return false if vsphere_os.release && [vsphere_os.release].flatten.include?(host.facts['os::release::full'])
       true
     end
   end

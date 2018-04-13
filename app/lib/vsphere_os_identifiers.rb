@@ -21,7 +21,17 @@ module VsphereOsIdentifiers
 
     selectors.each do |selector, value|
       next unless selectors.key?(selector)
-      found.select! { |os| os.public_send(selector) && os.public_send(selector) == value }
+      found.select! do |os|
+        test = os.public_send(selector)
+        next unless test
+
+        case test.class
+        when Array
+          test.include? value
+        else
+          test == value
+        end
+      end
     end
     found
   end
