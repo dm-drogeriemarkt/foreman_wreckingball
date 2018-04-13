@@ -25,7 +25,7 @@ module VsphereOsIdentifiers
         test = os.public_send(selector)
         next unless test
 
-        case test.class
+        case test
         when Array
           test.include? value
         else
