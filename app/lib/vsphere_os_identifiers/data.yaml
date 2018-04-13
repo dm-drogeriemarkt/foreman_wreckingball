@@ -534,7 +534,7 @@ windows7Server64Guest:
   :name: windows
   :osfamily: Windows
   :release:
-    - 2008
+    - '2008'
     - 2008 R2
   :since: 4.0
 windows7_64Guest:
@@ -558,7 +558,7 @@ windows8Server64Guest:
   :name: windows
   :osfamily: Windows
   :release:
-    - 2012
+    - '2012'
     - 2012 R2
   :since: 5.0
 windows8_64Guest:
@@ -582,7 +582,7 @@ windows9Server64Guest:
   :name: windows
   :osfamily: Windows
   :release:
-    - 2016
+    - '2016'
     - 2016 R2
   :since: 6.0
 windows9_64Guest:
