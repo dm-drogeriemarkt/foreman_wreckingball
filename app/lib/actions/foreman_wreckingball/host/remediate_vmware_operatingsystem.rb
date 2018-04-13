@@ -39,8 +39,8 @@ module Actions
           }
 
           desired_os = VsphereOsIdentifiers.find_by(selectors)
-          desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:release))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major))
+          desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:release))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :release))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name, :release))

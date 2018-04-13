@@ -1,6 +1,6 @@
 module VsphereOsIdentifiers
   class Os
-    attr_reader :id, :description, :architecture, :since, :osfamily, :major, :name
+    attr_reader :id, :description, :architecture, :since, :osfamily, :major, :name, :release
 
     def initialize(id, opts = {})
       @id = id.to_s
@@ -10,6 +10,7 @@ module VsphereOsIdentifiers
       @osfamily = opts.fetch(:osfamily, nil)
       @name = opts.fetch(:name, nil)
       @major = opts.fetch(:major, nil)
+      @release = opts.fetch(:release, nil)
     end
 
     def ==(other)
