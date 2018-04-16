@@ -34,12 +34,16 @@ module Actions
             :architecture => host.architecture.name,
             :osfamily => host.operatingsystem.family,
             :name => host.operatingsystem.name,
-            :major => host.operatingsystem.major.to_i
+            :major => host.operatingsystem.major.to_i,
+            :release => host.facts['os::release::full']
           }
 
           desired_os = VsphereOsIdentifiers.find_by(selectors)
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major))
+          desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:release))
+          desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :release))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name))
+          desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name, :release))
 
           fail _('Could not auto detect desired operatingsystem.') unless desired_os
 
