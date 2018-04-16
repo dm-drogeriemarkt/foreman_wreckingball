@@ -18,15 +18,6 @@ module Actions
           initially_powered_on = host.power.ready?
           output[:initially_powered_on] = initially_powered_on
 
-          vm = host.compute_object
-
-          if initially_powered_on
-            vm.stop
-            vm.wait_for { power_state == 'poweredOff' }
-          end
-
-          fail _('Could not shut down VM.') if vm.ready?
-
           current_os_id = host.vmware_facet.guest_id
           current_os = VsphereOsIdentifiers.lookup(current_os_id)
 
@@ -54,12 +45,20 @@ module Actions
           output[:new_operatingsytem] = desired_os.description
           output[:new_operatingsytem_id] = desired_os.id
 
-          vm.vm_reconfig_hardware('guestId' => desired_os.id)
+          vm = host.compute_object
 
-          vm.start if initially_powered_on
+          if initially_powered_on
+            vm.stop
+            vm.wait_for { power_state == 'poweredOff' }
+            fail _('Could not shut down VM.') if vm.ready?
+          end
+
+          vm.vm_reconfig_hardware('guestId' => desired_os.id)
 
           state = host.refresh_vmware_facet!
           output[:state] = state
+        ensure
+          vm.start if vm && initially_powered_on
         end
 
         def humanized_name
