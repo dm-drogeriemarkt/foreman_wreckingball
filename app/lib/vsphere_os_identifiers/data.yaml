@@ -23,6 +23,9 @@ centos6_64Guest:
   :description: CentOS 6 (64-bit)
   :architecture: x86_64
   :since: 6.5
+  :osfamily: Redhat
+  :name: CentOS
+  :major: 6
 centos64Guest:
   :description: CentOS 4/5 (64-bit)
   :architecture: x86_64
@@ -108,58 +111,100 @@ darwinGuest:
 debian10Guest:
   :description: Debian GNU/Linux 10 (32-bit)
   :architecture: i386
+  :major: 10
+  :name: Debian
+  :osfamily: Debian
   :since: 6.5
 debian10_64Guest:
   :description: Debian GNU/Linux 10 (64-bit)
   :architecture: x86_64
+  :major: 10
+  :name: Debian
+  :osfamily: Debian
   :since: 6.5
 debian4Guest:
   :description: Debian GNU/Linux 4 (32-bit)
   :architecture: i386
+  :major: 4
+  :name: Debian
+  :osfamily: Debian
   :since: 4.0
 debian4_64Guest:
   :description: Debian GNU/Linux 5 (64-bit)
   :architecture: x86_64
+  :major: 4
+  :name: Debian
+  :osfamily: Debian
   :since: 4.0
 debian5Guest:
   :description: Debian GNU/Linux 5 (32-bit)
   :architecture: i386
+  :major: 5
+  :name: Debian
+  :osfamily: Debian
   :since: 4.0
 debian5_64Guest:
   :description: Debian GNU/Linux 5 (64-bit)
   :architecture: x86_64
+  :major: 5
+  :name: Debian
+  :osfamily: Debian
   :since: 4.0
 debian6Guest:
   :description: Debian GNU/Linux 6 (32-bit)
   :architecture: i386
+  :major: 6
+  :name: Debian
+  :osfamily: Debian
   :since: 5.0
 debian6_64Guest:
   :description: Debian GNU/Linux 6 (64-bit)
   :architecture: x86_64
+  :major: 6
+  :name: Debian
+  :osfamily: Debian
   :since: 5.0
 debian7Guest:
   :description: Debian GNU/Linux 7 (32-bit)
   :architecture: i386
+  :major: 7
+  :name: Debian
+  :osfamily: Debian
   :since: 5.5
 debian7_64Guest:
   :description: Debian GNU/Linux 7 (64-bit)
   :architecture: x86_64
+  :major: 7
+  :name: Debian
+  :osfamily: Debian
   :since: 5.5
 debian8Guest:
   :description: Debian GNU/Linux 8 (32-bit)
   :architecture: i386
+  :major: 8
+  :name: Debian
+  :osfamily: Debian
   :since: 6.0
 debian8_64Guest:
   :description: Debian GNU/Linux 8 (64-bit)
   :architecture: x86_64
+  :major: 8
+  :name: Debian
+  :osfamily: Debian
   :since: 6.0
 debian9Guest:
   :description: Debian GNU/Linux 9 (32-bit)
   :architecture: i386
+  :major: 9
+  :name: Debian
+  :osfamily: Debian
   :since: 6.5
 debian9_64Guest:
   :description: Debian GNU/Linux 9 (64-bit)
   :architecture: x86_64
+  :major: 9
+  :name: Debian
+  :osfamily: Debian
   :since: 6.5
 dosGuest:
   :description: Microsoft MS-DOS
