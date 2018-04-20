@@ -32,6 +32,9 @@ centos64Guest:
   :since: 6.1
   :osfamily: Redhat
   :name: CentOS
+  :major:
+    - 4
+    - 5
 centos6Guest:
   :description: CentOS 6 (32-bit)
   :architecture: i386
@@ -59,6 +62,9 @@ centosGuest:
   :since: 4.1
   :osfamily: Redhat
   :name: CentOS
+  :major:
+    - 4
+    - 5
 coreos64Guest:
   :description: CoreOS Linux (64-bit)
   :architecture: x86_64
