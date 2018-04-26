@@ -11,7 +11,7 @@ module ForemanWreckingball
     let(:organization) do
       Organization.find_by(name: 'Organization 1')
     end
-    let(:location) do
+    let(:tax_location) do
       Location.find_by(name: 'Location 1')
     end
     let(:compute_resource) do
@@ -19,7 +19,7 @@ module ForemanWreckingball
         :vmware_cr,
         uuid: 'Solutions',
         organizations: [organization],
-        locations: [location]
+        locations: [tax_location]
       )
     end
     let(:cluster) do
@@ -50,7 +50,7 @@ module ForemanWreckingball
         assert_equal '1.2.3.4', host.ip
         assert_nil host.ip6
         assert_equal organization, host.organization
-        assert_equal location, host.location
+        assert_equal tax_location, host.location
 
         # Test facet attributes are set correctly
         assert_equal cluster, host.vmware_hypervisor_facet.vmware_cluster
