@@ -23,7 +23,7 @@ module ForemanWreckingball
 
     initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
-        requires_foreman '>= 1.15'
+        requires_foreman '>= 1.16'
 
         security_block :foreman_wreckingball do
           permission :refresh_vmware_status_hosts, {
