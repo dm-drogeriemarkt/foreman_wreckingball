@@ -1,4 +1,4 @@
-FactoryGirl.modify do
+FactoryBot.modify do
   factory :host do
     trait :with_vmware_facet do
       vmware_facet

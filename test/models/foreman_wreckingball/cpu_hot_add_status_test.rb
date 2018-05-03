@@ -9,7 +9,7 @@ module ForemanWreckingball
     should belong_to(:host)
 
     let(:host) do
-      FactoryGirl.create(:host, :managed, :with_vmware_facet)
+      FactoryBot.create(:host, :managed, :with_vmware_facet)
     end
     let(:status) { ForemanWreckingball::CpuHotAddStatus.new(host: host) }
 
@@ -67,7 +67,7 @@ module ForemanWreckingball
         end
 
         test 'no performance degration is indicated' do
-          FactoryGirl.create(:vmware_hypervisor_facet, cpu_cores: 4, vmware_cluster: host.vmware_facet.vmware_cluster)
+          FactoryBot.create(:vmware_hypervisor_facet, cpu_cores: 4, vmware_cluster: host.vmware_facet.vmware_cluster)
           host.vmware_facet.cpus = 100
           assert status.performance_degration?
         end
@@ -76,8 +76,8 @@ module ForemanWreckingball
 
     describe '#hypervisor_min_cores' do
       test 'returns the minimum core count from all hypervisors in the same cluster' do
-        FactoryGirl.create(:vmware_hypervisor_facet, cpu_cores: 4, vmware_cluster: host.vmware_facet.vmware_cluster)
-        FactoryGirl.create(:vmware_hypervisor_facet, cpu_cores: 8, vmware_cluster: host.vmware_facet.vmware_cluster)
+        FactoryBot.create(:vmware_hypervisor_facet, cpu_cores: 4, vmware_cluster: host.vmware_facet.vmware_cluster)
+        FactoryBot.create(:vmware_hypervisor_facet, cpu_cores: 8, vmware_cluster: host.vmware_facet.vmware_cluster)
         status.host.reload
         assert_equal 4, status.hypervisor_min_cores
       end

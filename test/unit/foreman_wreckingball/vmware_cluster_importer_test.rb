@@ -8,7 +8,7 @@ module ForemanWreckingball
     end
     teardown { Fog.unmock! }
 
-    let(:compute_resource) { FactoryGirl.create(:vmware_cr, :uuid => 'Solutions') }
+    let(:compute_resource) { FactoryBot.create(:vmware_cr, :uuid => 'Solutions') }
     let(:importer) do
       VmwareClusterImporter.new(
         compute_resource: compute_resource
@@ -25,7 +25,7 @@ module ForemanWreckingball
       end
 
       test 'removes old clusters' do
-        old_cluster = FactoryGirl.create(:vmware_cluster, compute_resource: compute_resource)
+        old_cluster = FactoryBot.create(:vmware_cluster, compute_resource: compute_resource)
         importer.import!
         refute ForemanWreckingball::VmwareCluster.find_by(id: old_cluster.id)
       end

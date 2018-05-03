@@ -8,7 +8,7 @@ module ForemanWreckingball
 
     should belong_to(:host)
 
-    let(:host) { FactoryGirl.create(:host, :with_vmware_facet) }
+    let(:host) { FactoryBot.create(:host, :with_vmware_facet) }
     let(:status) { ForemanWreckingball::ToolsStatus.new(host: host) }
 
     test 'has a host association' do
@@ -25,7 +25,7 @@ module ForemanWreckingball
     end
 
     test '#relevant is only for hosts with a vmware facet' do
-      h = FactoryGirl.build(:host, :managed)
+      h = FactoryBot.build(:host, :managed)
       refute ForemanWreckingball::ToolsStatus.new(host: h).relevant?
     end
 
