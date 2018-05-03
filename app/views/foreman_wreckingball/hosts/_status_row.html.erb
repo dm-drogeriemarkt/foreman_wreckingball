@@ -85,10 +85,9 @@
                         action_buttons(
                           display_link_if_authorized(
                             _('Remediate'),
-                            hash_for_remediate_host_path(:id => host, :status_id => host.public_send(status).id).merge(:auth_object => host, :permission => 'remediate_vmware_status_hosts'),
-                            :data => { :confirm => _('Are you sure? This might cause a service interruption.') },
-                            :method => :put,
-                            :target => :blank
+                            hash_for_schedule_remediate_host_path(:id => host, :status_id => host.public_send(status).id).merge(:auth_object => host, :permission => 'remediate_vmware_status_hosts'),
+                            :data => { :title => _('Remediate Host OS'), :submit_class => 'btn-danger' },
+                            :onclick => 'show_modal(this); return false;'
                           )
                         )
                       %>

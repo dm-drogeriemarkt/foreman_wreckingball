@@ -34,14 +34,36 @@ module ForemanWreckingball
       end
     end
 
-    describe '#remediate' do
+    describe '#schedule_remediate' do
+      let(:host) do
+        FactoryBot.create(:host, :with_wreckingball_statuses)
+      end
+
+      test 'shows a remediation schedule page' do
+        get :schedule_remediate, params: { status_id: host.vmware_operatingsystem_status_object.id, id: host.id }, session: set_session_user
+        assert_response :success
+      end
+
+      test 'returns not found when host id is invalid' do
+        get :schedule_remediate, params: { status_id: nil, id: 'invalid' }, session: set_session_user
+        assert_response :not_found
+      end
+
+      test 'returns not found when status id is invalid' do
+        FactoryBot.create(:host, :with_wreckingball_statuses)
+        get :schedule_remediate, params: { status_id: 'invalid', id: host.id }, session: set_session_user
+        assert_response :not_found
+      end
+    end
+
+    describe '#submit_remediate' do
       let(:host) do
         FactoryBot.create(:host, :with_wreckingball_statuses)
       end
 
       test 'redirects to scheduled task' do
         ForemanTasks.expects(:async_task).returns(fake_task)
-        put :remediate, params: { status_id: host.vmware_operatingsystem_status_object.id, id: host.id }, session: set_session_user
+        post :submit_remediate, params: { status_id: host.vmware_operatingsystem_status_object.id, id: host.id }, session: set_session_user
         assert_response :redirect
         assert_includes flash[:success], 'successfully scheduled'
         assert_redirected_to foreman_tasks_task_path(123)
@@ -50,18 +72,18 @@ module ForemanWreckingball
       test 'raises error when status can not be remediated' do
         FactoryBot.create(:host, :with_wreckingball_statuses)
         assert_raises Foreman::Exception do
-          put :remediate, params: { status_id: host.vmware_tools_status_object.id, id: host.id }, session: set_session_user
+          post :submit_remediate, params: { status_id: host.vmware_tools_status_object.id, id: host.id }, session: set_session_user
         end
       end
 
       test 'returns not found when host id is invalid' do
-        put :remediate, params: { status_id: nil, id: 'invalid' }, session: set_session_user
+        post :submit_remediate, params: { status_id: nil, id: 'invalid' }, session: set_session_user
         assert_response :not_found
       end
 
       test 'returns not found when status id is invalid' do
         FactoryBot.create(:host, :with_wreckingball_statuses)
-        put :remediate, params: { status_id: 'invalid', id: host.id }, session: set_session_user
+        post :submit_remediate, params: { status_id: 'invalid', id: host.id }, session: set_session_user
         assert_response :not_found
       end
     end

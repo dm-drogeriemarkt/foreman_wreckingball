@@ -5,7 +5,8 @@ Rails.application.routes.draw do
     constraints(:id => /[^\/]+/) do
       resources :hosts, controller: 'foreman_wreckingball/hosts', only: [] do
         member do
-          put :remediate
+          get :schedule_remediate
+          post :submit_remediate
         end
         collection do
           get :status_dashboard

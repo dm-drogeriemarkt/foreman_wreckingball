@@ -1,0 +1,35 @@
+<% title _('Remediate %s') % @host %>
+<% javascript 'foreman_tasks/trigger_form' %>
+<% stylesheet 'foreman_tasks/trigger_form' %>
+
+
+<% if @status.class.respond_to?(:dangerous_remediate?) && @status.class.dangerous_remediate? -%>
+<%= alert(:text => _('This will cause a service interruption.'), :class => 'alert-warning', :close => false) %>
+<% end -%>
+
+<%= form_for @triggering, :url => submit_remediate_host_path(:id => @host.id, :status_id => @status), :html => { :class => 'form-horizontal', :id => 'schedule_remediate_form' } do |f| %>
+  <%= javascript_tag do %>
+    $(function() { trigger_form_selector_binds('<%= f.options[:html][:id] %>','<%= f.object_name %>') });
+  <% end %>
+  <div class="form-group">
+    <label class="col-md-2 control-label"><%= _('Schedule') %></label>
+    <div class="col-md-8">
+      <%= fields_for :triggering, @triggering do |trigger_fields| %>
+        <%= radio_button_f trigger_fields, :mode, :class => 'trigger_mode_selector', :value => 'immediate', :text => _("Execute now") %>
+        <%= radio_button_f trigger_fields, :mode, :class => 'trigger_mode_selector', :value => 'future',    :text => _("Schedule future execution") %>
+    </div>
+  </div>
+
+  <div class="trigger_fields">
+    <%= content_tag(:fieldset, nil, :id => 'trigger_mode_future', :class => "trigger_mode_form #{'hidden' unless @triggering.future?}") do
+      safe_join([
+        text_f(f, :start_at_raw, :label => _('Start at'), :placeholder => 'YYYY-mm-dd HH:MM'),
+        text_f(f, :start_before_raw, :label => _('Start before'), :placeholder => 'YYYY-mm-dd HH:MM',
+                                     :label_help => _('Indicates that the action should be cancelled if it cannot be started before this time.'))
+      ])
+    end %>
+  </div>
+  <% end %>
+
+  <%= submit_or_cancel f, false, :cancel_path => { :controller => :'foreman_wreckingball/hosts', :action => :status_dashboard } %>
+<% end %>

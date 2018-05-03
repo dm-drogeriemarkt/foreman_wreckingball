@@ -2,8 +2,9 @@
 
 module ForemanWreckingball
   class HostsController < ::HostsController
-    before_action :find_resource, :only => [:remediate]
-    before_action :find_status, :only => [:remediate]
+    include ::ForemanTasks::Concerns::Parameters::Triggering
+    before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
+    before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
 
     def status_dashboard
       statuses = [
@@ -42,16 +43,34 @@ module ForemanWreckingball
       redirect_to(foreman_tasks_task_path(task.id))
     end
 
-    def remediate
+    def schedule_remediate
+      @triggering = ForemanTasks::Triggering.new(mode: :immediate)
+    end
+
+    def submit_remediate
       raise Foreman::Exception, 'VMware Status can not be remediated.' unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
-      flash[:success] = _('Remediate VM task for %s was successfully scheduled.') % @host
       task = User.as_anonymous_admin do
-        ::ForemanTasks.async_task(@status.class.remediate_action, @host)
+        triggering = ::ForemanTasks::Triggering.new_from_params(triggering_params)
+        if triggering.future?
+          triggering.parse_start_at!
+          triggering.parse_start_before!
+        else
+          triggering.start_at ||= Time.zone.now
+        end
+
+        triggering.trigger(@status.class.remediate_action, @host)
       end
+      flash[:success] = _('Remediate VM task for %s was successfully scheduled.') % @host
       redirect_to(foreman_tasks_task_path(task.id))
     end
 
     private
+
+    def triggering_params
+      %i[triggering foreman_tasks_triggering].inject({}) do |result, param_name|
+        result.merge(self.class.triggering_params_filter.filter_params(params, parameter_filter_context, param_name))
+      end
+    end
 
     def find_status
       @status = HostStatus::Status.find_by!(:id => params[:status_id], :host_id => @host.id)
@@ -63,7 +82,7 @@ module ForemanWreckingball
         'view'
       when 'refresh_status_dashboard'
         'refresh_vmware_status'
-      when 'remediate'
+      when 'schedule_remediate', 'submit_remediate'
         'remediate_vmware_status'
       else
         super
