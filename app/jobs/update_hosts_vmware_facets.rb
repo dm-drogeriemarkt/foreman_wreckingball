@@ -1,4 +1,6 @@
-class UpdateHostsVmwareFacets < ActiveJob::Base
+# frozen_string_literal: true
+
+class UpdateHostsVmwareFacets < ApplicationJob
   after_perform do
     self.class.set(:wait => 12.hours).perform_later
   end

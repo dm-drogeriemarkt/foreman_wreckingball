@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VsphereOsIdentifiers
   class Os
     attr_reader :id, :description, :architecture, :since, :osfamily, :major, :name, :release

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
-  class VmwareHypervisorFacet < ActiveRecord::Base
+  class VmwareHypervisorFacet < ApplicationRecord
     include Facets::Base
 
     validates_lengths_from_database

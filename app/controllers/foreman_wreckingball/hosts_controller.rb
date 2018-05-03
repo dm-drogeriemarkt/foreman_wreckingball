@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   class HostsController < ::HostsController
     before_action :find_resource, :only => [:remediate]

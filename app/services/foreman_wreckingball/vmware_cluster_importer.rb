@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   class VmwareClusterImporter
     delegate :logger, :to => :Rails

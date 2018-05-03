@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.2
+  - 2.3
 gemfile: foreman/Gemfile
 install:
   - cd ..
@@ -23,7 +23,7 @@ env:
     - TESTOPTS=-v
     - FOREMAN_PLUGIN_NAME=foreman_wreckingball
   matrix:
-    - FOREMAN_CORE_BRANCH=1.16-stable
+    - FOREMAN_CORE_BRANCH=1.17-stable
 addons:
   apt:
     packages:

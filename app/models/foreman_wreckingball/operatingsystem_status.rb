@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   class OperatingsystemStatus < ::HostStatus::Status
     OK = 0
@@ -46,7 +48,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && host.vmware_facet
+      host&.vmware_facet
     end
 
     def os_matches_identifier?

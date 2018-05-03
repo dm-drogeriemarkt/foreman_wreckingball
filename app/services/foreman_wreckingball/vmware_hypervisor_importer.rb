@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   class VmwareHypervisorImporter
     delegate :logger, :to => :Rails
