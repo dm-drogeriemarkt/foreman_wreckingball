@@ -13,14 +13,14 @@ module Actions
         teardown { ::Fog.unmock! }
 
         let(:compute_resource) do
-          cr = FactoryGirl.create(:compute_resource, :vmware, :uuid => 'Solutions')
+          cr = FactoryBot.create(:compute_resource, :vmware, :uuid => 'Solutions')
           ComputeResource.find(cr.id)
         end
         let(:uuid) { '5032c8a5-9c5e-ba7a-3804-832a03e16381' }
         let(:vm) { compute_resource.find_vm_by_uuid(uuid) }
 
         let(:operatingsystem) do
-          FactoryGirl.create(
+          FactoryBot.create(
             :operatingsystem,
             architectures: [architectures(:x86_64)],
             major: 6,
@@ -31,7 +31,7 @@ module Actions
         end
 
         let(:host) do
-          FactoryGirl.create(
+          FactoryBot.create(
             :host,
             :managed,
             :with_vmware_facet,

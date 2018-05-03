@@ -3,5 +3,5 @@ require 'test_helper'
 require 'dynflow/testing'
 
 # Add plugin to FactoryBot's paths
-FactoryGirl.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')
-FactoryGirl.reload
+FactoryBot.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')
+FactoryBot.reload

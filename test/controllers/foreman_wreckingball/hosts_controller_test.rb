@@ -16,7 +16,7 @@ module ForemanWreckingball
       end
 
       test 'shows a status page' do
-        FactoryGirl.create_list(:host, 5, :with_wreckingball_statuses)
+        FactoryBot.create_list(:host, 5, :with_wreckingball_statuses)
         get :status_dashboard, {}, set_session_user
         assert_response :success
       end
@@ -34,7 +34,7 @@ module ForemanWreckingball
 
     describe '#remediate' do
       let(:host) do
-        FactoryGirl.create(:host, :with_wreckingball_statuses)
+        FactoryBot.create(:host, :with_wreckingball_statuses)
       end
 
       test 'redirects to scheduled task' do
@@ -46,7 +46,7 @@ module ForemanWreckingball
       end
 
       test 'raises error when status can not be remediated' do
-        FactoryGirl.create(:host, :with_wreckingball_statuses)
+        FactoryBot.create(:host, :with_wreckingball_statuses)
         assert_raises Foreman::Exception do
           put :remediate, { status_id: host.vmware_tools_status_object.id, id: host.id }, set_session_user
         end
@@ -58,7 +58,7 @@ module ForemanWreckingball
       end
 
       test 'returns not found when status id is invalid' do
-        FactoryGirl.create(:host, :with_wreckingball_statuses)
+        FactoryBot.create(:host, :with_wreckingball_statuses)
         put :remediate, { status_id: 'invalid', id: host.id }, set_session_user
         assert_response :not_found
       end

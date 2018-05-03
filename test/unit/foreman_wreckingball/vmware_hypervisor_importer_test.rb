@@ -15,7 +15,7 @@ module ForemanWreckingball
       Location.find_by(name: 'Location 1')
     end
     let(:compute_resource) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :vmware_cr,
         uuid: 'Solutions',
         organizations: [organization],
@@ -23,7 +23,7 @@ module ForemanWreckingball
       )
     end
     let(:cluster) do
-      FactoryGirl.create(
+      FactoryBot.create(
         :vmware_cluster,
         name: 'Solutionscluster',
         compute_resource: compute_resource
@@ -62,7 +62,7 @@ module ForemanWreckingball
       end
 
       test 'updates host by katello name' do
-        host = FactoryGirl.create(:host,  organization: organization)
+        host = FactoryBot.create(:host,  organization: organization)
         host.update!(:name => "virt-who-host1.example.com-#{organization.id}")
         importer.import!
         assert_equal 'host1.example.com', host.reload.name
