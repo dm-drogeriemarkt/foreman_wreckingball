@@ -9,7 +9,7 @@ module VsphereOsIdentifiers
   end
 
   def self.load_data
-    YAML.load_file(File.expand_path('../vsphere_os_identifiers/data.yaml', __FILE__))
+    YAML.load_file(File.expand_path('vsphere_os_identifiers/data.yaml', __dir__))
   end
 
   def self.all
