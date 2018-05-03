@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VsphereOsIdentifiers
   def self.data
     @data ||= load_data

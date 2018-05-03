@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   module VmwareHypervisorFacetHostExtensions
     extend ActiveSupport::Concern

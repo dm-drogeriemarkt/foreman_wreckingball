@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.modify do
   factory :compute_resource do
     trait :with_vmware_clusters do

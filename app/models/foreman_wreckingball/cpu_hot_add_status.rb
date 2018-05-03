@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
   class CpuHotAddStatus < ::HostStatus::Status
     OK = 0
@@ -42,7 +44,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && host.vmware_facet && host.vmware_facet.try(:cpu_hot_add?)
+      host&.vmware_facet && host.vmware_facet.try(:cpu_hot_add?)
     end
 
     def performance_degration?

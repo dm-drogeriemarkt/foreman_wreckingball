@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path('lib/foreman_wreckingball/version', __dir__)
 
 Gem::Specification.new do |s|
@@ -14,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib,locale}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
-  s.add_dependency 'foreman-tasks', '~> 0.10.9'
+  s.add_dependency 'foreman-tasks', '~> 0.11.2'
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'rubocop', '0.54.0'
 end

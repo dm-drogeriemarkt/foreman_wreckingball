@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
-  class VmwareFacet < ActiveRecord::Base
+  class VmwareFacet < ApplicationRecord
     include Facets::Base
 
     VALID_GUEST_STATUSES = [:toolsNotInstalled, :toolsNotRunning, :toolsOk, :toolsOld].freeze

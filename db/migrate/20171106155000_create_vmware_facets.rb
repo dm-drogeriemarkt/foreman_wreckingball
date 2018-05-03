@@ -1,4 +1,6 @@
-class CreateVmwareFacets < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class CreateVmwareFacets < ActiveRecord::Migration[4.2]
   def change
     create_table :vmware_clusters do |t|
       t.string :name, limit: 255, index: true

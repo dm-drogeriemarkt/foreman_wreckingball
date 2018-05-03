@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module ForemanWreckingball
-  class VmwareCluster < ActiveRecord::Base
+  class VmwareCluster < ApplicationRecord
     has_many :vmware_hypervisor_facets,
              :class_name => '::ForemanWreckingball::VmwareHypervisorFacet',
              :inverse_of => :vmware_cluster,

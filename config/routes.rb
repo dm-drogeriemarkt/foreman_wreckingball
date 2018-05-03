@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   scope '/wreckingball' do
     constraints(:id => /[^\/]+/) do
