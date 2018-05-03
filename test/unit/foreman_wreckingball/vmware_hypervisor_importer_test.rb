@@ -63,7 +63,7 @@ module ForemanWreckingball
 
       test 'updates host by katello name' do
         host = FactoryGirl.create(:host,  organization: organization)
-        host.update_attributes!(:name => "virt-who-host1.example.com-#{organization.id}")
+        host.update!(:name => "virt-who-host1.example.com-#{organization.id}")
         importer.import!
         assert_equal 'host1.example.com', host.reload.name
       end

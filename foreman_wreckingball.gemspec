@@ -1,4 +1,4 @@
-require File.expand_path('../lib/foreman_wreckingball/version', __FILE__)
+require File.expand_path('lib/foreman_wreckingball/version', __dir__)
 
 Gem::Specification.new do |s|
   s.name        = 'foreman_wreckingball'
@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'foreman-tasks', '~> 0.10.9'
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.52.1'
+  s.add_development_dependency 'rubocop', '0.54.0'
 end

@@ -82,7 +82,7 @@ module ForemanWreckingball
     end
 
     initializer 'foreman_wreckingball.register_gettext', after: :load_config_initializers do |_app|
-      locale_dir = File.join(File.expand_path('../../..', __FILE__), 'locale')
+      locale_dir = File.join(File.expand_path('../..', __dir__), 'locale')
       locale_domain = 'foreman_wreckingball'
       Foreman::Gettext::Support.add_text_domain locale_domain, locale_dir
     end
