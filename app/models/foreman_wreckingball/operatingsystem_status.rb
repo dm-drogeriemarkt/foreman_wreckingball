@@ -21,6 +21,10 @@ module ForemanWreckingball
       true
     end
 
+    def self.dangerous_remediate?
+      true
+    end
+
     def self.remediate_action
       ::Actions::ForemanWreckingball::Host::RemediateVmwareOperatingsystem
     end

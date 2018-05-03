@@ -7,6 +7,7 @@ install:
   - git clone https://github.com/theforeman/foreman.git -b ${FOREMAN_CORE_BRANCH} --depth 1
   - cd ${FOREMAN_PLUGIN_NAME}
   - bundle install --jobs=3 --retry=3
+  - npm install eslint
   - cd ../foreman
   - echo "gemspec :path => '../${FOREMAN_PLUGIN_NAME}'" > bundler.d/${FOREMAN_PLUGIN_NAME}.local.rb
   - ln -s settings.yaml.test config/settings.yaml
@@ -16,6 +17,7 @@ install:
 script:
   - cd ../${FOREMAN_PLUGIN_NAME}
   - bundle exec rubocop
+  - node ./node_modules/.bin/eslint . app/**/*.js
   - cd ../foreman
   - bundle exec rake test:${FOREMAN_PLUGIN_NAME}
 env:

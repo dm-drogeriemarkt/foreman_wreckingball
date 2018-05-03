@@ -32,7 +32,7 @@ module ForemanWreckingball
             :'foreman_wreckingball/hosts' => [:refresh_status_dashboard]
           }, :resource_type => 'Host'
           permission :remediate_vmware_status_hosts, {
-            :'foreman_wreckingball/hosts' => [:remediate]
+            :'foreman_wreckingball/hosts' => [:schedule_remediate, :submit_remediate]
           }, :resource_type => 'Host'
         end
 

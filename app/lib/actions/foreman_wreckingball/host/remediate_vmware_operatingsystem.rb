@@ -6,6 +6,11 @@ module Actions
       class RemediateVmwareOperatingsystem < Actions::EntryAction
         middleware.use Actions::Middleware::KeepCurrentUser
 
+        def delay(delay_options, host)
+          action_subject(host)
+          super(delay_options, host)
+        end
+
         def plan(host)
           action_subject(host)
           plan_self
