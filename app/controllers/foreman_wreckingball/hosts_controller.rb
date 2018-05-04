@@ -10,7 +10,8 @@ module ForemanWreckingball
       statuses = [
         ToolsStatus,
         OperatingsystemStatus,
-        CpuHotAddStatus
+        CpuHotAddStatus,
+        SpectreV2Status
       ]
 
       @newest_data = Host.authorized(:view_hosts, Host).joins(:vmware_facet).maximum('vmware_facets.updated_at')

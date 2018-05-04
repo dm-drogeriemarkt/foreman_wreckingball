@@ -7,8 +7,15 @@ module Actions
     module Vmware
       class RefreshVmwareFacetTest < ActiveSupport::TestCase
         include ::Dynflow::Testing
+
+        let(:uuid) { '5032c8a5-9c5e-ba7a-3804-832a03e16381' }
+        let(:vm) { compute_resource.find_vm_by_uuid(uuid) }
+
         setup do
           ::Fog.mock!
+          ::Fog::Compute::Vsphere::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
+          ::Fog::Compute::Vsphere::Server.any_instance.stubs(:ready?).returns(false)
+          ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           # this is not stubbed correctly in fog-vsphere
           Fog::Compute::Vsphere::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
         end
@@ -18,8 +25,6 @@ module Actions
           cr = FactoryBot.create(:compute_resource, :vmware, :uuid => 'Solutions')
           ComputeResource.find(cr.id)
         end
-        let(:uuid) { '5032c8a5-9c5e-ba7a-3804-832a03e16381' }
-        let(:vm) { compute_resource.find_vm_by_uuid(uuid) }
 
         let(:host) do
           FactoryBot.create(
