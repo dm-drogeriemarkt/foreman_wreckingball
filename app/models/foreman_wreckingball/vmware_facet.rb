@@ -19,6 +19,8 @@ module ForemanWreckingball
 
     validates :host, :presence => true, :allow_blank => false
 
+    serialize :cpu_features, JSON
+
     def tools_state_label
       case tools_state.to_sym
       when :toolsNotInstalled
@@ -35,22 +37,35 @@ module ForemanWreckingball
     def refresh!
       vm = host.compute_object
       return unless vm
-      update(
-        :vmware_cluster => ::ForemanWreckingball::VmwareCluster.find_by(:name => vm.cluster, :compute_resource => host.compute_resource),
-        :cpus => vm.cpus,
-        :corespersocket => vm.corespersocket,
-        :memory_mb => vm.memory_mb,
-        :tools_state => vm.tools_state,
-        :guest_id => vm.guest_id,
-        :cpu_hot_add => vm.cpuHotAddEnabled
-      )
+      data_for_update = {
+        vmware_cluster: ::ForemanWreckingball::VmwareCluster.find_by(name: vm.cluster, compute_resource: host.compute_resource),
+        cpus: vm.cpus,
+        corespersocket: vm.corespersocket,
+        memory_mb: vm.memory_mb,
+        tools_state: vm.tools_state,
+        guest_id: vm.guest_id,
+        cpu_hot_add: vm.cpuHotAddEnabled,
+        hardware_version: vm.hardware_version,
+        cpu_features: []
+      }
+      data_for_update[:cpu_features] = raw_vm_object.runtime.featureRequirement.map(&:key) if vm.ready?
+      update(data_for_update)
     end
 
     def refresh_statuses
       host.get_status(::ForemanWreckingball::ToolsStatus).refresh!
       host.get_status(::ForemanWreckingball::CpuHotAddStatus).refresh!
       host.get_status(::ForemanWreckingball::OperatingsystemStatus).refresh!
+      host.get_status(::ForemanWreckingball::SpectreV2Status).refresh!
       host.refresh_global_status!
+    end
+
+    private
+
+    def raw_vm_object
+      instance_uuid = host.compute_object.try(:instance_uuid)
+      return unless instance_uuid
+      host.compute_resource.send(:client).send(:get_vm_ref, instance_uuid)
     end
   end
 end

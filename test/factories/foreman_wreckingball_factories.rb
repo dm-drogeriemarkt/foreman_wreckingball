@@ -9,6 +9,29 @@ FactoryBot.define do
     memory_mb 8192
     guest_id 'rhel6_64Guest'
     cpu_hot_add false
+    hardware_version 'vmx-10'
+    cpu_features [
+      'cpuid.SSE3',
+      'cpuid.PCLMULQDQ',
+      'cpuid.SSSE3',
+      'cpuid.CMPXCHG16B',
+      'cpuid.PCID',
+      'cpuid.SSE41',
+      'cpuid.SSE42',
+      'cpuid.POPCNT',
+      'cpuid.AES',
+      'cpuid.XSAVE',
+      'cpuid.AVX',
+      'cpuid.DS',
+      'cpuid.SS',
+      'cpuid.XCR0_MASTER_SSE',
+      'cpuid.XCR0_MASTER_YMM_H',
+      'cpuid.LAHF64',
+      'cpuid.NX',
+      'cpuid.RDTSCP',
+      'cpuid.LM',
+      'cpuid.Intel'
+    ]
     host
   end
 

@@ -11,6 +11,7 @@ module Actions
           ::Fog.mock!
           # this is not stubbed correctly in fog-vsphere
           Fog::Compute::Vsphere::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+          ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
         end
         teardown { ::Fog.unmock! }
 

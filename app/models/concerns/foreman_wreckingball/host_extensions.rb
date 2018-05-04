@@ -21,6 +21,11 @@ module ForemanWreckingball
               :foreign_key => 'host_id',
               :inverse_of => :host,
               :dependent => :destroy
+      has_one :vmware_spectre_v2_status_object,
+              :class_name => 'ForemanWreckingball::SpectreV2Status',
+              :foreign_key => 'host_id',
+              :inverse_of => :host,
+              :dependent => :destroy
     end
 
     def action_input_key
