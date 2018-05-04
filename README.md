@@ -8,6 +8,7 @@ This is a plugin for Foreman that adds several VMware related status checks to y
 | --------------- | -------------- |
 | >= 1.15         | ~> 0.1         |
 | >= 1.16         | ~> 1.0         |
+| >= 1.17         | ~> 2.0         |
 
 ## Installation
 
