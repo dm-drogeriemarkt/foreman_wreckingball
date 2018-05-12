@@ -10,6 +10,8 @@ module ForemanWreckingball
 
     belongs_to :vmware_cluster, :inverse_of => :vmware_hypervisor_facets, :class_name => 'ForemanWreckingball::VmwareCluster'
 
+    has_one :compute_resource, :inverse_of => :vmware_hypervisor_facets, :through => :vmware_cluster
+
     has_many :vmware_facets, :class_name => '::ForemanWreckingball::VmwareFacet', :through => :vmware_clusters,
                              :inverse_of => :vmware_hypervisor_facets
 

@@ -55,6 +55,14 @@ module ForemanWreckingball
         register_facet(ForemanWreckingball::VmwareHypervisorFacet, :vmware_hypervisor_facet)
 
         add_controller_action_scope(HostsController, :index) { |base_scope| base_scope.includes(:vmware_facet) }
+
+        # extend host show page
+        extend_page('compute_resources/show') do |context|
+          context.add_pagelet :main_tabs,
+                              :name => N_('Hypervisors'),
+                              :partial => 'compute_resources/hypervisors_tab',
+                              :onlyif => proc { |cr| cr.provider_friendly_name == 'VMware' && cr.vmware_hypervisor_facets.any? }
+        end
       end
     end
 
