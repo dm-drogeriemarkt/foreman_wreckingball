@@ -1,0 +1,20 @@
+<table class="<%= table_css_classes 'table-fixed' %>">
+  <thead>
+    <tr>
+      <th><%= _('Name') %></th>
+      <th class="col-md-3"><%= _('Cluster') %></th>
+      <th class="col-md-1"><%= _('Cores') %></th>
+      <th class="col-md-1"><%= _('Sockets') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @compute_resource.hypervisor_hosts.includes(:vmware_hypervisor_facet, :vmware_cluster).each do |host| %>
+      <tr>
+        <td class="ellipsis"><%= link_to_if_authorized(host.name, hash_for_host_path(:id => host)) %></td>
+        <td><%= host.vmware_cluster.name %></td>
+        <td><%= host.vmware_hypervisor_facet.cpu_cores %></td>
+        <td><%= host.vmware_hypervisor_facet.cpu_sockets %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
