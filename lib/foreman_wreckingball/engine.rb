@@ -103,7 +103,7 @@ module ForemanWreckingball
     require 'fog/vsphere'
     require 'fog/vsphere/compute'
     require 'fog/vsphere/models/compute/host'
-    !::Fog::Compute::Vsphere::Host.instance_methods.include?(:uuid)
+    !::Fog::Compute::Vsphere::Host.instance_methods.include?(:feature_capabilities)
   rescue LoadError
     false
   end

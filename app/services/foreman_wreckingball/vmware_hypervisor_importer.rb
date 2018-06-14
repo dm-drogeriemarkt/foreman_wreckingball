@@ -63,7 +63,8 @@ module ForemanWreckingball
           :cpu_sockets => hypervisor.cpu_sockets,
           :cpu_threads => hypervisor.cpu_threads,
           :memory => hypervisor.memory,
-          :uuid => hypervisor.uuid
+          :uuid => hypervisor.uuid,
+          :feature_capabilities => hypervisor.feature_capabilities
         }
       )
       if result
