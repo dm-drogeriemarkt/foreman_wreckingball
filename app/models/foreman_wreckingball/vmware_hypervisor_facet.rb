@@ -15,8 +15,14 @@ module ForemanWreckingball
     has_many :vmware_facets, :class_name => '::ForemanWreckingball::VmwareFacet', :through => :vmware_clusters,
                              :inverse_of => :vmware_hypervisor_facets
 
+    serialize :feature_capabilities, JSON
+
     def self.sanitize_name(name)
       name.tr('_', '-').chomp('.').downcase
+    end
+
+    def provides_spectre_features?
+      !((feature_capabilities || []) & ['cpuid.IBRS', 'cpuid.IBPB', 'cpuid.STIBP']).empty?
     end
   end
 end
