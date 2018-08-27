@@ -1,8 +1,8 @@
 language: ruby
 rvm:
   - 2.3
-gemfile: foreman/Gemfile
 install:
+  - unset BUNDLE_GEMFILE
   - cd ..
   - git clone https://github.com/theforeman/foreman.git -b ${FOREMAN_CORE_BRANCH} --depth 1
   - cd ${FOREMAN_PLUGIN_NAME}
@@ -26,6 +26,7 @@ env:
     - FOREMAN_PLUGIN_NAME=foreman_wreckingball
   matrix:
     - FOREMAN_CORE_BRANCH=1.18-stable
+    - FOREMAN_CORE_BRANCH=1.19-stable
     - FOREMAN_CORE_BRANCH=develop
 addons:
   apt:
