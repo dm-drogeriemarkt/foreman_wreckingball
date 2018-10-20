@@ -32,13 +32,16 @@ module ForemanWreckingball
     end
 
     describe 'status calculation' do
+      setup do
+        Host::Managed.any_instance.stubs(:supports_power?).returns(true)
+      end
+
       test 'when host is powered down' do
-        Host::Managed.any_instance.stubs(:supports_power_and_running?).returns(false)
+        host.vmware_facet.update(power_state: 'poweredOff')
         assert_equal ForemanWreckingball::ToolsStatus::POWERDOWN, status.to_status
       end
 
       test 'when host is powered on' do
-        Host::Managed.any_instance.stubs(:supports_power_and_running?).returns(true)
         assert_equal 2, status.to_status
       end
     end
