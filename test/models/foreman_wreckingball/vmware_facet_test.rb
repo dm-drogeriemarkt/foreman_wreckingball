@@ -25,7 +25,7 @@ module ForemanWreckingball
       end
 
       let(:compute_resource) do
-        cr = FactoryBot.create(:compute_resource, :vmware, :uuid => 'Solutions')
+        cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, :uuid => 'Solutions')
         ComputeResource.find(cr.id)
       end
 
