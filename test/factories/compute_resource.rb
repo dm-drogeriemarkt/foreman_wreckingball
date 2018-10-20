@@ -11,5 +11,10 @@ FactoryBot.modify do
         create_list(:vmware_cluster, evaluator.vmware_clusters_count, compute_resource: compute_resource)
       end
     end
+
+    trait :with_taxonomy do
+      organizations { [Organization.find_by(name: 'Organization 1')] }
+      locations { [Location.find_by(name: 'Location 1')] }
+    end
   end
 end

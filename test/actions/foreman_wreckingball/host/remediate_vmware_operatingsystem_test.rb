@@ -16,7 +16,7 @@ module Actions
         teardown { ::Fog.unmock! }
 
         let(:compute_resource) do
-          cr = FactoryBot.create(:compute_resource, :vmware, :uuid => 'Solutions')
+          cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, :uuid => 'Solutions')
           ComputeResource.find(cr.id)
         end
         let(:uuid) { '5032c8a5-9c5e-ba7a-3804-832a03e16381' }

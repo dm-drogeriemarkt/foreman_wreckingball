@@ -27,6 +27,7 @@ env:
   matrix:
     - FOREMAN_CORE_BRANCH=1.18-stable
     - FOREMAN_CORE_BRANCH=1.19-stable
+    - FOREMAN_CORE_BRANCH=1.20-stable
     - FOREMAN_CORE_BRANCH=develop
 addons:
   apt:
