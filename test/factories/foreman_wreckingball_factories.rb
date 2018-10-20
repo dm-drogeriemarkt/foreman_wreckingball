@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :vmware_facet, class: 'ForemanWreckingball::VmwareFacet' do
     vmware_cluster
     tools_state 2 #:toolsOk
+    power_state 1 #:poweredOn
     cpus 2
     corespersocket 1
     memory_mb 8192

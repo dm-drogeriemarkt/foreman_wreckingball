@@ -21,7 +21,7 @@ module ForemanWreckingball
     end
 
     def to_status(_options = {})
-      return POWERDOWN unless host.supports_power_and_running?
+      return POWERDOWN unless host.supports_power? && host.vmware_facet.vm_ready?
       VmwareFacet.tools_states[host.vmware_facet.tools_state]
     end
 

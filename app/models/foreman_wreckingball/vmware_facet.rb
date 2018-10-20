@@ -8,6 +8,9 @@ module ForemanWreckingball
 
     enum :tools_state => VALID_GUEST_STATUSES
 
+    VALID_POWER_STATES = [:poweredOff, :poweredOn, :suspended].freeze
+    enum :power_state => VALID_POWER_STATES
+
     belongs_to :vmware_cluster, :class_name => '::ForemanWreckingball::VmwareCluster',
                                 :inverse_of => :vmware_facets
 
@@ -43,6 +46,7 @@ module ForemanWreckingball
         corespersocket: vm.corespersocket,
         memory_mb: vm.memory_mb,
         tools_state: vm.tools_state,
+        power_state: vm.power_state,
         guest_id: vm.guest_id,
         cpu_hot_add: vm.cpuHotAddEnabled,
         hardware_version: vm.hardware_version,
@@ -58,6 +62,10 @@ module ForemanWreckingball
       host.get_status(::ForemanWreckingball::OperatingsystemStatus).refresh!
       host.get_status(::ForemanWreckingball::SpectreV2Status).refresh!
       host.refresh_global_status!
+    end
+
+    def vm_ready?
+      power_state == 'poweredOn'
     end
 
     private
