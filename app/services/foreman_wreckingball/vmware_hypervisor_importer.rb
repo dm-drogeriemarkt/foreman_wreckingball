@@ -16,6 +16,7 @@ module ForemanWreckingball
       compute_resource.refresh_cache
       compute_resource.vmware_clusters.each do |cluster|
         import_hypervisors(cluster)
+        delete_removed_hypervisors(cluster)
       end
       logger.info("Import hypervisors for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} hypervisors") # rubocop:disable Metrics/LineLength
     end
@@ -99,6 +100,17 @@ module ForemanWreckingball
                                  :location => location, :managed => false, :enabled => false)
       host.save!
       host
+    end
+
+    def delete_removed_hypervisors(cluster)
+      hypervisor_names = hypervisors(cluster).map(&:name)
+      hypervisor_uuids = hypervisors(cluster).map(&:uuid)
+      delete_query = ::ForemanWreckingball::VmwareHypervisorFacet.joins(:host).where(vmware_cluster: cluster).where.not('hosts.name': hypervisor_names).where.not(uuid: hypervisor_uuids)
+      counters[:deleted] = if ActiveRecord::Base.connection.adapter_name.downcase.starts_with?('mysql')
+                             ::ForemanWreckingball::VmwareHypervisorFacet.where(:id => delete_query.pluck(:id)).delete_all
+                           else
+                             delete_query.delete_all
+                           end
     end
 
     def organization
