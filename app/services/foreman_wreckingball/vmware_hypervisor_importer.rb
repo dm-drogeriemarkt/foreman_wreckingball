@@ -2,7 +2,6 @@
 
 module ForemanWreckingball
   class VmwareHypervisorImporter
-    delegate :logger, :to => :Rails
     attr_accessor :compute_resource, :counters
 
     def initialize(options = {})
@@ -121,6 +120,10 @@ module ForemanWreckingball
     def increment_counter(id)
       counters[id] ||= 0
       counters[id] += 1
+    end
+
+    def logger
+      ::Foreman::Logging.logger('foreman_wreckingball/import')
     end
   end
 end

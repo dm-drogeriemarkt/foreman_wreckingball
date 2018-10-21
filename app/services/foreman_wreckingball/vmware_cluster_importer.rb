@@ -2,7 +2,6 @@
 
 module ForemanWreckingball
   class VmwareClusterImporter
-    delegate :logger, :to => :Rails
     attr_accessor :compute_resource, :counters
 
     def initialize(options = {})
@@ -38,6 +37,12 @@ module ForemanWreckingball
 
     def cluster_names
       @cluster_names ||= compute_resource.clusters
+    end
+
+    private
+
+    def logger
+      ::Foreman::Logging.logger('foreman_wreckingball/import')
     end
   end
 end

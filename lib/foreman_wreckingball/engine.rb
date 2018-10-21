@@ -63,6 +63,9 @@ module ForemanWreckingball
                               :partial => 'compute_resources/hypervisors_tab',
                               :onlyif => proc { |cr| cr.provider_friendly_name == 'VMware' && cr.vmware_hypervisor_facets.any? }
         end
+
+        # add custom logger
+        logger :import, enabled: true
       end
     end
 
