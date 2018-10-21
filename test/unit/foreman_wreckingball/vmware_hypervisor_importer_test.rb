@@ -63,6 +63,17 @@ module ForemanWreckingball
         assert_equal '4c4c4544-0051-3610-8046-c4c44f584a32', host.vmware_hypervisor_facet.uuid
       end
 
+      test 'removes hypervisor facets from stale hosts' do
+        host_on_other_cluster = FactoryBot.create(:host, :managed, :with_vmware_hypervisor_facet)
+        stale_facet = FactoryBot.create(:vmware_hypervisor_facet, vmware_cluster: cluster, compute_resource: compute_resource)
+
+        importer.import!
+
+        assert_nil ForemanWreckingball::VmwareHypervisorFacet.find_by(id: stale_facet.id)
+        assert_not_nil Host::Managed.find_by(name: 'host1.example.com').vmware_hypervisor_facet
+        assert_not_nil Host::Managed.find_by(id: host_on_other_cluster.id).vmware_hypervisor_facet
+      end
+
       test 'updates host by katello name' do
         host = FactoryBot.create(:host,  organization: organization)
         host.update!(:name => "virt-who-host1.example.com-#{organization.id}")
