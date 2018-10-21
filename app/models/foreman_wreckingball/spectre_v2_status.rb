@@ -44,7 +44,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && host&.vmware_facet && host.vmware_facet.cpu_features.any?
+      host && host&.vmware_facet && host.vmware_facet.hardware_version.present? && host.vmware_facet.cpu_features.any?
     end
 
     def guest_mitigation_enabled?
@@ -52,7 +52,7 @@ module ForemanWreckingball
     end
 
     def recent_hw_version?
-      host.vmware_facet.hardware_version.gsub(/^vmx-/, '').to_i >= 9
+      host.vmware_facet.hardware_version.to_s.gsub(/^vmx-/, '').to_i >= 9
     end
 
     def required_cpu_features_present?
