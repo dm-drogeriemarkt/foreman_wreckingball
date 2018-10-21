@@ -49,6 +49,7 @@ module ForemanWreckingball
         register_custom_status(ForemanWreckingball::ToolsStatus)
         register_custom_status(ForemanWreckingball::OperatingsystemStatus)
         register_custom_status(ForemanWreckingball::CpuHotAddStatus)
+        register_custom_status(ForemanWreckingball::SpectreV2Status)
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 
