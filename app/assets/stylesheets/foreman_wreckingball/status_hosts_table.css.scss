@@ -1,0 +1,13 @@
+div.status-hosts-container div.alert-danger {
+  display: none;
+}
+
+div.status-hosts-container.ajax-error div.alert-danger {
+  margin-top: 25px;
+  display: block;
+}
+
+div.status-hosts-container.ajax-error div.dataTables_wrapper,
+div.status-hosts-container.ajax-error p {
+  display: none;
+}

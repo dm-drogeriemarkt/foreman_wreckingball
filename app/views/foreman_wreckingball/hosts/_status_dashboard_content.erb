@@ -11,9 +11,8 @@
   render :partial => 'status_row', locals: {
     name: status[:name],
     description: status[:description],
-    counter: vmware_status_counter(status[:hosts], status[:host_association]),
+    counter: status[:counter],
     status: status[:host_association],
-    hosts: status[:hosts],
     supports_remediate: status[:supports_remediate],
     id: idx
   }

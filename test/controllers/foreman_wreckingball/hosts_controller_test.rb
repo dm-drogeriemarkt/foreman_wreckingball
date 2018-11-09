@@ -11,6 +11,10 @@ module ForemanWreckingball
       )
     end
 
+    setup do
+      Setting::Wreckingball.load_defaults
+    end
+
     describe '#status_dashboard' do
       test 'shows an empty status page' do
         get :status_dashboard, session: set_session_user
@@ -21,6 +25,21 @@ module ForemanWreckingball
         FactoryBot.create_list(:host, 5, :with_wreckingball_statuses)
         get :status_dashboard, session: set_session_user
         assert_response :success
+      end
+    end
+
+    describe '#status_hosts' do
+      test 'returns hosts for status' do
+        ok_status = FactoryBot.create(:vmware_hardware_version_status, :with_ok_status)
+        out_of_date_status = FactoryBot.create(:vmware_hardware_version_status, :with_out_of_date_status)
+
+        get :status_hosts, params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
+                           session: set_session_user, xhr: true
+
+        assert_response :ok
+        hosts_names = JSON.parse(response.body)['data'].map { |host| host['name'] }
+        assert_includes hosts_names, out_of_date_status.host.name
+        refute_includes hosts_names, ok_status.host.name
       end
     end
 
