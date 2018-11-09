@@ -3,6 +3,15 @@
 module ForemanWreckingball
   class HostsController < ::HostsController
     include ::ForemanTasks::Concerns::Parameters::Triggering
+    include ::HostsHelper
+    if Gem::Version.new(SETTINGS[:version].short) < Gem::Version.new('1.20')
+      include ::ApplicationHelper
+    else
+      include ::AuthorizeHelper
+    end
+
+    AJAX_REQUESTS = [:status_hosts].freeze
+    before_action :ajax_request, :only => AJAX_REQUESTS
     before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
     before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
 
@@ -16,23 +25,54 @@ module ForemanWreckingball
       ]
 
       @newest_data = Host.authorized(:view_hosts, Host).joins(:vmware_facet).maximum('vmware_facets.updated_at')
-
       @data = statuses.map do |status|
         host_association = status.host_association
-        hosts = Host.authorized(:view_hosts, Host)
-                    .joins(host_association)
-                    .includes(host_association)
-                    .includes(:vmware_facet)
-                    .includes(:environment)
-                    .preload(:owner)
-                    .order(:name)
+        counter = Host.authorized(:view_hosts, Host)
+                      .joins(host_association)
+                      .includes(host_association)
+                      .map { |host| host.public_send(host_association).to_global }
+                      .group_by { |global_status| global_status }
+                      .each_with_object({}) { |(global_status, items), hash| hash[global_status] = items.size }
         {
           name: status.status_name,
-          hosts: hosts,
           description: status.description,
-          host_association: host_association,
-          supports_remediate: status.supports_remediate?
+          host_association: status.host_association,
+          supports_remediate: status.supports_remediate?,
+          counter: {
+            ok: counter[HostStatus::Global::OK] || 0,
+            warning: counter[HostStatus::Global::WARN] || 0,
+            critical: counter[HostStatus::Global::ERROR] || 0
+          }
         }
+      end
+    end
+
+    # ajax method
+    def status_hosts
+      statuses_map = {
+        vmware_tools_status_object: ForemanWreckingball::ToolsStatus,
+        vmware_operatingsystem_status_object: ForemanWreckingball::OperatingsystemStatus,
+        vmware_cpu_hot_add_status_object: ForemanWreckingball::CpuHotAddStatus,
+        vmware_spectre_v2_status_object: ForemanWreckingball::SpectreV2Status,
+        vmware_hardware_version_status_object: ForemanWreckingball::HardwareVersionStatus
+      }
+
+      @status = statuses_map[params[:status].to_sym]
+      all_hosts = Host.authorized(:view_hosts, Host)
+                      .joins(@status.host_association)
+                      .includes(@status.host_association, :vmware_facet, :environment)
+                      .preload(:owner)
+                      .order(:name)
+      @count = all_hosts.count
+      @hosts = all_hosts.reject { |h| h.send(@status.host_association).to_global == HostStatus::Global::OK }
+                        .paginate(page: params.fetch(:page, 1), per_page: params.fetch(:per_page, 100))
+
+      respond_to do |format|
+        format.json do
+          Rabl::Renderer.json(@hosts, 'foreman_wreckingball/hosts/status_hosts',
+                              view_path: "#{ForemanWreckingball::Engine.root}/app/views",
+                              scope: self)
+        end
       end
     end
 

@@ -31,10 +31,18 @@ FactoryBot.modify do
       end
     end
 
+    trait :with_vmware_hardware_version_status do
+      with_vmware_facet
+      after(:create) do |host, _evaluator|
+        create :vmware_hardware_version_status, host: host
+      end
+    end
+
     trait :with_wreckingball_statuses do
       with_vmware_tools_status
       with_vmware_operatingsystem_status
       with_vmware_cpu_hot_add_status
+      with_vmware_hardware_version_status
     end
   end
 end

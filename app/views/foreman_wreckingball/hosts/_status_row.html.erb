@@ -1,4 +1,4 @@
-<div class="list-group-item list-view-pf-stacked list-view-pf-top-align">
+<div class="status-row list-group-item list-view-pf-stacked list-view-pf-top-align">
   <div class="list-group-item-header">
     <div class="list-view-pf-expand">
       <span class="fa fa-angle-right"></span>
@@ -53,50 +53,15 @@
       <span class="pficon pficon-close"></span>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12 status-hosts-container">
         <% if counter[:warning] > 0 || counter[:critical] > 0 %>
           <p><%= _('The following host require manual attention:') %></p>
-          <table class="table table-striped table-fixed">
-            <thead>
-              <tr>
-                <th><%= _('Hostname') %></th>
-                <th><%= _('Status') %></th>
-                <th><%= _('Owner') %></th>
-                <th><%= _('Puppet Environment') %></th>
-                <% if supports_remediate %>
-                  <th><%= _('Actions') %></th>
-                <% end %>
-              </tr>
-            </thead>
-            <tbody>
-              <% hosts.each do |host| %>
-                <% next if host.public_send(status).to_global == HostStatus::Global::OK %>
-                <tr>
-                  <td class="ellipsis"><%= link_to_if_authorized(host.name, hash_for_host_path(:id => host)) %></td>
-                  <td>
-                    <span class="<%= host_global_status_icon_class(host.public_send(status).to_global) %>"></span>
-                    <span class="<%= host_global_status_class(host.public_send(status).to_global) %>"><%= _(host.public_send(status).to_label) %></span>
-                  </td>
-                  <td class="ellipsis"><%= host.owner %></td>
-                  <td class="ellipsis"><%= host.environment %></td>
-                  <% if supports_remediate %>
-                    <td>
-                      <%=
-                        action_buttons(
-                          display_link_if_authorized(
-                            _('Remediate'),
-                            hash_for_schedule_remediate_host_path(:id => host, :status_id => host.public_send(status).id).merge(:auth_object => host, :permission => 'remediate_vmware_status_hosts'),
-                            :data => { :title => _('Remediate Host OS'), :submit_class => 'btn-danger' },
-                            :onclick => 'show_modal(this); return false;'
-                          )
-                        )
-                      %>
-                  </td>
-                <% end %>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
+          <%=
+            render :partial => 'status_row_hosts_table', locals: {
+              status: status,
+              supports_remediate: supports_remediate
+            }
+          %>
         <% else %>
           <p><%= _('No manual actions required.') %></p>
         <% end %>

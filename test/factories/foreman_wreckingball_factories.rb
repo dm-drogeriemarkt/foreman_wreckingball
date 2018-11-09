@@ -150,4 +150,18 @@ FactoryBot.define do
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
   end
+
+  factory :vmware_hardware_version_status, class: 'ForemanWreckingball::HardwareVersionStatus' do
+    association :host, factory: [:host, :with_vmware_facet]
+    reported_at { Time.now.utc }
+    after(:build) { |status| status.status = status.to_status }
+
+    trait(:with_ok_status) do
+      after(:build) { |status| status.status = ForemanWreckingball::HardwareVersionStatus::OK }
+    end
+
+    trait(:with_out_of_date_status) do
+      after(:build) { |status| status.status = ForemanWreckingball::HardwareVersionStatus::OUTOFDATE }
+    end
+  end
 end
