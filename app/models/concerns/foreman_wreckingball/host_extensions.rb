@@ -26,6 +26,11 @@ module ForemanWreckingball
               :foreign_key => 'host_id',
               :inverse_of => :host,
               :dependent => :destroy
+      has_one :vmware_hardware_version_status_object,
+              :class_name => 'ForemanWreckingball::HardwareVersionStatus',
+              :foreign_key => 'host_id',
+              :inverse_of => :host,
+              :dependent => :destroy
     end
 
     def action_input_key

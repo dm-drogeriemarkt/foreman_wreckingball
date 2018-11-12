@@ -61,6 +61,7 @@ module ForemanWreckingball
       host.get_status(::ForemanWreckingball::CpuHotAddStatus).refresh!
       host.get_status(::ForemanWreckingball::OperatingsystemStatus).refresh!
       host.get_status(::ForemanWreckingball::SpectreV2Status).refresh!
+      host.get_status(::ForemanWreckingball::HardwareVersionStatus).refresh!
       host.refresh_global_status!
     end
 

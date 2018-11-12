@@ -23,6 +23,15 @@ module ForemanWreckingball
       end
     end
 
+    initializer 'foreman_wreckingball.load_default_settings', before: :load_config_initializers do
+      table_exists = begin
+                       Setting.table_exists?
+                     rescue StandardError
+                       false
+                     end
+      require_dependency File.expand_path('../../app/models/settings/wreckingball.rb', __dir__) if table_exists
+    end
+
     initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
         requires_foreman '>= 1.18'
@@ -50,6 +59,7 @@ module ForemanWreckingball
         register_custom_status(ForemanWreckingball::OperatingsystemStatus)
         register_custom_status(ForemanWreckingball::CpuHotAddStatus)
         register_custom_status(ForemanWreckingball::SpectreV2Status)
+        register_custom_status(ForemanWreckingball::HardwareVersionStatus)
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 
