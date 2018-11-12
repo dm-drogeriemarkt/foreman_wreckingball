@@ -10,4 +10,5 @@ class Host::ManagedTest < ActiveSupport::TestCase
   should have_one(:vmware_operatingsystem_status_object)
   should have_one(:vmware_cpu_hot_add_status_object)
   should have_one(:vmware_spectre_v2_status_object)
+  should have_one(:vmware_hardware_version_status_object)
 end
