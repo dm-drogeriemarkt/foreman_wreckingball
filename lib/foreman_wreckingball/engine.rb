@@ -29,7 +29,7 @@ module ForemanWreckingball
                      rescue StandardError
                        false
                      end
-      require_dependency File.expand_path('../../app/models/settings/wreckingball.rb', __dir__) if table_exists
+      require_dependency File.expand_path('../../app/models/setting/wreckingball.rb', __dir__) if table_exists
     end
 
     initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
@@ -96,7 +96,9 @@ module ForemanWreckingball
 
         if ForemanWreckingball.fog_patches_required?
           Fog::Compute::Vsphere::Host.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Host)
+          Fog::Compute::Vsphere::Server.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Server)
           Fog::Compute::Vsphere::Real.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Real)
+          Fog::Compute::Vsphere::Mock.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Mock)
         end
       rescue StandardError => e
         Rails.logger.warn "ForemanWreckingball: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
@@ -117,7 +119,7 @@ module ForemanWreckingball
     require 'fog/vsphere'
     require 'fog/vsphere/compute'
     require 'fog/vsphere/models/compute/host'
-    !::Fog::Compute::Vsphere::Host.instance_methods.include?(:feature_capabilities)
+    true
   rescue LoadError
     false
   end

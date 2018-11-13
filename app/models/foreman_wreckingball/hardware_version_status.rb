@@ -18,7 +18,15 @@ module ForemanWreckingball
     end
 
     def self.supports_remediate?
-      false
+      true
+    end
+
+    def self.dangerous_remediate?
+      true
+    end
+
+    def self.remediate_action
+      ::Actions::ForemanWreckingball::Host::RemediateHardwareVersion
     end
 
     def to_status(_options = {})

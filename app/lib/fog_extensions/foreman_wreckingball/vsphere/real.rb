@@ -19,6 +19,13 @@ module FogExtensions
         included do
           prepend Overrides
         end
+
+        def vm_upgrade_hardware(version: nil, instance_uuid:)
+          vm_mob_ref = get_vm_ref(instance_uuid)
+          task = vm_mob_ref.UpgradeVM_Task(version: version)
+          task.wait_for_completion
+          { 'task_state' => task.info.state }
+        end
       end
     end
   end
