@@ -20,6 +20,7 @@ script:
   - node ./node_modules/.bin/eslint . app/**/*.js
   - cd ../foreman
   - bundle exec rake test:${FOREMAN_PLUGIN_NAME}
+  - bundle exec rake "plugin:assets:precompile[${FOREMAN_PLUGIN_NAME}]" RAILS_ENV=production
 env:
   global:
     - TESTOPTS=-v
