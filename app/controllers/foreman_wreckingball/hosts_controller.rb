@@ -63,9 +63,9 @@ module ForemanWreckingball
                       .includes(@status.host_association, :vmware_facet, :environment)
                       .preload(:owner)
                       .order(:name)
+                      .reject { |h| h.send(@status.host_association).to_global == HostStatus::Global::OK }
       @count = all_hosts.count
-      @hosts = all_hosts.reject { |h| h.send(@status.host_association).to_global == HostStatus::Global::OK }
-                        .paginate(page: params.fetch(:page, 1), per_page: params.fetch(:per_page, 100))
+      @hosts = all_hosts.paginate(page: params.fetch(:page, 1), per_page: params.fetch(:per_page, 100))
 
       respond_to do |format|
         format.json do
