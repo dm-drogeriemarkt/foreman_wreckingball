@@ -26,6 +26,10 @@ module ForemanWreckingball
     end
 
     def to_global(_options = {})
+      SpectreV2Status.to_global(status)
+    end
+
+    def self.to_global(status)
       case status
       when MISSING
         HostStatus::Global::ERROR

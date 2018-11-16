@@ -151,6 +151,20 @@ FactoryBot.define do
     after(:build) { |status| status.status = status.to_status }
   end
 
+  factory :vmware_spectre_v2_status, class: 'ForemanWreckingball::SpectreV2Status' do
+    association :host, factory: [:host, :with_vmware_facet]
+    reported_at { Time.now.utc }
+    after(:build) { |status| status.status = status.to_status }
+
+    trait(:with_enabled) do
+      after(:build) { |status| status.status = ForemanWreckingball::SpectreV2Status::ENABLED }
+    end
+
+    trait(:with_missing) do
+      after(:build) { |status| status.status = ForemanWreckingball::SpectreV2Status::MISSING }
+    end
+  end
+
   factory :vmware_hardware_version_status, class: 'ForemanWreckingball::HardwareVersionStatus' do
     association :host, factory: [:host, :with_vmware_facet]
     reported_at { Time.now.utc }
