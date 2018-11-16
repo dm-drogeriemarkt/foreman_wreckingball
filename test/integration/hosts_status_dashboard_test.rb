@@ -1,4 +1,4 @@
-require 'benchmark'
+# frozen_string_literal: true
 
 require 'integration_test_plugin_helper'
 
@@ -20,31 +20,31 @@ class HostsStatusDashboardTest < ActionDispatch::IntegrationTest
 
     visit status_dashboard_hosts_path
 
-    lists = find_all("div.list-view-pf-main-info")
+    lists = find_all('div.list-view-pf-main-info')
 
     # VMWare Tools
-    assert_content lists[0].text, "1 OK"
-    assert_content lists[0].text, "0 Warning"
-    assert_content lists[0].text, "0 Critical"
+    assert_content lists[0].text, '1 OK'
+    assert_content lists[0].text, '0 Warning'
+    assert_content lists[0].text, '0 Critical'
 
     # VMWare Operating System
-    assert_content lists[1].text, "2 OK"
-    assert_content lists[1].text, "0 Warning"
-    assert_content lists[1].text, "0 Critical"
+    assert_content lists[1].text, '2 OK'
+    assert_content lists[1].text, '0 Warning'
+    assert_content lists[1].text, '0 Critical'
 
     # VMWare CPU Hot Plug
-    assert_content lists[2].text, "3 OK"
-    assert_content lists[2].text, "0 Warning"
-    assert_content lists[2].text, "0 Critical"
+    assert_content lists[2].text, '3 OK'
+    assert_content lists[2].text, '0 Warning'
+    assert_content lists[2].text, '0 Critical'
 
     # VMWare Spectre V2
-    assert_content lists[3].text, "4 OK"
-    assert_content lists[3].text, "0 Warning"
-    assert_content lists[3].text, "5 Critical"
+    assert_content lists[3].text, '4 OK'
+    assert_content lists[3].text, '0 Warning'
+    assert_content lists[3].text, '5 Critical'
 
     # VMWare Hardware Version
-    assert_content lists[4].text, "6 OK"
-    assert_content lists[4].text, "7 Warning"
-    assert_content lists[4].text, "0 Critical"
+    assert_content lists[4].text, '6 OK'
+    assert_content lists[4].text, '7 Warning'
+    assert_content lists[4].text, '0 Critical'
   end
 end

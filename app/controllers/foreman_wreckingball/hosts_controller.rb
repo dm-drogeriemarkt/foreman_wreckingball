@@ -29,12 +29,12 @@ module ForemanWreckingball
         host_association = status.host_association
 
         # Let the database calculate status counts, then map to HostStatus::Global values
-        counter = Host.authorized(:view_hosts).
-                       joins(host_association).
-                       select('host_status.status').
-                       group('host_status.status').
-                       count.
-                       inject({}) { |r, (k,v)| r[status.to_global(k)] = v; r }
+        counter = Host.authorized(:view_hosts)
+                      .joins(host_association)
+                      .select('host_status.status')
+                      .group('host_status.status')
+                      .count
+                      .each_with_object({}) { |r, (k, v)| r[status.to_global(k)] = v }
 
         {
           name: status.status_name,
