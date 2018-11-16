@@ -14,7 +14,6 @@ module ForemanWreckingball
     before_action :ajax_request, :only => AJAX_REQUESTS
     before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
     before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
-
     STATUSES_MAP ||= {
       vmware_tools_status_object: ForemanWreckingball::ToolsStatus,
       vmware_operatingsystem_status_object: ForemanWreckingball::OperatingsystemStatus,
@@ -31,6 +30,7 @@ module ForemanWreckingball
         # Let the database calculate status counts, then map to HostStatus::Global values
         counter = Host.authorized(:view_hosts)
                       .joins(host_association)
+                      .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
                       .select('host_status.status')
                       .group('host_status.status')
                       .count
@@ -39,7 +39,7 @@ module ForemanWreckingball
         {
           name: status.status_name,
           description: status.description,
-          host_association: status.host_association,
+          host_association: host_association,
           supports_remediate: status.supports_remediate?,
           counter: {
             ok: counter[HostStatus::Global::OK] || 0,
@@ -56,6 +56,7 @@ module ForemanWreckingball
 
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
+                      .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
                       .includes(@status.host_association, :vmware_facet, :environment)
                       .where.not('host_status.status': @status.global_ok_list)
                       .preload(:owner)

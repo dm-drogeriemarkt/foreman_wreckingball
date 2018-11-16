@@ -93,6 +93,8 @@ module ForemanWreckingball
         ::Host::Managed.send(:include, ForemanWreckingball::VmwareFacetHostExtensions)
         ::Host::Managed.send(:include, ForemanWreckingball::VmwareHypervisorFacetHostExtensions)
         ::HostsHelper.send(:include, ForemanWreckingball::HostsHelperExtensions)
+        ::User.send(:include, ForemanWreckingball::UserExtensions)
+        ::Usergroup.send(:include, ForemanWreckingball::UsergroupExtensions)
 
         if ForemanWreckingball.fog_patches_required?
           Fog::Compute::Vsphere::Host.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Host)

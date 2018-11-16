@@ -5,6 +5,16 @@
        )
 %>
 
+<%= title_actions(
+  button_group(
+    if params[:owned_only]
+      link_to _('Show all hosts'), status_dashboard_hosts_path, class: 'btn btn-default'
+    else
+      link_to _('Show only owned hosts'), status_dashboard_hosts_path(owned_only: true), class: 'btn btn-default'
+    end
+  )
+) %>
+
 <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
 <% @data.each_with_index do |status, idx| %>
 <%=
