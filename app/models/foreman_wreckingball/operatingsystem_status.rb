@@ -34,7 +34,7 @@ module ForemanWreckingball
     end
 
     def to_global(_options = {})
-      OperatingsystemStatus.to_global(status)
+      self.class.to_global(status)
     end
 
     def self.to_global(status)
