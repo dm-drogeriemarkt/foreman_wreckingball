@@ -26,6 +26,10 @@ module ForemanWreckingball
     end
 
     def to_global(_options = {})
+      self.class.to_global(status)
+    end
+
+    def self.to_global(status)
       case status
       when PERFORMANCE_DEGRATION
         HostStatus::Global::ERROR

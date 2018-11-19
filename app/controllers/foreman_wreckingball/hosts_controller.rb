@@ -27,12 +27,15 @@ module ForemanWreckingball
       @newest_data = Host.authorized(:view_hosts, Host).joins(:vmware_facet).maximum('vmware_facets.updated_at')
       @data = statuses.map do |status|
         host_association = status.host_association
-        counter = Host.authorized(:view_hosts, Host)
+
+        # Let the database calculate status counts, then map to HostStatus::Global values
+        counter = Host.authorized(:view_hosts)
                       .joins(host_association)
-                      .includes(host_association)
-                      .map { |host| host.public_send(host_association).to_global }
-                      .group_by { |global_status| global_status }
-                      .each_with_object({}) { |(global_status, items), hash| hash[global_status] = items.size }
+                      .select('host_status.status')
+                      .group('host_status.status')
+                      .count
+                      .each_with_object({}) { |(k, v), r| r[status.to_global(k)] = v }
+
         {
           name: status.status_name,
           description: status.description,
