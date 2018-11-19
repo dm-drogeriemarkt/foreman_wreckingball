@@ -8,7 +8,6 @@ class HostsStatusDashboardTest < ActionDispatch::IntegrationTest
   end
 
   test 'shows different vmware host statuses' do
-    # A few unassociated hosts
     FactoryBot.create_list(:host, 10)
     FactoryBot.create_list(:vmware_tools_status, 1)
     FactoryBot.create_list(:vmware_operatingsystem_status, 2)
@@ -18,6 +17,7 @@ class HostsStatusDashboardTest < ActionDispatch::IntegrationTest
     FactoryBot.create_list(:vmware_hardware_version_status, 6, :with_ok_status)
     FactoryBot.create_list(:vmware_hardware_version_status, 7, :with_out_of_date_status)
 
+    User.current = users(:admin)
     visit status_dashboard_hosts_path
 
     lists = find_all('div.list-view-pf-main-info')

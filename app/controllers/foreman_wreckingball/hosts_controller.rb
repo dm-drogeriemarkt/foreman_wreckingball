@@ -34,7 +34,7 @@ module ForemanWreckingball
                       .select('host_status.status')
                       .group('host_status.status')
                       .count
-                      .each_with_object({}) { |r, (k, v)| r[status.to_global(k)] = v }
+                      .each_with_object({}) { |(k, v), r| r[status.to_global(k)] = v }
 
         {
           name: status.status_name,
