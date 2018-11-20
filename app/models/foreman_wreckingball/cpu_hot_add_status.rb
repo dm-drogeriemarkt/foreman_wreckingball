@@ -38,7 +38,7 @@ module ForemanWreckingball
       end
     end
 
-    def self.global_ok_list()
+    def self.global_ok_list
       [OK]
     end
 

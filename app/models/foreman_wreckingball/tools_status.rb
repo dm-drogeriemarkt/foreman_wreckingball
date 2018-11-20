@@ -40,7 +40,7 @@ module ForemanWreckingball
       end
     end
 
-    def self.global_ok_list()
+    def self.global_ok_list
       [VmwareFacet.tools_states[:toolsOk], POWERDOWN]
     end
 

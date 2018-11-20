@@ -24,16 +24,8 @@ module ForemanWreckingball
     }.freeze
 
     def status_dashboard
-      statuses = [
-        ToolsStatus,
-        OperatingsystemStatus,
-        CpuHotAddStatus,
-        SpectreV2Status,
-        HardwareVersionStatus
-      ]
-
       @newest_data = Host.authorized(:view_hosts, Host).joins(:vmware_facet).maximum('vmware_facets.updated_at')
-      @data = statuses.map do |status|
+      @data = STATUSES_MAP.map do |_key, status|
         host_association = status.host_association
 
         # Let the database calculate status counts, then map to HostStatus::Global values
