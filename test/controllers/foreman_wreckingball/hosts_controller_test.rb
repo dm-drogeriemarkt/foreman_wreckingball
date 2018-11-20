@@ -29,6 +29,20 @@ module ForemanWreckingball
     end
 
     describe '#status_hosts' do
+      test 'returns correct counts' do
+        FactoryBot.create_list(:vmware_hardware_version_status, 3, :with_ok_status)
+        FactoryBot.create_list(:vmware_hardware_version_status, 4, :with_out_of_date_status)
+
+        get :status_hosts, params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
+                           session: set_session_user, xhr: true
+
+        assert_response :ok
+        json = JSON.parse(response.body)
+        assert_equal 7, json['recordsTotal']
+        assert_equal 3, json['recordsFiltered']
+        assert_equal 4, json['data'].size
+      end
+
       test 'returns hosts for status' do
         ok_status = FactoryBot.create(:vmware_hardware_version_status, :with_ok_status)
         out_of_date_status = FactoryBot.create(:vmware_hardware_version_status, :with_out_of_date_status)

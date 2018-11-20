@@ -3,7 +3,7 @@
 object false
 
 node(:recordsTotal) { @count }
-node(:recordsFiltered) { @count }
+node(:recordsFiltered) { @count - @hosts.size }
 node(:data) do
   partial 'foreman_wreckingball/hosts/_hosts', object: @hosts,
                                                locals: {
