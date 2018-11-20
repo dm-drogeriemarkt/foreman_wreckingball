@@ -55,6 +55,19 @@ module ForemanWreckingball
         assert_includes hosts_names, out_of_date_status.host.name
         refute_includes hosts_names, ok_status.host.name
       end
+
+      test 'returns hosts for spectre v2 status' do
+        FactoryBot.create_list(:vmware_spectre_v2_status, 1, :with_enabled)
+        missing_list = FactoryBot.create_list(:vmware_spectre_v2_status, 2, :with_missing)
+
+        get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
+                           session: set_session_user, xhr: true
+
+        hosts = missing_list.map(&:host)
+
+        data = JSON.parse(response.body)['data']
+        assert_equal 2, data.size
+      end
     end
 
     describe '#refresh_status_dashboard' do

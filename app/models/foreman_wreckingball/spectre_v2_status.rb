@@ -38,6 +38,10 @@ module ForemanWreckingball
       end
     end
 
+    def self.global_ok_list()
+      [ENABLED]
+    end
+
     def to_label(_options = {})
       case status
       when MISSING
