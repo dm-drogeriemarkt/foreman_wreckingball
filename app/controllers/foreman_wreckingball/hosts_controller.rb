@@ -54,19 +54,15 @@ module ForemanWreckingball
     def status_hosts
       @status = STATUSES_MAP[params.fetch(:status).to_sym]
 
-      total = Host.authorized(:view_hosts, Host)
+      query = Host.authorized(:view_hosts, Host)
                   .joins(@status.host_association)
                   .includes(@status.host_association, :vmware_facet, :environment)
-                  .count
 
-      all_hosts = Host.authorized(:view_hosts, Host)
-                      .joins(@status.host_association)
-                      .includes(@status.host_association, :vmware_facet, :environment)
-                      .where('"host_status"."status" NOT IN (:status)', status: @status.global_ok_list)
-                      .preload(:owner)
-                      .order(:name)
+      all_hosts = query.where('"host_status"."status" NOT IN (:status)', status: @status.global_ok_list)
+                       .preload(:owner)
+                       .order(:name)
 
-      @count = total
+      @count = all_hosts.size
       @hosts = all_hosts.paginate(page: params.fetch(:page, 1), per_page: params.fetch(:per_page, 100))
 
       respond_to do |format|
