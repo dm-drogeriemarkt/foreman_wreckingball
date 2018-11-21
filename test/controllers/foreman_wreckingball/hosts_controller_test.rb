@@ -29,6 +29,20 @@ module ForemanWreckingball
     end
 
     describe '#status_hosts' do
+      test 'returns correct counts' do
+        FactoryBot.create_list(:vmware_hardware_version_status, 3, :with_ok_status)
+        FactoryBot.create_list(:vmware_hardware_version_status, 4, :with_out_of_date_status)
+
+        get :status_hosts, params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
+                           session: set_session_user, xhr: true
+
+        assert_response :ok
+        json = JSON.parse(response.body)
+        assert_equal 4, json['recordsTotal']
+        assert_equal 4, json['recordsFiltered']
+        assert_equal 4, json['data'].size
+      end
+
       test 'returns hosts for status' do
         ok_status = FactoryBot.create(:vmware_hardware_version_status, :with_ok_status)
         out_of_date_status = FactoryBot.create(:vmware_hardware_version_status, :with_out_of_date_status)
@@ -37,9 +51,24 @@ module ForemanWreckingball
                            session: set_session_user, xhr: true
 
         assert_response :ok
-        hosts_names = JSON.parse(response.body)['data'].map { |host| host['name'] }
+
+        data = JSON.parse(response.body)['data']
+
+        hosts_names = data.map { |host| host['name'] }
+        assert_equal 1, data.size
         assert_includes hosts_names, out_of_date_status.host.name
         refute_includes hosts_names, ok_status.host.name
+      end
+
+      test 'returns hosts for spectre v2 status' do
+        FactoryBot.create_list(:vmware_spectre_v2_status, 1, :with_enabled)
+        FactoryBot.create_list(:vmware_spectre_v2_status, 2, :with_missing)
+
+        get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
+                           session: set_session_user, xhr: true
+
+        data = JSON.parse(response.body)['data']
+        assert_equal 2, data.size
       end
     end
 

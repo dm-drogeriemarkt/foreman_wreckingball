@@ -40,6 +40,10 @@ module ForemanWreckingball
       end
     end
 
+    def self.global_ok_list
+      [VmwareFacet.tools_states[:toolsOk], POWERDOWN]
+    end
+
     def to_label(_options = {})
       return N_('Powered down') if status == POWERDOWN
       host.vmware_facet.tools_state_label

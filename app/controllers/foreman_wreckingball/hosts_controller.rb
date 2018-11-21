@@ -15,17 +15,17 @@ module ForemanWreckingball
     before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
     before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
 
-    def status_dashboard
-      statuses = [
-        ToolsStatus,
-        OperatingsystemStatus,
-        CpuHotAddStatus,
-        SpectreV2Status,
-        HardwareVersionStatus
-      ]
+    STATUSES_MAP ||= {
+      vmware_tools_status_object: ForemanWreckingball::ToolsStatus,
+      vmware_operatingsystem_status_object: ForemanWreckingball::OperatingsystemStatus,
+      vmware_cpu_hot_add_status_object: ForemanWreckingball::CpuHotAddStatus,
+      vmware_spectre_v2_status_object: ForemanWreckingball::SpectreV2Status,
+      vmware_hardware_version_status_object: ForemanWreckingball::HardwareVersionStatus
+    }.freeze
 
+    def status_dashboard
       @newest_data = Host.authorized(:view_hosts, Host).joins(:vmware_facet).maximum('vmware_facets.updated_at')
-      @data = statuses.map do |status|
+      @data = STATUSES_MAP.map do |_key, status|
         host_association = status.host_association
 
         # Let the database calculate status counts, then map to HostStatus::Global values
@@ -52,22 +52,16 @@ module ForemanWreckingball
 
     # ajax method
     def status_hosts
-      statuses_map = {
-        vmware_tools_status_object: ForemanWreckingball::ToolsStatus,
-        vmware_operatingsystem_status_object: ForemanWreckingball::OperatingsystemStatus,
-        vmware_cpu_hot_add_status_object: ForemanWreckingball::CpuHotAddStatus,
-        vmware_spectre_v2_status_object: ForemanWreckingball::SpectreV2Status,
-        vmware_hardware_version_status_object: ForemanWreckingball::HardwareVersionStatus
-      }
+      @status = STATUSES_MAP[params.fetch(:status).to_sym]
 
-      @status = statuses_map[params[:status].to_sym]
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
                       .includes(@status.host_association, :vmware_facet, :environment)
+                      .where.not('host_status.status': @status.global_ok_list)
                       .preload(:owner)
                       .order(:name)
-                      .reject { |h| h.send(@status.host_association).to_global == HostStatus::Global::OK }
-      @count = all_hosts.count
+
+      @count = all_hosts.size
       @hosts = all_hosts.paginate(page: params.fetch(:page, 1), per_page: params.fetch(:per_page, 100))
 
       respond_to do |format|

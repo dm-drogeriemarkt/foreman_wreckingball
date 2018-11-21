@@ -46,6 +46,10 @@ module ForemanWreckingball
       end
     end
 
+    def self.global_ok_list
+      [OK]
+    end
+
     def to_label(_options = {})
       case status
       when OUTOFDATE
