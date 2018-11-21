@@ -38,8 +38,8 @@ module ForemanWreckingball
 
         assert_response :ok
         json = JSON.parse(response.body)
-        assert_equal 7, json['recordsTotal']
-        assert_equal 3, json['recordsFiltered']
+        assert_equal 4, json['recordsTotal']
+        assert_equal 4, json['recordsFiltered']
         assert_equal 4, json['data'].size
       end
 

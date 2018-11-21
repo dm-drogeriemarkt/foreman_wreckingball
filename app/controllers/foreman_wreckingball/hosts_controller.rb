@@ -58,7 +58,7 @@ module ForemanWreckingball
                   .joins(@status.host_association)
                   .includes(@status.host_association, :vmware_facet, :environment)
 
-      all_hosts = query.where('"host_status"."status" NOT IN (:status)', status: @status.global_ok_list)
+      all_hosts = query.where.not('host_status.status': @status.global_ok_list)
                        .preload(:owner)
                        .order(:name)
 
