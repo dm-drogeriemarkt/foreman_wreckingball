@@ -27,7 +27,11 @@ module ForemanWreckingball
       end
 
       test 'removes old clusters' do
-        old_cluster = FactoryBot.create(:vmware_cluster, compute_resource: compute_resource)
+        old_cluster = FactoryBot.create(:vmware_cluster,
+                                        :with_hosts,
+                                        :with_vmware_facets,
+                                        :with_vmware_hypervisor_facets,
+                                        compute_resource: compute_resource)
         importer.import!
         refute ForemanWreckingball::VmwareCluster.find_by(id: old_cluster.id)
       end
