@@ -74,11 +74,22 @@ module ForemanWreckingball
 
     describe '#refresh_status_dashboard' do
       test 'redirects to scheduled task' do
+        FactoryBot.create(:some_task, :vmware_sync, :stopped)
+
         ForemanTasks.expects(:async_task).returns(fake_task)
         put :refresh_status_dashboard, session: set_session_user
         assert_response :redirect
         assert_includes flash[:success], 'successfully scheduled'
         assert_redirected_to foreman_tasks_task_path(123)
+      end
+
+      test 'show flash warning message when task is already running' do
+        FactoryBot.create(:some_task, :vmware_sync, :running)
+
+        put :refresh_status_dashboard, session: set_session_user
+        assert_response :redirect
+        assert_includes flash[:warning], 'task is already running'
+        assert_redirected_to status_dashboard_hosts_path
       end
     end
 
