@@ -5,5 +5,6 @@ require 'test_helper'
 require 'dynflow/testing'
 
 # Add plugin to FactoryBot's paths
+FactoryBot.definition_file_paths << File.join(ForemanTasks::Engine.root, 'test', 'factories')
 FactoryBot.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')
 FactoryBot.reload

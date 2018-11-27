@@ -75,11 +75,16 @@ module ForemanWreckingball
     end
 
     def refresh_status_dashboard
-      flash[:success] = _('Refresh Compute Resource data task was successfully scheduled.')
-      task = User.as_anonymous_admin do
-        ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
+      if ForemanTasks::Task.active.where(label: ::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync.to_s).empty?
+        flash[:success] = _('Refresh Compute Resource data task was successfully scheduled.')
+        task = User.as_anonymous_admin do
+          ::ForemanTasks.async_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
+        end
+        redirect_to(foreman_tasks_task_path(task.id))
+      else
+        flash[:warning] = _('Refresh Compute Resource data task is already running. Please wait for the running task to finish.')
+        redirect_to status_dashboard_hosts_path
       end
-      redirect_to(foreman_tasks_task_path(task.id))
     end
 
     def schedule_remediate
@@ -87,7 +92,7 @@ module ForemanWreckingball
     end
 
     def submit_remediate
-      raise Foreman::Exception, 'VMware Status can not be remediated.' unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
+      raise Foreman::Exception, _('VMware Status can not be remediated.') unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
       task = User.as_anonymous_admin do
         triggering = ::ForemanTasks::Triggering.new_from_params(triggering_params)
         if triggering.future?
