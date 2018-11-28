@@ -47,7 +47,8 @@ module ForemanWreckingball
 
         # Extend built in permissions
         Foreman::AccessControl.permission(:view_hosts).actions.concat [
-          'foreman_wreckingball/hosts/status_dashboard'
+          'foreman_wreckingball/hosts/status_dashboard',
+          'foreman_wreckingball/hosts/status_hosts'
         ]
 
         menu :top_menu, :wreckingball_status_dashboard, :url_hash => { :controller => :'foreman_wreckingball/hosts', :action => :status_dashboard },

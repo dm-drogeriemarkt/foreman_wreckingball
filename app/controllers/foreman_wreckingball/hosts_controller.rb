@@ -122,7 +122,7 @@ module ForemanWreckingball
 
     def action_permission
       case params[:action]
-      when 'status_dashboard'
+      when 'status_dashboard', 'status_hosts'
         'view'
       when 'refresh_status_dashboard'
         'refresh_vmware_status'
