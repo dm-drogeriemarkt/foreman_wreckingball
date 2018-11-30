@@ -24,11 +24,11 @@ module ForemanWreckingball
 
     def status_dashboard
       @newest_data = Host.authorized(:view_hosts).joins(:vmware_facet).maximum('vmware_facets.updated_at')
-      host_ids = Host.authorized(:view_hosts).pluck(:id)
+      host_ids = Host.authorized(:view_hosts)
+                     .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+                     .pluck(:id)
 
       @data = STATUSES_MAP.map do |_key, status|
-        host_association = status.host_association
-
         counter = status.where(host_id: host_ids)
                         .select(:status)
                         .group(:status)
@@ -38,7 +38,7 @@ module ForemanWreckingball
         {
           name: status.status_name,
           description: status.description,
-          host_association: host_association,
+          host_association: status.host_association,
           supports_remediate: status.supports_remediate?,
           counter: {
             ok: counter[HostStatus::Global::OK] || 0,
