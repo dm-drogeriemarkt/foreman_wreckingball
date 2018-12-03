@@ -1,7 +1,7 @@
 $(document).ready(() => {
   $.fn.dataTable.ext.errMode = 'none';
-  $('.status-row.list-group-item').one('click', (a, b, c) => {
-    $(a.currentTarget).find('table.status-hosts').each((_index, element) => {
+  $('.status-row.list-group-item').one('click', function() {
+    $(this).find('table.status-hosts').each((_index, element) => {
       $(element).dataTable({
         searching: false,
         ordering: false,

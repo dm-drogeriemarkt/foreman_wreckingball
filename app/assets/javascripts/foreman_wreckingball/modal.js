@@ -39,4 +39,3 @@ function show_modal(element, url) {
     });
   return false;
 }
-
