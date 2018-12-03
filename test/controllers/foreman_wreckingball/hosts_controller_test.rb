@@ -4,27 +4,86 @@ require 'test_plugin_helper'
 
 module ForemanWreckingball
   class HostsControllerTest < ActionController::TestCase
-    let(:task_id) { 123 }
-    let(:fake_task) do
-      OpenStruct.new(
-        id: task_id
-      )
-    end
+    let(:fake_task) { OpenStruct.new(id: 123) }
 
     setup do
       Setting::Wreckingball.load_defaults
     end
 
     describe '#status_dashboard' do
-      test 'shows an empty status page' do
-        get :status_dashboard, session: set_session_user
-        assert_response :success
+      context 'when there are no hosts with wreckingball statuses' do
+        test 'shows an empty status page' do
+          get :status_dashboard, session: set_session_user
+          assert_response :success
+        end
       end
 
-      test 'shows a status page' do
-        FactoryBot.create_list(:host, 5, :with_wreckingball_statuses)
-        get :status_dashboard, session: set_session_user
-        assert_response :success
+      context 'when there are hosts with wreckingball statuses' do
+        context 'for admin user' do
+          setup do
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: users(:admin))
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:usergroup, users: [users(:admin)]))
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:user))
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:usergroup))
+          end
+
+          test 'shows a status page' do
+            get :status_dashboard, session: set_session_user
+            assert_response :success
+          end
+
+          test 'should count all hosts' do
+            get :status_dashboard, session: set_session_user
+            assert_equal 4, assigns[:data].first[:counter][:ok]
+          end
+
+          test 'should count only owned hosts' do
+            get :status_dashboard, params: { owned_only: true }, session: set_session_user
+            assert_equal 2, assigns[:data].first[:counter][:ok]
+          end
+        end
+
+        context 'for user with custom role' do
+          let(:search) { "owner = current_user or (owner_type = Usergroup and owner_id = #{user.usergroups.first.id}) or hostgroup_id = #{hostgroup.id} or name ~ #{host_name_prefix}" }
+          let(:filter) do
+            FactoryBot.create(:filter,
+                              search: search,
+                              permissions: Permission.where(name: 'view_hosts'))
+          end
+          let(:role) { FactoryBot.create(:role) }
+          let(:user) { FactoryBot.create(:user, :with_mail, :with_usergroup, admin: false, roles: [role]) }
+          let(:hostgroup) { FactoryBot.create(:hostgroup) }
+          let(:host_name_prefix) { 'abc' }
+
+          setup do
+            # hosts that match search query
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: user)
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: user.usergroups.first)
+            FactoryBot.create(:host, :with_wreckingball_statuses, hostgroup: hostgroup)
+            FactoryBot.create(:host, :with_wreckingball_statuses, name: "#{host_name_prefix}123", hostname: "#{host_name_prefix}123")
+            # hosts that do not match search query
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:user))
+            FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:usergroup))
+            FactoryBot.create(:host, :with_wreckingball_statuses, hostgroup: FactoryBot.create(:hostgroup))
+            FactoryBot.create(:host, :with_wreckingball_statuses)
+          end
+
+          setup do
+            role.filters << filter
+          end
+
+          test 'should count only hosts that match search query' do
+            get :status_dashboard, session: set_session_user(user)
+
+            expected_4_ok = { ok: 4, warning: 0, critical: 0 }
+            expected_4_critical = { ok: 0, warning: 0, critical: 4 }
+
+            assert_equal expected_4_ok, assigns[:data][0][:counter]
+            assert_equal expected_4_ok, assigns[:data][1][:counter]
+            assert_equal expected_4_ok, assigns[:data][2][:counter]
+            assert_equal expected_4_critical, assigns[:data][3][:counter]
+          end
+        end
       end
     end
 
@@ -69,6 +128,27 @@ module ForemanWreckingball
 
         data = JSON.parse(response.body)['data']
         assert_equal 2, data.size
+      end
+
+      describe 'filtering by owner' do
+        setup do
+          FactoryBot.create(:host, :with_wreckingball_statuses, owner: users(:admin))
+          FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:usergroup, users: [users(:admin)]))
+          FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:user))
+          FactoryBot.create(:host, :with_wreckingball_statuses, owner: FactoryBot.create(:usergroup))
+        end
+
+        test 'should show all hosts' do
+          get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
+                             session: set_session_user, xhr: true
+          assert_equal 4, JSON.parse(response.body)['data'].count
+        end
+
+        test 'should show only owned hosts' do
+          get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association, owned_only: true },
+                             session: set_session_user, xhr: true
+          assert_equal 2, JSON.parse(response.body)['data'].count
+        end
       end
     end
 
