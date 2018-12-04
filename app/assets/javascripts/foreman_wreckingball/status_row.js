@@ -1,7 +1,7 @@
 $(document).ready(() => {
   // click the list-view heading then expand a row
   $('.list-group-item-header').click(function(event) {
-    if(!$(this).is('button, a, input, .fa-ellipsis-v')) {
+    if(!$(event.target).is('button, a, input, .fa-ellipsis-v')) {
       $(this).find('.fa-angle-right').toggleClass('fa-angle-down')
         .end().parent().toggleClass('list-view-pf-expand-active')
         .find('.list-group-item-container').toggleClass('hidden');
