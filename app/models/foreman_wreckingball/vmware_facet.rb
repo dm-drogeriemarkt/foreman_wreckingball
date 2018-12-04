@@ -57,11 +57,7 @@ module ForemanWreckingball
     end
 
     def refresh_statuses
-      host.get_status(::ForemanWreckingball::ToolsStatus).refresh!
-      host.get_status(::ForemanWreckingball::CpuHotAddStatus).refresh!
-      host.get_status(::ForemanWreckingball::OperatingsystemStatus).refresh!
-      host.get_status(::ForemanWreckingball::SpectreV2Status).refresh!
-      host.get_status(::ForemanWreckingball::HardwareVersionStatus).refresh!
+      ::HostStatus.wreckingball_statuses.each { |status| host.get_status(status).refresh! }
       host.refresh_global_status!
     end
 
