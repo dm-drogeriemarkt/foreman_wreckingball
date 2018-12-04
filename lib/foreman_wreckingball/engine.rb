@@ -97,6 +97,8 @@ module ForemanWreckingball
         ::User.send(:include, ForemanWreckingball::UserExtensions)
         ::Usergroup.send(:include, ForemanWreckingball::UsergroupExtensions)
 
+        ::HostStatus.extend(ForemanWreckingball::HostStatusExtensions)
+
         if ForemanWreckingball.fog_patches_required?
           Fog::Compute::Vsphere::Host.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Host)
           Fog::Compute::Vsphere::Server.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Server)
