@@ -18,12 +18,7 @@ module ForemanWreckingball
     end
 
     def delete_removed_clusters
-      delete_query = ::ForemanWreckingball::VmwareCluster.where(:compute_resource => compute_resource).where.not(:name => cluster_names)
-      counters[:deleted] = if ActiveRecord::Base.connection.adapter_name.downcase.starts_with? 'mysql'
-                             ::ForemanWreckingball::VmwareCluster.where(:id => delete_query.pluck(:id)).delete_all
-                           else
-                             delete_query.delete_all
-                           end
+      counters[:deleted] = ::ForemanWreckingball::VmwareCluster.where(compute_resource: compute_resource).where.not(name: cluster_names).destroy_all
     end
 
     def create_new_clusters

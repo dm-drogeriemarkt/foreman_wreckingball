@@ -131,6 +131,24 @@ FactoryBot.define do
   factory :vmware_cluster, class: 'ForemanWreckingball::VmwareCluster' do
     sequence(:name) { |n| "Cluster #{n}" }
     association :compute_resource, factory: [:compute_resource, :vmware]
+
+    trait(:with_hosts) do
+      after(:create) do |vmware_cluster|
+        create_list(:vmware_hypervisor_facet, 2, vmware_cluster: vmware_cluster)
+      end
+    end
+
+    trait(:with_vmware_facets) do
+      after(:create) do |vmware_cluster|
+        create_list(:vmware_facet, 2, vmware_cluster: vmware_cluster)
+      end
+    end
+
+    trait(:with_vmware_hypervisor_facets) do
+      after(:create) do |vmware_cluster|
+        create_list(:vmware_hypervisor_facet, 2, vmware_cluster: vmware_cluster)
+      end
+    end
   end
 
   factory :vmware_tools_status, class: 'ForemanWreckingball::ToolsStatus' do
