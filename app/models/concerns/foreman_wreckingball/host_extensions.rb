@@ -6,31 +6,12 @@ module ForemanWreckingball
     include ForemanTasks::Concerns::ActionSubject
 
     included do
-      has_one :vmware_tools_status_object,
-              :class_name => 'ForemanWreckingball::ToolsStatus',
-              :foreign_key => 'host_id',
-              :inverse_of => :host,
-              :dependent => :destroy
-      has_one :vmware_operatingsystem_status_object,
-              :class_name => 'ForemanWreckingball::OperatingsystemStatus',
-              :foreign_key => 'host_id',
-              :inverse_of => :host,
-              :dependent => :destroy
-      has_one :vmware_cpu_hot_add_status_object,
-              :class_name => 'ForemanWreckingball::CpuHotAddStatus',
-              :foreign_key => 'host_id',
-              :inverse_of => :host,
-              :dependent => :destroy
-      has_one :vmware_spectre_v2_status_object,
-              :class_name => 'ForemanWreckingball::SpectreV2Status',
-              :foreign_key => 'host_id',
-              :inverse_of => :host,
-              :dependent => :destroy
-      has_one :vmware_hardware_version_status_object,
-              :class_name => 'ForemanWreckingball::HardwareVersionStatus',
-              :foreign_key => 'host_id',
-              :inverse_of => :host,
-              :dependent => :destroy
+      ForemanWreckingball::Engine::WRECKINGBALL_STATUSES.map(&:constantize).each do |status|
+        has_one(status.host_association, class_name: status.to_s,
+                                         foreign_key: 'host_id',
+                                         inverse_of: :host,
+                                         dependent: :destroy)
+      end
 
       scope :owned_by_current_user, -> { where(owner_type: 'User', owner_id: User.current.id) }
       scope :owned_by_group_with_current_user, -> { where(owner_type: 'Usergroup', owner_id: User.current.usergroup_ids_with_parents) }
