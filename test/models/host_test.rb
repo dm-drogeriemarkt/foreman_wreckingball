@@ -6,11 +6,10 @@ class Host::ManagedTest < ActiveSupport::TestCase
   should have_one(:vmware_facet)
   should have_one(:vmware_cluster)
   should have_one(:vmware_hypervisor_facet)
-  should have_one(:vmware_tools_status_object)
-  should have_one(:vmware_operatingsystem_status_object)
-  should have_one(:vmware_cpu_hot_add_status_object)
-  should have_one(:vmware_spectre_v2_status_object)
-  should have_one(:vmware_hardware_version_status_object)
+
+  HostStatus.wreckingball_statuses.each do |status|
+    should have_one(status.host_association)
+  end
 
   describe '#owned_by_current_user_or_group_with_current_user' do
     test 'returns only hosts owned by current user' do
