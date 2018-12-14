@@ -56,6 +56,7 @@ module ForemanWreckingball
         # Extend built in permissions
         Foreman::AccessControl.permission(:view_hosts).actions.concat [
           'foreman_wreckingball/hosts/status_dashboard',
+          'foreman_wreckingball/hosts/status_managed_hosts_dashboard',
           'foreman_wreckingball/hosts/status_hosts'
         ]
 
@@ -65,6 +66,11 @@ module ForemanWreckingball
                                                         :after => :hosts
 
         WRECKINGBALL_STATUSES.each { |status| register_custom_status(status.constantize) }
+
+        menu :top_menu, :wreckingball_status_managed_hosts_dashboard, url_hash: { :controller => :'foreman_wreckingball/hosts', :action => :status_managed_hosts_dashboard },
+                                                                      caption: N_('VMware Managed Status'),
+                                                                      parent: :hosts_menu,
+                                                                      after: :hosts
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 

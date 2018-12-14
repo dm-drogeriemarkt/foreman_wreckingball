@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 require 'test_plugin_helper'
 
 module ForemanWreckingball
@@ -84,6 +86,34 @@ module ForemanWreckingball
             assert_equal expected_4_critical, assigns[:data][3][:counter]
           end
         end
+      end
+    end
+
+    describe '#status_managed_hosts_dashboard' do
+      let(:admin) { users(:admin) }
+
+      setup do
+        @managed_host = FactoryBot.create(:host, :managed, owner: admin, uuid: 1)
+        @missing_host = FactoryBot.create(:host, :managed, owner: admin)
+
+        mock_vm = mock('vm')
+        mock_vm.expects(:uuid).returns(@managed_host.uuid)
+        Foreman::Model::Vmware.any_instance.stubs(:vms).returns(Array(mock_vm))
+      end
+
+      test 'shows a status page' do
+        get :status_managed_hosts_dashboard, session: set_session_user
+        assert_response :success
+      end
+
+      test 'should contain host with missing vm' do
+        get :status_managed_hosts_dashboard, session: set_session_user
+        assert_includes assigns[:missing_hosts], @missing_host
+      end
+
+      test 'should filter host with vm' do
+        get :status_managed_hosts_dashboard, session: set_session_user
+        refute_includes assigns[:missing_hosts], @managed_host
       end
     end
 

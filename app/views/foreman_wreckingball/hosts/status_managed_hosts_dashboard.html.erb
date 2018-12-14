@@ -1,0 +1,20 @@
+<% title _('VMware Managed Hosts Overview') %>
+<% javascript 'foreman_wreckingball/modal' %>
+<% javascript 'foreman_wreckingball/status_hosts_table' %>
+<% stylesheet 'foreman_wreckingball/status_hosts_table' %>
+
+<%= title_actions(
+  button_group(
+    if params[:owned_only]
+      link_to _('Show all hosts'), status_managed_hosts_dashboard_hosts_path, class: 'btn btn-default'
+    else
+      link_to _('Show only owned hosts'), status_managed_hosts_dashboard_hosts_path(owned_only: true), class: 'btn btn-default'
+    end
+  )
+) %>
+
+<div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
+<% @missing_hosts.each do |host| %>
+  <div><%= host.name %></div>
+<% end %>
+</div>

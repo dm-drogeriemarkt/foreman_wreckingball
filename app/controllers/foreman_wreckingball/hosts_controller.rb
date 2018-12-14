@@ -42,6 +42,19 @@ module ForemanWreckingball
       end
     end
 
+    def status_managed_hosts_dashboard
+      @hosts = Host::Managed.authorized(:view_hosts, Host)
+                   .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+
+      compute_resources = ComputeResource.where(:type => 'Foreman::Model::Vmware')
+
+      # The call to ComputeResource#vms may slow things down
+      # TODO check if there is another API endpoint to fetch vms, without reference to ComputeResource
+      @vms_uuids = compute_resources.inject([]) { |result, cr| result += cr.vms.map(&:uuid) }
+
+      @missing_hosts = @hosts.reject{ |host| @vms_uuids.include?(host.uuid) }
+    end
+
     # ajax method
     def status_hosts
       @status = HostStatus.find_wreckingball_status_by_host_association(params.fetch(:status).to_sym)
