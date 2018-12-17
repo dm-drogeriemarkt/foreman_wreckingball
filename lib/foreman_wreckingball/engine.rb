@@ -7,6 +7,14 @@ module ForemanWreckingball
   class Engine < ::Rails::Engine
     engine_name 'foreman_wreckingball'
 
+    WRECKINGBALL_STATUSES = [
+      'ForemanWreckingball::ToolsStatus',
+      'ForemanWreckingball::OperatingsystemStatus',
+      'ForemanWreckingball::CpuHotAddStatus',
+      'ForemanWreckingball::SpectreV2Status',
+      'ForemanWreckingball::HardwareVersionStatus'
+    ].freeze
+
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
@@ -56,11 +64,7 @@ module ForemanWreckingball
                                                         :parent => :hosts_menu,
                                                         :after => :hosts
 
-        register_custom_status(ForemanWreckingball::ToolsStatus)
-        register_custom_status(ForemanWreckingball::OperatingsystemStatus)
-        register_custom_status(ForemanWreckingball::CpuHotAddStatus)
-        register_custom_status(ForemanWreckingball::SpectreV2Status)
-        register_custom_status(ForemanWreckingball::HardwareVersionStatus)
+        WRECKINGBALL_STATUSES.each { |status| register_custom_status(status.constantize) }
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 
@@ -88,6 +92,8 @@ module ForemanWreckingball
     # Include concerns in this config.to_prepare block
     config.to_prepare do
       begin
+        ::HostStatus.extend(ForemanWreckingball::HostStatusExtensions)
+
         ::ComputeResource.send(:include, ForemanWreckingball::ComputeResourceExtensions)
         ::Foreman::Model::Vmware.send(:include, ForemanWreckingball::VmwareExtensions)
         ::Host::Managed.send(:include, ForemanWreckingball::HostExtensions)

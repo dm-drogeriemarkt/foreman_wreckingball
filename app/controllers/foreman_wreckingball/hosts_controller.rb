@@ -14,13 +14,6 @@ module ForemanWreckingball
     before_action :ajax_request, :only => AJAX_REQUESTS
     before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
     before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
-    STATUSES_MAP ||= {
-      vmware_tools_status_object: ForemanWreckingball::ToolsStatus,
-      vmware_operatingsystem_status_object: ForemanWreckingball::OperatingsystemStatus,
-      vmware_cpu_hot_add_status_object: ForemanWreckingball::CpuHotAddStatus,
-      vmware_spectre_v2_status_object: ForemanWreckingball::SpectreV2Status,
-      vmware_hardware_version_status_object: ForemanWreckingball::HardwareVersionStatus
-    }.freeze
 
     def status_dashboard
       @newest_data = Host.authorized(:view_hosts).joins(:vmware_facet).maximum('vmware_facets.updated_at')
@@ -28,7 +21,7 @@ module ForemanWreckingball
                      .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
                      .pluck(:id)
 
-      @data = STATUSES_MAP.map do |_key, status|
+      @data = HostStatus.wreckingball_statuses.map do |status|
         counter = status.where(host_id: host_ids)
                         .select(:status)
                         .group(:status)
@@ -51,7 +44,7 @@ module ForemanWreckingball
 
     # ajax method
     def status_hosts
-      @status = STATUSES_MAP[params.fetch(:status).to_sym]
+      @status = HostStatus.find_wreckingball_status_by_host_association(params.fetch(:status).to_sym)
 
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
