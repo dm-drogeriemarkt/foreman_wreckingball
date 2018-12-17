@@ -48,11 +48,33 @@ module ForemanWreckingball
 
       compute_resources = ComputeResource.where(:type => 'Foreman::Model::Vmware')
 
-      # The call to ComputeResource#vms may slow things down
-      # TODO check if there is another API endpoint to fetch vms, without reference to ComputeResource
-      @vms_uuids = compute_resources.inject([]) { |result, cr| result += cr.vms.map(&:uuid) }
+      # get all vms by compute resource id
+      vms_by_compute_resource_id = {}
+      compute_resources.each { |cr| vms_by_compute_resource_id[cr.id] = cr.vms }
 
-      @missing_hosts = @hosts.reject{ |host| @vms_uuids.include?(host.uuid) }
+      # NOTE The call to ComputeResource#vms may slow things down
+      vms_by_uuid = vms_by_compute_resource_id.values.flatten.group_by(&:uuid)
+
+      # Find all hosts with duplicate VMs
+      @duplicate_vms = vms_by_uuid.select{ |_uuid, vms| vms.size > 1 }
+
+      @missing_hosts = []
+      @different_hosts = []
+
+      @hosts.each do |host|
+        next unless host.compute_resource_id
+
+        # find the compute resource id of the host in the vm map
+        cr_id, _vms = vms_by_compute_resource_id.find{ |_cr_id, vms| vms.find{ |vm| vm.uuid == host.uuid } }
+
+        if cr_id == nil
+          # No compute resource id is found, vSphere does not have the vm uuid
+          @missing_hosts << host
+        elsif cr_id != host.compute_resource_id
+          # The host uuid is found in a different compute resource
+          @different_hosts << host
+        end
+      end
     end
 
     # ajax method

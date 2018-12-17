@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 require 'test_plugin_helper'
 
 module ForemanWreckingball
@@ -93,7 +91,7 @@ module ForemanWreckingball
       let(:admin) { users(:admin) }
 
       setup do
-        @managed_host = FactoryBot.create(:host, :managed, owner: admin, uuid: 1)
+        @managed_host= FactoryBot.create(:host, :managed, owner: admin, uuid: 1)
         @missing_host = FactoryBot.create(:host, :managed, owner: admin)
 
         mock_vm = mock('vm')
@@ -114,6 +112,12 @@ module ForemanWreckingball
       test 'should filter host with vm' do
         get :status_managed_hosts_dashboard, session: set_session_user
         refute_includes assigns[:missing_hosts], @managed_host
+      end
+
+      describe 'test' do
+        test 'should contain host that references the same vm multiple times' do
+
+        end
       end
     end
 
