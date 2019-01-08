@@ -15,7 +15,7 @@
 
 <% if @missing_hosts.any? %>
   <div id="missing_vms">
-    <h2>List of missing hosts</h2>
+    <h2>List of hosts missing not found in vSphere</h2>
     <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
     <% @missing_hosts.each do |host| %>
       <div><%= host.name %></div>

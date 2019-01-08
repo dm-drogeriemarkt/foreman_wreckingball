@@ -89,13 +89,33 @@ module ForemanWreckingball
 
     describe '#status_managed_hosts_dashboard' do
       let(:admin) { users(:admin) }
+      let(:organization) { Organization.find_by(name: 'Organization 1') }
+      let(:tax_location) { Location.find_by(name: 'Location 1') }
+      let(:cr) do
+        FactoryBot.create(
+          :vmware_cr,
+          uuid: 'test',
+          organizations: [organization],
+          locations: [tax_location],
+        )
+      end
+      let(:other_cr) do
+        FactoryBot.create(
+          :vmware_cr,
+          uuid: 'bla',
+          organizations: [organization],
+          locations: [tax_location],
+        )
+      end
 
       setup do
-        @managed_host= FactoryBot.create(:host, :managed, owner: admin, uuid: 1)
-        @missing_host = FactoryBot.create(:host, :managed, owner: admin)
+        Fog.mock!
+        @managed_host = FactoryBot.create(:host, :managed, :with_vmware_facet, compute_resource: cr, owner: admin, uuid: 1)
+        @missing_host = FactoryBot.create(:host, :managed, :with_vmware_facet, compute_resource: cr, owner: admin, uuid: 2)
 
         mock_vm = mock('vm')
-        mock_vm.expects(:uuid).returns(@managed_host.uuid)
+        mock_vm.stubs(:uuid).returns(@managed_host.uuid)
+        mock_vm.stubs(:name).returns(@managed_host.name)
         Foreman::Model::Vmware.any_instance.stubs(:vms).returns(Array(mock_vm))
       end
 
@@ -112,12 +132,6 @@ module ForemanWreckingball
       test 'should filter host with vm' do
         get :status_managed_hosts_dashboard, session: set_session_user
         refute_includes assigns[:missing_hosts], @managed_host
-      end
-
-      describe 'test' do
-        test 'should contain host that references the same vm multiple times' do
-
-        end
       end
     end
 

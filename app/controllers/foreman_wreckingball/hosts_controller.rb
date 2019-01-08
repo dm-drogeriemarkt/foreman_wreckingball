@@ -50,9 +50,9 @@ module ForemanWreckingball
 
       # get all vms by compute resource id
       vms_by_compute_resource_id = {}
+      # NOTE The call to ComputeResource#vms may slow things down
       compute_resources.each { |cr| vms_by_compute_resource_id[cr.id] = cr.vms }
 
-      # NOTE The call to ComputeResource#vms may slow things down
       vms_by_uuid = vms_by_compute_resource_id.values.flatten.group_by(&:uuid)
 
       # Find all hosts with duplicate VMs

@@ -34,7 +34,6 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     list = page.find('#missing_vms')
     assert_includes list.text, missing_host.name
     refute_includes list.text, managed_host.name
-    # refute list.text.contains?(managed_host.name)
   end
 
   test 'shows duplicate vms with same uuid for a host' do
