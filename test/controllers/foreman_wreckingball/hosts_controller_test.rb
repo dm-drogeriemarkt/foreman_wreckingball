@@ -4,6 +4,8 @@ require 'test_plugin_helper'
 
 module ForemanWreckingball
   class HostsControllerTest < ActionController::TestCase
+    include ForemanWreckingball::StatusHelper
+
     let(:fake_task) { OpenStruct.new(id: 123) }
 
     setup do
@@ -222,56 +224,108 @@ module ForemanWreckingball
     end
 
     describe '#schedule_remediate' do
-      let(:host) do
-        FactoryBot.create(:host, :with_wreckingball_statuses)
-      end
+      let(:host) { FactoryBot.create(:host, :with_wreckingball_statuses) }
+      let(:status_ids) { [host.vmware_tools_status_object.id] }
 
       test 'shows a remediation schedule page' do
-        get :schedule_remediate, params: { status_id: host.vmware_operatingsystem_status_object.id, id: host.id }, session: set_session_user
+        get :schedule_remediate, params: { status_ids: status_ids }, session: set_session_user
         assert_response :success
       end
 
-      test 'returns not found when host id is invalid' do
-        get :schedule_remediate, params: { status_id: nil, id: 'invalid' }, session: set_session_user
-        assert_response :not_found
+      context 'with status_id' do
+        let(:hosts) { FactoryBot.create_list(:host, 2, :with_wreckingball_statuses) }
+        let(:status_ids) { [hosts.first.vmware_operatingsystem_status_object.id] }
+
+        test 'remediate selected statuses' do
+          get :schedule_remediate, params: { status_ids: status_ids }, session: set_session_user
+          assert_statuses HostStatus::Status.find(status_ids)
+        end
       end
 
-      test 'returns not found when status id is invalid' do
-        FactoryBot.create(:host, :with_wreckingball_statuses)
-        get :schedule_remediate, params: { status_id: 'invalid', id: host.id }, session: set_session_user
-        assert_response :not_found
+      context 'with host_association' do
+        let(:hosts) { FactoryBot.create_list(:host, 2, :with_wreckingball_statuses, owner: users(:admin)) }
+        let(:statuses) { hosts.map { |h| h.send(host_association) } }
+        let(:status_class) { ForemanWreckingball::OperatingsystemStatus }
+        let(:host_association) { status_class.host_association }
+
+        setup do
+          hosts.each { |h| h.send(host_association).update(status: status_class::MISMATCH) }
+        end
+
+        test 'remediate all statuses' do
+          get :schedule_remediate, params: { host_association: host_association }, session: set_session_user
+          assert_statuses statuses
+        end
+
+        context 'with owned_only' do
+          setup do
+            hosts_list = FactoryBot.create_list(:host, 2, :with_wreckingball_statuses, owner: users(:one))
+            hosts_list.each { |h| h.send(host_association).update(status: status_class::MISMATCH) }
+          end
+
+          test 'remediate only those statuses where the user is the owner of the host' do
+            get :schedule_remediate, params: { host_association: host_association, owned_only: true }, session: set_session_user
+            assert_statuses statuses
+          end
+        end
       end
     end
 
     describe '#submit_remediate' do
-      let(:host) do
-        FactoryBot.create(:host, :with_wreckingball_statuses)
+      let(:host) { FactoryBot.create(:host, :with_wreckingball_statuses) }
+      let(:status_ids) { [host.vmware_tools_status_object.id] }
+
+      setup do
+        ForemanTasks.stubs(:async_task).returns(fake_task)
       end
 
       test 'redirects to scheduled task' do
-        ForemanTasks.expects(:async_task).returns(fake_task)
-        post :submit_remediate, params: { status_id: host.vmware_operatingsystem_status_object.id, id: host.id }, session: set_session_user
+        post :submit_remediate, params: { status_ids: status_ids }, session: set_session_user
         assert_response :redirect
-        assert_includes flash[:success], 'successfully scheduled'
-        assert_redirected_to foreman_tasks_task_path(123)
+        assert_redirected_to foreman_tasks_task_path(fake_task.id)
       end
 
-      test 'raises error when status can not be remediated' do
-        FactoryBot.create(:host, :with_wreckingball_statuses)
-        assert_raises Foreman::Exception do
-          post :submit_remediate, params: { status_id: host.vmware_tools_status_object.id, id: host.id }, session: set_session_user
+      test 'returns not found when status_ids param is invalid' do
+        post :submit_remediate, params: { status_ids: 'invalid' }, session: set_session_user
+        assert_response :not_found
+      end
+
+      context 'with status_id' do
+        let(:hosts) { FactoryBot.create_list(:host, 2, :with_wreckingball_statuses) }
+        let(:status_ids) { [hosts.first.vmware_operatingsystem_status_object.id] }
+
+        test 'remediate selected statuses' do
+          post :submit_remediate, params: { status_ids: status_ids }, session: set_session_user
+          assert_statuses HostStatus::Status.find(status_ids)
         end
       end
 
-      test 'returns not found when host id is invalid' do
-        post :submit_remediate, params: { status_id: nil, id: 'invalid' }, session: set_session_user
-        assert_response :not_found
-      end
+      context 'with host_association' do
+        let(:hosts) { FactoryBot.create_list(:host, 2, :with_wreckingball_statuses, owner: users(:admin)) }
+        let(:statuses) { hosts.map { |h| h.send(host_association) } }
+        let(:status_class) { ForemanWreckingball::OperatingsystemStatus }
+        let(:host_association) { status_class.host_association }
 
-      test 'returns not found when status id is invalid' do
-        FactoryBot.create(:host, :with_wreckingball_statuses)
-        post :submit_remediate, params: { status_id: 'invalid', id: host.id }, session: set_session_user
-        assert_response :not_found
+        setup do
+          hosts.each { |h| h.send(host_association).update(status: status_class::MISMATCH) }
+        end
+
+        test 'remediate all statuses' do
+          post :submit_remediate, params: { host_association: host_association }, session: set_session_user
+          assert_statuses statuses
+        end
+
+        context 'with owned_only' do
+          setup do
+            hosts_list = FactoryBot.create_list(:host, 2, :with_wreckingball_statuses, owner: users(:one))
+            hosts_list.each { |h| h.send(host_association).update(status: status_class::MISMATCH) }
+          end
+
+          test 'remediate only those statuses where the user is the owner of the host' do
+            post :submit_remediate, params: { host_association: host_association, owned_only: true }, session: set_session_user
+            assert_statuses statuses
+          end
+        end
       end
     end
   end

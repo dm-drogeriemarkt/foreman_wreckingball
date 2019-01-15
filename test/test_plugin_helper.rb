@@ -5,6 +5,8 @@ require 'test_helper'
 require 'database_cleaner'
 require 'dynflow/testing'
 
+Dir["#{__dir__}/helpers/foreman_wreckingball/**.rb"].each { |f| require f }
+
 # Add plugin to FactoryBot's paths
 FactoryBot.definition_file_paths << File.join(ForemanTasks::Engine.root, 'test', 'factories')
 FactoryBot.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')

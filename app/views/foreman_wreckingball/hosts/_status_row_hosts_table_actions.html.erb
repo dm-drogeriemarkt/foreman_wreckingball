@@ -1,0 +1,9 @@
+<%= content_tag :div, class: 'text-right' do %>
+  <% if supports_remediate %>
+    <%= content_tag :a, _('Remediate selected'),
+                        href: schedule_remediate_hosts_path,
+                        class: 'btn btn-default remediate-selected',
+                        onclick: 'show_modal(this); return false;',
+                        disabled: true %>
+  <% end %>
+<% end %>

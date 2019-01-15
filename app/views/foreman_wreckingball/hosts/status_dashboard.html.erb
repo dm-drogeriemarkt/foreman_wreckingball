@@ -13,11 +13,11 @@
     render 'status_dashboard_empty'
   end
 %>
-<%= render :partial => 'common/modal', :locals => {
-  :id => 'confirmation-modal',
-  :title => _('Please Confirm'),
-  :buttons => [
-    button_tag(_('Cancel'), :class => 'btn btn-default', :data => { :dismiss => 'modal' }, :type => 'button'),
-    button_tag(_('Submit'), :class => 'btn btn-primary', :data => { :action => 'submit' }, :onclick => 'submit_modal_form()')
+<%= render partial: 'common/modal', locals: {
+  id: 'confirmation-modal',
+  title: _('Please Confirm'),
+  buttons: [
+    button_tag(_('Cancel'), class: 'btn btn-default', data: { dismiss: 'modal' }, type: 'button'),
+    button_tag(_('Submit'), class: 'btn btn-primary', data: { action: 'submit' }, onclick: 'submit_modal_form()')
   ]
 } %>

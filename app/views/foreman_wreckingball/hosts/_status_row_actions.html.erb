@@ -1,0 +1,22 @@
+<% actions = status_actions(host_association, owned_only, supports_remediate) %>
+
+<% if actions.any? %>
+  <div class='list-view-pf-actions'>
+    <div class='dropdown pull-right dropdown-kebab-pf'>
+      <%= content_tag :button, class: 'btn btn-link dropdown-toggle',
+                               type: 'button',
+                               id: "dropdownKebabRight#{id}",
+                               'data-toggle': 'dropdown',
+                               'aria-haspopup': true,
+                               'aria-expanded': true do %>
+        <span class='fa fa-ellipsis-v' />
+      <% end %>
+
+      <%= content_tag :ul, class: 'dropdown-menu dropdown-menu-right', 'aria-labelledby': "dropdownKebabRight#{id}" do %>
+        <% actions.each do |action| %>
+          <%= content_tag :li, action %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
