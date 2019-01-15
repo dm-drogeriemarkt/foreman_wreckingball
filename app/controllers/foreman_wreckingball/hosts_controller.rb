@@ -12,8 +12,7 @@ module ForemanWreckingball
 
     AJAX_REQUESTS = [:status_hosts].freeze
     before_action :ajax_request, :only => AJAX_REQUESTS
-    before_action :find_resource, :only => [:submit_remediate, :schedule_remediate]
-    before_action :find_status, :only => [:submit_remediate, :schedule_remediate]
+    before_action :find_statuses, :only => [:schedule_remediate, :submit_remediate]
 
     def status_dashboard
       @newest_data = Host.authorized(:view_hosts).joins(:vmware_facet).maximum('vmware_facets.updated_at')
@@ -79,7 +78,7 @@ module ForemanWreckingball
 
     # ajax method
     def status_hosts
-      @status = HostStatus.find_wreckingball_status_by_host_association(params.fetch(:status).to_sym)
+      @status = HostStatus.find_wreckingball_status_by_host_association(params.fetch(:status))
 
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
@@ -119,20 +118,21 @@ module ForemanWreckingball
     end
 
     def submit_remediate
-      raise Foreman::Exception, _('VMware Status can not be remediated.') unless @status.class.respond_to?(:supports_remediate?) && @status.class.supports_remediate?
-      task = User.as_anonymous_admin do
-        triggering = ::ForemanTasks::Triggering.new_from_params(triggering_params)
-        if triggering.future?
-          triggering.parse_start_at!
-          triggering.parse_start_before!
-        else
-          triggering.start_at ||= Time.zone.now
-        end
+      return not_found unless @statuses.any?
 
-        triggering.trigger(@status.class.remediate_action, @host)
+      triggering = ::ForemanTasks::Triggering.new_from_params(triggering_params)
+      if triggering.future?
+        triggering.parse_start_at!
+        triggering.parse_start_before!
+      else
+        triggering.start_at ||= Time.zone.now
       end
-      flash[:success] = _('Remediate VM task for %s was successfully scheduled.') % @host
-      redirect_to(foreman_tasks_task_path(task.id))
+
+      task = User.as_anonymous_admin do
+        triggering.trigger(::Actions::ForemanWreckingball::BulkRemediate, @statuses)
+      end
+
+      redirect_to foreman_tasks_task_path(task.id)
     end
 
     private
@@ -143,8 +143,27 @@ module ForemanWreckingball
       end
     end
 
-    def find_status
-      @status = HostStatus::Status.find_by!(:id => params[:status_id], :host_id => @host.id)
+    def statuses_params
+      @statuses_params ||= params.permit(:host_association, :owned_only, status_ids: [])
+    end
+
+    def find_statuses
+      @statuses = begin
+        host_association = statuses_params[:host_association]
+        status_class = HostStatus.find_wreckingball_status_by_host_association(host_association)
+        if status_class
+          Host.authorized(:remediate_vmware_status_hosts, Host)
+              .joins(status_class.host_association)
+              .includes(status_class.host_association)
+              .try { |query| statuses_params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+              .where.not('host_status.status': status_class.global_ok_list)
+              .map { |host| host.send(status_class.host_association) }
+        else
+          HostStatus::Status.includes(:host).where(id: statuses_params[:status_ids]).select do |status|
+            User.current.can?(:remediate_vmware_status_hosts, status.host)
+          end
+        end
+      end
     end
 
     def action_permission

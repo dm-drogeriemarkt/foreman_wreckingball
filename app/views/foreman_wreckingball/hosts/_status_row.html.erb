@@ -3,18 +3,14 @@
     <div class="list-view-pf-expand">
       <span class="fa fa-angle-right"></span>
     </div>
-    <div class="list-view-pf-actions">
-      <% if User.current.allowed_to?(hash_for_refresh_status_dashboard_hosts_path) %>
-        <div class="dropdown pull-right dropdown-kebab-pf">
-          <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebabRight<%= id %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <span class="fa fa-ellipsis-v"></span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebabRight<%= id %>">
-            <li><%= display_link_if_authorized(_('Refresh'), hash_for_refresh_status_dashboard_hosts_path, :title => _('Refresh data'), :method => :put) %></li>
-          </ul>
-        </div>
-      <% end %>
-    </div>
+    <%=
+      render :partial => 'status_row_actions', locals: {
+        id: id,
+        supports_remediate: supports_remediate,
+        host_association: host_association,
+        owned_only: owned_only
+      }
+    %>
     <div class="list-view-pf-main-info">
       <div class="list-view-pf-left">
         <span class="pficon list-view-pf-icon-md <%= classes_for_vmware_status_row(counter) %>"></span>
