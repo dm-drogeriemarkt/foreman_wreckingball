@@ -69,8 +69,8 @@ module ForemanWreckingball
 
         menu :top_menu, :wreckingball_status_managed_hosts_dashboard, url_hash: { :controller => :'foreman_wreckingball/hosts', :action => :status_managed_hosts_dashboard },
                                                                       caption: N_('VMware Managed Status'),
-                                                                      parent: :hosts_menu,
-                                                                      after: :hosts
+                                                                      parent: :monitor_menu,
+                                                                      after: :audits
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 

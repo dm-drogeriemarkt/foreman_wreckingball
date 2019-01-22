@@ -44,19 +44,19 @@ module ForemanWreckingball
 
     def status_managed_hosts_dashboard
       @hosts = Host::Managed.authorized(:view_hosts, Host)
-                   .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+                            .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
 
       compute_resources = ComputeResource.where(:type => 'Foreman::Model::Vmware')
 
       # get all vms by compute resource id
       vms_by_compute_resource_id = {}
       # NOTE The call to ComputeResource#vms may slow things down
-      compute_resources.each { |cr| vms_by_compute_resource_id[cr.id] = cr.vms }
+      compute_resources.each { |cr| vms_by_compute_resource_id[cr.id] = cr.vms(eager_loading: true) }
 
       vms_by_uuid = vms_by_compute_resource_id.values.flatten.group_by(&:uuid)
 
       # Find all hosts with duplicate VMs
-      @duplicate_vms = vms_by_uuid.select{ |_uuid, vms| vms.size > 1 }
+      @duplicate_vms = vms_by_uuid.select { |_uuid, vms| vms.size > 1 }
 
       @missing_hosts = []
       @different_hosts = []
@@ -65,9 +65,9 @@ module ForemanWreckingball
         next unless host.compute_resource_id
 
         # find the compute resource id of the host in the vm map
-        cr_id, _vms = vms_by_compute_resource_id.find{ |_cr_id, vms| vms.find{ |vm| vm.uuid == host.uuid } }
+        cr_id, _vms = vms_by_compute_resource_id.find { |_cr_id, vms| vms.find { |vm| vm.uuid == host.uuid } }
 
-        if cr_id == nil
+        if cr_id.nil?
           # No compute resource id is found, vSphere does not have the vm uuid
           @missing_hosts << host
         elsif cr_id != host.compute_resource_id
