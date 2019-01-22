@@ -96,7 +96,7 @@ module ForemanWreckingball
           :vmware_cr,
           uuid: 'test',
           organizations: [organization],
-          locations: [tax_location],
+          locations: [tax_location]
         )
       end
       let(:other_cr) do
@@ -104,7 +104,7 @@ module ForemanWreckingball
           :vmware_cr,
           uuid: 'bla',
           organizations: [organization],
-          locations: [tax_location],
+          locations: [tax_location]
         )
       end
 
