@@ -10,6 +10,7 @@ Rails.application.routes.draw do
         end
         collection do
           get :status_dashboard
+          get :status_managed_hosts_dashboard
           get 'status_dashboard/hosts(/:status)', as: :ajax_status_dashboard, action: :status_hosts, defaults: { format: :json }
           put :refresh_status_dashboard
         end
