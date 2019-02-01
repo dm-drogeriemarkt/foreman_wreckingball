@@ -1,7 +1,5 @@
 <% title _('VMware Managed Hosts Overview') %>
-<% javascript 'foreman_wreckingball/modal' %>
-<% javascript 'foreman_wreckingball/status_hosts_table' %>
-<% stylesheet 'foreman_wreckingball/status_hosts_table' %>
+<% javascript 'foreman_wreckingball/status_managed_hosts_dashboard' %>
 
 <%= title_actions(
   button_group(
@@ -14,36 +12,61 @@
 ) %>
 
 <% if @missing_hosts.any? %>
-  <div id="missing_vms">
-    <h2>List of hosts not found in vSphere</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @missing_hosts.each do |host| %>
-      <div><%= host.name %></div>
-    <% end %>
-    </div>
-  </div>
+  <%= content_tag :h2, _('List of hosts not found in vSphere') %>
+  <%= content_tag :table, id: 'missing_vms', class: table_css_classes do %>
+    <thead>
+      <tr>
+        <%= content_tag :th, _('Name') %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @missing_hosts.each do |host| %>
+        <tr>
+          <%= content_tag :td, host.name %>
+        </tr>
+      <% end %>
+    </tbody>
+  <% end %>
 <% end %>
 
 <% if @duplicate_vms.any? %>
-  <div id="duplicate_vms">
-    <h2>List of VMs with same uuid</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @duplicate_vms.each do |uuid, hosts| %>
-      <% hosts.each do |host| %>
-        <div><%= host.uuid %> - <%= host.name %></div>
+  <%= content_tag :h2, _('List of VMs with same uuid')  %>
+  <%= content_tag :table, id: 'duplicate_vms', class: table_css_classes do %>
+    <thead>
+      <tr>
+        <%= content_tag :th, _('UUID') %>
+        <%= content_tag :th, _('Name') %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @duplicate_vms.each do |uuid, hosts| %>
+        <% hosts.each do |host| %>
+          <tr>
+            <%= content_tag :td, host.uuid %>
+            <%= content_tag :td, host.name %>
+          </tr>
+        <% end %>
       <% end %>
-    <% end %>
-    </div>
-  </div>
+    </tbody>
+  <% end %>
 <% end %>
 
 <% if @different_hosts.any? %>
-  <div id="different_vms">
-    <h2>List of VMs associated with different compute resources</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @different_hosts.each do |host| %>
-      <div><%= host.uuid %> - <%= host.name %></div>
-    <% end %>
-    </div>
-  </div>
+  <%= content_tag :h2, _('List of VMs associated with different compute resources') %>
+  <%= content_tag :table, id: 'different_vms', class: table_css_classes do %>
+    <thead>
+      <tr>
+        <%= content_tag :th, _('UUID') %>
+        <%= content_tag :th, _('Name') %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @different_hosts.each do |host| %>
+        <tr>
+          <%= content_tag :td, host.uuid %>
+          <%= content_tag :td, host.name %>
+        </tr>
+      <% end %>
+    </tbody>
+  <% end %>
 <% end %>
