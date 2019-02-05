@@ -1,5 +1,6 @@
 <% title _('VMware Managed Hosts Overview') %>
 <% javascript 'foreman_wreckingball/status_managed_hosts_dashboard' %>
+<% stylesheet 'foreman_wreckingball/status_managed_hosts_dashboard' %>
 
 <%= title_actions(
   button_group(
@@ -11,9 +12,15 @@
   )
 ) %>
 
+<%= render partial: 'status_managed_hosts_dashboard_cards', locals: {
+  missing_hosts_count: @missing_hosts.count,
+  duplicate_vms_count: @duplicate_vms.map(&:second).flatten.count,
+  different_hosts_count: @different_hosts.count
+} %>
+
 <ul class='nav nav-tabs' data-tabs='tabs'>
   <li class='active'>
-    <%= content_tag :a, _('List of hosts not found in vSphere'), href: '#missing_vms_tab', 'data-toggle': 'tab' %>
+    <%= content_tag :a, _('List of Hosts not found in vSphere'), href: '#missing_vms_tab', 'data-toggle': 'tab' %>
   </li>
   <li>
     <%= content_tag :a, _('List of VMs with same uuid'), href: '#duplicate_vms_tab', 'data-toggle': 'tab' %>
@@ -32,16 +39,12 @@
         <thead>
           <tr>
             <%= content_tag :th, _('Name') %>
-            <%= content_tag :th, _('Actions') %>
           </tr>
         </thead>
         <tbody>
           <% @missing_hosts.each do |host| %>
             <tr>
-              <%= content_tag :td, host.name %>
-              <td>
-                <%= link_to_if_authorized(_('Show'), hash_for_host_path(id: host), title: _('Open host page'), class: 'btn btn-default') %>
-              </td>
+              <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
             </tr>
           <% end %>
         </tbody>
@@ -57,7 +60,6 @@
           <tr>
             <%= content_tag :th, _('UUID') %>
             <%= content_tag :th, _('Name') %>
-            <%= content_tag :th, _('Actions') %>
           </tr>
         </thead>
         <tbody>
@@ -65,11 +67,7 @@
             <% hosts.each do |host| %>
               <tr>
                 <%= content_tag :td, host.uuid %>
-                <%= content_tag :td, host.name %>
-                <td>
-                  <%= link_to_if_authorized(_('Show'), hash_for_host_path(id: host), title: _('Open host page'), class: 'btn btn-default') %>
-                </td>
-                <%= %>
+                <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
               </tr>
             <% end %>
           <% end %>
@@ -86,17 +84,13 @@
           <tr>
             <%= content_tag :th, _('UUID') %>
             <%= content_tag :th, _('Name') %>
-            <%= content_tag :th, _('Actions') %>
           </tr>
         </thead>
         <tbody>
           <% @different_hosts.each do |host| %>
             <tr>
               <%= content_tag :td, host.uuid %>
-              <%= content_tag :td, host.name %>
-              <td>
-                <%= link_to_if_authorized(_('Show'), hash_for_host_path(id: host), title: _('Open host page'), class: 'btn btn-default') %>
-              </td>
+              <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
             </tr>
           <% end %>
         </tbody>

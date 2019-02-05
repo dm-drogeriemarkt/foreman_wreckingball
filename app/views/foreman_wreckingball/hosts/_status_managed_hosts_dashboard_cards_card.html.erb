@@ -1,0 +1,11 @@
+<div class='col-xs-12 col-sm-4'>
+  <div class='card-pf card-pf-accented card-pf-aggregate-status'>
+    <%= content_tag :h2, title, class: 'card-pf-title' %>
+    <div class='card-pf-body'>
+      <p class='card-pf-aggregate-status-notifications'>
+        <%= content_tag :span, nil, class: "pficon pficon-#{count > 0 ? 'error-circle-o' : 'ok'}" %>
+        <%= count if count > 0 %>
+      </p>
+    </div>
+  </div>
+</div>
