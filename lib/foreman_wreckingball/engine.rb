@@ -42,7 +42,7 @@ module ForemanWreckingball
 
     initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
-        requires_foreman '>= 1.18'
+        requires_foreman '>= 1.21'
 
         security_block :foreman_wreckingball do
           permission :refresh_vmware_status_hosts, {
@@ -76,7 +76,7 @@ module ForemanWreckingball
 
         register_facet(ForemanWreckingball::VmwareHypervisorFacet, :vmware_hypervisor_facet)
 
-        add_controller_action_scope(HostsController, :index) { |base_scope| base_scope.includes(:vmware_facet) }
+        add_controller_action_scope('HostsController', :index) { |base_scope| base_scope.includes(:vmware_facet) }
 
         # extend host show page
         extend_page('compute_resources/show') do |context|
