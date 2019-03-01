@@ -26,7 +26,7 @@
     <%= content_tag :a, _('List of VMs with same uuid'), href: '#duplicate_vms_tab', 'data-toggle': 'tab' %>
   </li>
   <li>
-    <%= content_tag :a, _('List of VMs associated with different compute resources'), href: '#different_vms_tab', 'data-toggle': 'tab' %>
+    <%= content_tag :a, _('List of VMs associated with different Compute Resources'), href: '#different_vms_tab', 'data-toggle': 'tab' %>
   </li>
 </ul>
 
@@ -44,7 +44,7 @@
         <tbody>
           <% @missing_hosts.each do |host| %>
             <tr>
-              <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
+              <%= content_tag :td, hostname_or_link_to(host) %>
             </tr>
           <% end %>
         </tbody>
@@ -67,7 +67,7 @@
             <% hosts.each do |host| %>
               <tr>
                 <%= content_tag :td, host.uuid %>
-                <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
+                <%= content_tag :td, hostname_or_link_to(host) %>
               </tr>
             <% end %>
           <% end %>
@@ -90,7 +90,7 @@
           <% @different_hosts.each do |host| %>
             <tr>
               <%= content_tag :td, host.uuid %>
-              <%= content_tag :td, User.current.allowed_to?(hash_for_host_path(id: host)) ? link_to(host.name, host_path(host)) : host.name %>
+              <%= content_tag :td, hostname_or_link_to(host) %>
             </tr>
           <% end %>
         </tbody>
