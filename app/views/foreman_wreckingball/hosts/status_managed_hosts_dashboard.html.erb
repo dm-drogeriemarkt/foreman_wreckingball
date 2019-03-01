@@ -1,7 +1,6 @@
 <% title _('VMware Managed Hosts Overview') %>
-<% javascript 'foreman_wreckingball/modal' %>
-<% javascript 'foreman_wreckingball/status_hosts_table' %>
-<% stylesheet 'foreman_wreckingball/status_hosts_table' %>
+<% javascript 'foreman_wreckingball/status_managed_hosts_dashboard' %>
+<% stylesheet 'foreman_wreckingball/status_managed_hosts_dashboard' %>
 
 <%= title_actions(
   button_group(
@@ -13,37 +12,89 @@
   )
 ) %>
 
-<% if @missing_hosts.any? %>
-  <div id="missing_vms">
-    <h2>List of hosts not found in vSphere</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @missing_hosts.each do |host| %>
-      <div><%= host.name %></div>
-    <% end %>
-    </div>
-  </div>
-<% end %>
+<%= render partial: 'status_managed_hosts_dashboard_cards', locals: {
+  missing_hosts_count: @missing_hosts.count,
+  duplicate_vms_count: @duplicate_vms.map(&:second).flatten.count,
+  different_hosts_count: @different_hosts.count
+} %>
 
-<% if @duplicate_vms.any? %>
-  <div id="duplicate_vms">
-    <h2>List of VMs with same uuid</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @duplicate_vms.each do |uuid, hosts| %>
-      <% hosts.each do |host| %>
-        <div><%= host.uuid %> - <%= host.name %></div>
+<ul class='nav nav-tabs' data-tabs='tabs'>
+  <li class='active'>
+    <%= content_tag :a, _('List of Hosts not found in vSphere'), href: '#missing_vms_tab', 'data-toggle': 'tab' %>
+  </li>
+  <li>
+    <%= content_tag :a, _('List of VMs with same uuid'), href: '#duplicate_vms_tab', 'data-toggle': 'tab' %>
+  </li>
+  <li>
+    <%= content_tag :a, _('List of VMs associated with different Compute Resources'), href: '#different_vms_tab', 'data-toggle': 'tab' %>
+  </li>
+</ul>
+
+<div class='tab-content'>
+  <div class='tab-pane active' id='missing_vms_tab'>
+    <% if @missing_hosts.empty? %>
+      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+    <% else %>
+      <%= content_tag :table, id: 'missing_vms', class: table_css_classes do %>
+        <thead>
+          <tr>
+            <%= content_tag :th, _('Name') %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @missing_hosts.each do |host| %>
+            <tr>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
+            </tr>
+          <% end %>
+        </tbody>
       <% end %>
     <% end %>
-    </div>
   </div>
-<% end %>
-
-<% if @different_hosts.any? %>
-  <div id="different_vms">
-    <h2>List of VMs associated with different compute resources</h2>
-    <div class="list-group list-view-pf list-view-pf-equalized-column" style="max-height: initial;">
-    <% @different_hosts.each do |host| %>
-      <div><%= host.uuid %> - <%= host.name %></div>
+  <div class='tab-pane' id='duplicate_vms_tab'>
+    <% if @duplicate_vms.empty? %>
+      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+    <% else %>
+      <%= content_tag :table, id: 'duplicate_vms', class: table_css_classes do %>
+        <thead>
+          <tr>
+            <%= content_tag :th, _('UUID') %>
+            <%= content_tag :th, _('Name') %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @duplicate_vms.each do |_uuid, hosts| %>
+            <% hosts.each do |host| %>
+              <tr>
+                <%= content_tag :td, host.uuid %>
+                <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      <% end %>
     <% end %>
-    </div>
   </div>
-<% end %>
+  <div class='tab-pane' id='different_vms_tab'>
+    <% if @different_hosts.empty? %>
+      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+    <% else %>
+      <%= content_tag :table, id: 'different_vms', class: table_css_classes do %>
+        <thead>
+          <tr>
+            <%= content_tag :th, _('UUID') %>
+            <%= content_tag :th, _('Name') %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @different_hosts.each do |host| %>
+            <tr>
+              <%= content_tag :td, host.uuid %>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
+            </tr>
+          <% end %>
+        </tbody>
+      <% end %>
+    <% end %>
+  </div>
+</div>

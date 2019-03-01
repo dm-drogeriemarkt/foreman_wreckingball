@@ -81,7 +81,7 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     cr.stubs(:vms).returns([mock1_vm, mock2_vm])
     other_cr.stubs(:vms).returns([mock3_vm])
 
-    ComputeResource.stubs(:where).returns([cr, other_cr])
+    Foreman::Model::Vmware.stubs(:all).returns([cr, other_cr])
 
     visit status_managed_hosts_dashboard_hosts_path
 
