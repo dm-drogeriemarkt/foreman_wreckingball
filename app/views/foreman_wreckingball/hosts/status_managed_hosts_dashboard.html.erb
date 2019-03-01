@@ -44,7 +44,7 @@
         <tbody>
           <% @missing_hosts.each do |host| %>
             <tr>
-              <%= content_tag :td, hostname_or_link_to(host) %>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
             </tr>
           <% end %>
         </tbody>
@@ -67,7 +67,7 @@
             <% hosts.each do |host| %>
               <tr>
                 <%= content_tag :td, host.uuid %>
-                <%= content_tag :td, hostname_or_link_to(host) %>
+                <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
               </tr>
             <% end %>
           <% end %>
@@ -90,7 +90,7 @@
           <% @different_hosts.each do |host| %>
             <tr>
               <%= content_tag :td, host.uuid %>
-              <%= content_tag :td, hostname_or_link_to(host) %>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
             </tr>
           <% end %>
         </tbody>
