@@ -39,12 +39,17 @@
         <thead>
           <tr>
             <%= content_tag :th, _('Name') %>
+            <%= content_tag :th, nil, class: 'no-sort' %>
           </tr>
         </thead>
         <tbody>
           <% @missing_hosts.each do |host| %>
             <tr>
               <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host).merge(permission: 'view_hosts', auth_object: host, authorizer: @host_authorizer)) %>
+              <td>
+                <%= action_buttons(display_delete_if_authorized(hash_for_host_path(id: host).merge(permission: 'destroy_hosts', auth_object: host, authorizer: @host_authorizer),
+                                                                :data => { :confirm => _('Are you sure you want to delete host %s? This action is irreversible.') % host.name })) %>
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -61,6 +66,7 @@
             <%= content_tag :th, _('Name') %>
             <%= content_tag :th, _('Associated to') %>
             <%= content_tag :th, _('Found on') %>
+            <%= content_tag :th, nil, class: 'no-sort' %>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +75,23 @@
               <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host).merge(permission: 'view_hosts', auth_object: host, authorizer: @host_authorizer)) %>
               <%= content_tag :td, link_to_if_authorized(host.compute_resource.name, hash_for_compute_resource_path(id: host.compute_resource).merge(permission: 'view_compute_resources', auth_object: host.compute_resource, authorizer: @compute_resource_authorizer)) %>
               <%= content_tag :td, link_to_if_authorized(@vm_compute_resource_mapping[host.uuid].first.name, hash_for_compute_resource_path(id: @vm_compute_resource_mapping[host.uuid].first).merge(permission: 'view_compute_resources', auth_object: @vm_compute_resource_mapping[host.uuid].first, authorizer: @compute_resource_authorizer)) %>
+              <td>
+                <%= action_buttons(
+                  display_link_if_authorized(
+                    _('Fix Association'),
+                    hash_for_associate_compute_resource_vm_path(
+                      compute_resource_id: @vm_compute_resource_mapping[host.uuid].first,
+                      id: host.uuid
+                    ).merge(
+                      auth_object: @vm_compute_resource_mapping[host.uuid].first,
+                      authorizer: @compute_resource_authorizer,
+                      permission: 'edit_compute_resources'
+                    ),
+                    title: _('Associate Host to correct Compute Resouce'),
+                    method: :put
+                  )
+                ) %>
+              </td>
             </tr>
           <% end %>
         </tbody>

@@ -3,6 +3,12 @@ $(document).ready(() => {
     .DataTable({
       bLengthChange: true,
       lengthMenu: [20, 50, 100],
-      order: [[ 0, 'desc' ]]
+      order: [[ 0, 'desc' ]],
+      columnDefs: [
+        {
+          'targets': 'no-sort',
+          'orderable': false,
+        }
+      ]
     });
 });
