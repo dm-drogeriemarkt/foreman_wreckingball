@@ -14,8 +14,8 @@
 
 <%= render partial: 'status_managed_hosts_dashboard_cards', locals: {
   missing_hosts_count: @missing_hosts.count,
-  duplicate_vms_count: @duplicate_vms.map(&:second).flatten.count,
-  different_hosts_count: @different_hosts.count
+  wrong_hosts_count: @wrong_hosts.count,
+  more_than_one_hosts_count: @more_than_one_hosts.count
 } %>
 
 <ul class='nav nav-tabs' data-tabs='tabs'>
@@ -23,17 +23,17 @@
     <%= content_tag :a, _('List of Hosts not found in vSphere'), href: '#missing_vms_tab', 'data-toggle': 'tab' %>
   </li>
   <li>
-    <%= content_tag :a, _('List of VMs with same uuid'), href: '#duplicate_vms_tab', 'data-toggle': 'tab' %>
+    <%= content_tag :a, _('List of Hosts associated to wrong Compute Resource'), href: '#wrong_hosts_tab', 'data-toggle': 'tab' %>
   </li>
   <li>
-    <%= content_tag :a, _('List of VMs associated with different Compute Resources'), href: '#different_vms_tab', 'data-toggle': 'tab' %>
+    <%= content_tag :a, _('List of Hosts found on more than one Compute Resource'), href: '#more_than_one_hosts_tab', 'data-toggle': 'tab' %>
   </li>
 </ul>
 
 <div class='tab-content'>
   <div class='tab-pane active' id='missing_vms_tab'>
     <% if @missing_hosts.empty? %>
-      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+      <%= content_tag :p, _('No Hosts to show'), class: 'ca' %>
     <% else %>
       <%= content_tag :table, id: 'missing_vms', class: table_css_classes do %>
         <thead>
@@ -44,53 +44,57 @@
         <tbody>
           <% @missing_hosts.each do |host| %>
             <tr>
-              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host).merge(permission: 'view_hosts', auth_object: host, authorizer: @host_authorizer)) %>
             </tr>
           <% end %>
         </tbody>
       <% end %>
     <% end %>
   </div>
-  <div class='tab-pane' id='duplicate_vms_tab'>
-    <% if @duplicate_vms.empty? %>
-      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+  <div class='tab-pane' id='wrong_hosts_tab'>
+    <% if @wrong_hosts.empty? %>
+      <%= content_tag :p, _('No Hosts to show'), class: 'ca' %>
     <% else %>
-      <%= content_tag :table, id: 'duplicate_vms', class: table_css_classes do %>
+      <%= content_tag :table, id: 'wrong_hosts', class: table_css_classes do %>
         <thead>
           <tr>
-            <%= content_tag :th, _('UUID') %>
             <%= content_tag :th, _('Name') %>
+            <%= content_tag :th, _('Associated to') %>
+            <%= content_tag :th, _('Found on') %>
           </tr>
         </thead>
         <tbody>
-          <% @duplicate_vms.each do |_uuid, hosts| %>
-            <% hosts.each do |host| %>
-              <tr>
-                <%= content_tag :td, host.uuid %>
-                <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
-              </tr>
-            <% end %>
+          <% @wrong_hosts.each do |host| %>
+            <tr>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host).merge(permission: 'view_hosts', auth_object: host, authorizer: @host_authorizer)) %>
+              <%= content_tag :td, link_to_if_authorized(host.compute_resource.name, hash_for_compute_resource_path(id: host.compute_resource).merge(permission: 'view_compute_resources', auth_object: host.compute_resource, authorizer: @compute_resource_authorizer)) %>
+              <%= content_tag :td, link_to_if_authorized(@vm_compute_resource_mapping[host.uuid].first.name, hash_for_compute_resource_path(id: @vm_compute_resource_mapping[host.uuid].first).merge(permission: 'view_compute_resources', auth_object: @vm_compute_resource_mapping[host.uuid].first, authorizer: @compute_resource_authorizer)) %>
+            </tr>
           <% end %>
         </tbody>
       <% end %>
     <% end %>
   </div>
-  <div class='tab-pane' id='different_vms_tab'>
-    <% if @different_hosts.empty? %>
-      <%= content_tag :p, _('No hosts to show'), class: 'ca' %>
+  <div class='tab-pane' id='more_than_one_hosts_tab'>
+    <% if @more_than_one_hosts.empty? %>
+      <%= content_tag :p, _('No Hosts to show'), class: 'ca' %>
     <% else %>
-      <%= content_tag :table, id: 'different_vms', class: table_css_classes do %>
+      <%= content_tag :table, id: 'more_than_one_hosts', class: table_css_classes do %>
         <thead>
           <tr>
-            <%= content_tag :th, _('UUID') %>
             <%= content_tag :th, _('Name') %>
+            <%= content_tag :th, _('Associated to') %>
+            <%= content_tag :th, _('Found on') %>
           </tr>
         </thead>
         <tbody>
-          <% @different_hosts.each do |host| %>
+          <% @more_than_one_hosts.each do |host| %>
             <tr>
-              <%= content_tag :td, host.uuid %>
-              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host)) %>
+              <%= content_tag :td, link_to_if_authorized(host.name, hash_for_host_path(id: host).merge(permission: 'view_hosts', auth_object: host, authorizer: authorizer)) %>
+              <%= content_tag :td, (link_to_if_authorized(host.compute_resource.name, hash_for_compute_resource_path(id: host.compute_resource).merge(permission: 'view_compute_resources', auth_object: host.compute_resource, authorizer: @compute_resource_authorizer)) if host.compute_resource) %>
+              <td>
+                <%= safe_join(@vm_compute_resource_mapping[host.uuid].map { |compute_resource| link_to_if_authorized(compute_resource.name, hash_for_compute_resource_path(id: compute_resource).merge(permission: 'view_compute_resources', auth_object: compute_resource, authorizer: @compute_resource_authorizer))}, ', ') %>
+              </td>
             </tr>
           <% end %>
         </tbody>

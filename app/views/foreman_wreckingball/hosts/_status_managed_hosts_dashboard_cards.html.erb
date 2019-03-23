@@ -1,16 +1,16 @@
 <div class='status-managed-hosts-dashboard-cards container-fluid container-cards-pf'>
   <div class='row row-cards-pf'>
     <%= render partial: 'status_managed_hosts_dashboard_cards_card', locals: {
-      title: _('List of Hosts not found in vSphere'),
+      title: _('Hosts not found in vSphere'),
       count: missing_hosts_count
     } %>
     <%= render partial: 'status_managed_hosts_dashboard_cards_card', locals: {
-      title: _('List of VMs with same uuid'),
-      count: duplicate_vms_count
+      title: _('Hosts associated to wrong Compute Resource'),
+      count: wrong_hosts_count
     } %>
     <%= render partial: 'status_managed_hosts_dashboard_cards_card', locals: {
-      title: _('List of VMs associated with different compute resources'),
-      count: different_hosts_count
+      title: _('Hosts found on more than one Compute Resource'),
+      count: more_than_one_hosts_count
     } %>
   </div>
 </div>

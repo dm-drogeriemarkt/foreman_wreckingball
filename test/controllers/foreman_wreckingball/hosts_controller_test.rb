@@ -116,9 +116,9 @@ module ForemanWreckingball
         @missing_host = FactoryBot.create(:host, :managed, :with_vmware_facet, compute_resource: cr, owner: admin, uuid: 2)
 
         mock_vm = mock('vm')
-        mock_vm.stubs(:uuid).returns(@managed_host.uuid)
+        mock_vm.stubs(:id).returns(@managed_host.uuid)
         mock_vm.stubs(:name).returns(@managed_host.name)
-        Foreman::Model::Vmware.any_instance.stubs(:vms).returns(Array(mock_vm))
+        Foreman::Model::Vmware.any_instance.stubs(:vms).returns(OpenStruct.new(all: Array(mock_vm)))
       end
 
       test 'shows a status page' do
