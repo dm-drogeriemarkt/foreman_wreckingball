@@ -6,6 +6,7 @@ require 'webmock/minitest'
 require 'webmock'
 
 # Add plugin to FactoryBot's paths
+FactoryBot.definition_file_paths << File.join(ForemanTasks::Engine.root, 'test', 'factories')
 FactoryBot.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')
 FactoryBot.reload
 

@@ -25,9 +25,9 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     missing_host = FactoryBot.create(:host, :managed, compute_resource: cr, owner: admin, uuid: 2)
 
     mock_vm = mock('vm')
-    mock_vm.stubs(:uuid).returns(managed_host.uuid)
+    mock_vm.stubs(:id).returns(managed_host.uuid)
     mock_vm.stubs(:name).returns(managed_host.name)
-    Foreman::Model::Vmware.any_instance.stubs(:vms).returns(Array(mock_vm))
+    Foreman::Model::Vmware.any_instance.stubs(:vms).returns(OpenStruct.new(all: Array(mock_vm)))
 
     visit status_managed_hosts_dashboard_hosts_path
 
@@ -36,25 +36,37 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     refute_includes list.text, managed_host.name
   end
 
-  test 'shows duplicate vms with same uuid for a host' do
-    managed_host = FactoryBot.create(:host, :managed, compute_resource: cr, owner: admin, uuid: 1)
+  test 'shows hosts associated to wrong compute resource' do
+    other_cr = FactoryBot.create(
+      :vmware_cr,
+      uuid: 'bla',
+      organizations: [organization],
+      locations: [tax_location]
+    )
+
+    correct_host = FactoryBot.create(:host, :managed, compute_resource: cr, owner: admin, uuid: 1)
+    incorrect_host = FactoryBot.create(:host, :managed, compute_resource: cr, owner: admin, uuid: 2)
 
     mock1_vm = mock('vm1')
-    mock1_vm.stubs(:uuid).returns(managed_host.uuid)
+    mock1_vm.stubs(:id).returns(correct_host.uuid)
     mock1_vm.stubs(:name).returns('foo01.example.com')
     mock2_vm = mock('vm2')
-    mock2_vm.stubs(:uuid).returns(managed_host.uuid)
+    mock2_vm.stubs(:id).returns(incorrect_host.uuid)
     mock2_vm.stubs(:name).returns('foo02.example.com')
-    Foreman::Model::Vmware.any_instance.stubs(:vms).returns([mock1_vm, mock2_vm])
+
+    cr.stubs(:vms).returns(OpenStruct.new(all: [mock1_vm]))
+    other_cr.stubs(:vms).returns(OpenStruct.new(all: [mock2_vm]))
+
+    Foreman::Model::Vmware.stubs(:unscoped).returns(OpenStruct.new(all: [cr, other_cr]))
 
     visit status_managed_hosts_dashboard_hosts_path
 
-    list = page.find('#duplicate_vms')
-    assert_includes list.text, 'foo01.example.com'
-    assert_includes list.text, 'foo02.example.com'
+    list = page.find('#wrong_hosts')
+    refute_includes list.text, correct_host.name
+    assert_includes list.text, incorrect_host.name
   end
 
-  test 'shows hosts with vm associated with a different compute resource' do
+  test 'shows hosts that can be found one more than one compute resource' do
     other_cr = FactoryBot.create(
       :vmware_cr,
       uuid: 'bla',
@@ -69,23 +81,23 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     managed3_host = FactoryBot.create(:host, :managed, compute_resource: other_cr, owner: admin, uuid: 3)
 
     mock1_vm = mock('vm1')
-    mock1_vm.stubs(:uuid).returns(managed1_host.uuid)
+    mock1_vm.stubs(:id).returns(managed1_host.uuid)
     mock1_vm.stubs(:name).returns(managed1_host.name)
     mock2_vm = mock('vm2')
-    mock2_vm.stubs(:uuid).returns(managed2_host.uuid)
+    mock2_vm.stubs(:id).returns(managed2_host.uuid)
     mock2_vm.stubs(:name).returns(managed2_host.name)
     mock3_vm = mock('vm3')
-    mock3_vm.stubs(:uuid).returns(managed3_host.uuid)
+    mock3_vm.stubs(:id).returns(managed3_host.uuid)
     mock3_vm.stubs(:name).returns(managed3_host.name)
 
-    cr.stubs(:vms).returns([mock1_vm, mock2_vm])
-    other_cr.stubs(:vms).returns([mock3_vm])
+    cr.stubs(:vms).returns(OpenStruct.new(all: [mock1_vm, mock2_vm]))
+    other_cr.stubs(:vms).returns(OpenStruct.new(all: [mock2_vm, mock3_vm]))
 
-    Foreman::Model::Vmware.stubs(:all).returns([cr, other_cr])
+    Foreman::Model::Vmware.stubs(:unscoped).returns(OpenStruct.new(all: [cr, other_cr]))
 
     visit status_managed_hosts_dashboard_hosts_path
 
-    list = page.find('#different_vms')
+    list = page.find('#more_than_one_hosts')
     refute_includes list.text, managed1_host.name
     assert_includes list.text, managed2_host.name
     refute_includes list.text, managed3_host.name

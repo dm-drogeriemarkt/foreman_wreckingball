@@ -42,35 +42,48 @@ module ForemanWreckingball
     end
 
     def status_managed_hosts_dashboard
+      vmware_compute_resources = Foreman::Model::Vmware.unscoped.all
+
       # NOTE The call to ComputeResource#vms may slow things down
-      vms_by_compute_resource_id = Foreman::Model::Vmware.all.each_with_object({}) do |cr, memo|
-        memo[cr.id] = cr.vms(eager_loading: true)
+      vms_by_compute_resource_id = vmware_compute_resources.each_with_object({}) do |cr, memo|
+        memo[cr.id] = cr.vms.all
       end
 
-      # Find all hosts with duplicate VMs
-      @duplicate_vms = vms_by_compute_resource_id.values
-                                                 .flatten
-                                                 .group_by(&:uuid)
-                                                 .select { |_uuid, vms| vms.size > 1 }
+      # Get all VM UUIDs found in any of the compute resources
+      all_vm_uuids = vms_by_compute_resource_id.values.flatten.group_by(&:id).keys
+
+      # Map all VM UUIDs to all compute resources that have access to this VM
+      @vm_compute_resource_mapping = all_vm_uuids.each_with_object({}) do |uuid, obj|
+        cr_ids = vms_by_compute_resource_id.select { |_cr_id, vms| vms.find { |vm| vm.id == uuid } }.keys
+        obj[uuid] = vmware_compute_resources.select { |cr| cr_ids.include?(cr.id) }
+      end
 
       @missing_hosts = []
-      @different_hosts = []
+      @wrong_hosts = []
+      @more_than_one_hosts = []
 
       Host::Managed.authorized(:view_hosts, Host)
-                   .where.not(compute_resource_id: nil)
+                   .includes(:compute_resource)
+                   .where(compute_resource: vmware_compute_resources)
                    .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
                    .each do |host|
-        # find the compute resource id of the host in the vm map
-        cr_id, _vms = vms_by_compute_resource_id.find { |_cr_id, vms| vms.find { |vm| vm.uuid == host.uuid } }
 
-        if cr_id.nil?
-          # No compute resource id is found, vSphere does not have the vm uuid
+        compute_resources = @vm_compute_resource_mapping[host.uuid]
+
+        if compute_resources.empty?
+          # VM is not found on any compute resource, vSphere does not have the vm uuid
           @missing_hosts << host
-        elsif cr_id != host.compute_resource_id
-          # The host uuid is found in a different compute resource
-          @different_hosts << host
+        elsif compute_resources.count > 1
+          # The vm uuid is found on more than one compute resource
+          @more_than_one_hosts << host
+        elsif host.compute_resource_id != compute_resources.first.id
+          # The host is associated to a wrong compute resource
+          @wrong_hosts << host
         end
       end
+
+      @compute_resource_authorizer = Authorizer.new(User.current, collection: vmware_compute_resources)
+      @host_authorizer = Authorizer.new(User.current)
     end
 
     # ajax method
