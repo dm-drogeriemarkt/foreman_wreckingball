@@ -10,7 +10,7 @@ module Actions
         setup do
           ::Fog.mock!
           # this is not stubbed correctly in fog-vsphere
-          Fog::Compute::Vsphere::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           ::PowerManager::Virt.any_instance.stubs(:ready?).returns(true)
           Setting::Wreckingball.load_defaults
