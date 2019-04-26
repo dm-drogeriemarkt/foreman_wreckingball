@@ -18,6 +18,21 @@
   more_than_one_hosts_count: @more_than_one_hosts.count
 } %>
 
+<% if @errors.any? %>
+  <div class="alert alert-warning alert-block base alert-dismissable">
+    <%= alert_close %>
+    <h3>
+      <%= icon_text('warning-triangle-o', '', kind: 'pficon') %>
+      <%= _('Failed to load VM data.') %>
+    </h3>
+    <ul>
+    <% @errors.each do |cr, message| %>
+      <li><strong><%= cr %>:</strong> <%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <ul class='nav nav-tabs' data-tabs='tabs'>
   <li class='active'>
     <%= content_tag :a, _('List of Hosts not found in vSphere'), href: '#missing_vms_tab', 'data-toggle': 'tab' %>

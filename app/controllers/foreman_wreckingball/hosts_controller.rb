@@ -44,9 +44,16 @@ module ForemanWreckingball
     def status_managed_hosts_dashboard
       vmware_compute_resources = Foreman::Model::Vmware.unscoped.all
 
+      @errors = {}
+
       # NOTE The call to ComputeResource#vms may slow things down
       vms_by_compute_resource_id = vmware_compute_resources.each_with_object({}) do |cr, memo|
-        memo[cr.id] = cr.vms.all
+        begin
+          memo[cr.id] = cr.vms.all
+        rescue StandardError => e
+          @errors[cr.name] = e.message
+          Foreman::Logging.exception("Failed to load VMs from compute resource #{cr.name}", e)
+        end
       end
 
       # Get all VM UUIDs found in any of the compute resources
@@ -178,7 +185,7 @@ module ForemanWreckingball
 
     def action_permission
       case params[:action]
-      when 'status_dashboard', 'status_hosts'
+      when 'status_dashboard', 'status_hosts', 'status_managed_hosts_dashboard'
         'view'
       when 'refresh_status_dashboard'
         'refresh_vmware_status'
