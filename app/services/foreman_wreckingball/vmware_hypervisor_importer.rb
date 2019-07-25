@@ -11,7 +11,7 @@ module ForemanWreckingball
     end
 
     def import!
-      logger.info "Can not determine organization for compute resource #{compute_resource}." if SETTINGS[:organizations_enabled]
+      logger.info "Can not determine organization for compute resource #{compute_resource}."
       compute_resource.refresh_cache
       compute_resource.vmware_clusters.each do |cluster|
         import_hypervisors(cluster)
@@ -113,12 +113,10 @@ module ForemanWreckingball
     end
 
     def organization
-      return unless SETTINGS[:organizations_enabled]
       compute_resource.organizations.first
     end
 
     def location
-      return unless SETTINGS[:locations_enabled]
       compute_resource.locations.first
     end
 
