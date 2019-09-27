@@ -70,4 +70,32 @@ class Host::ManagedTest < ActiveSupport::TestCase
       assert_includes hosts, @host
     end
   end
+
+  describe '#deduced_vsphere_guest' do
+    context 'host with RHEL 6.1' do
+      let(:operatingsystem) do
+        FactoryBot.create(
+          :operatingsystem,
+          architectures: [architectures(:x86_64)],
+          major: 6,
+          minor: 1,
+          type: 'Redhat',
+          name: 'RedHat'
+        )
+      end
+      let(:host) do
+        FactoryBot.create(
+          :host,
+          :managed,
+          :with_vmware_facet,
+          architecture: architectures(:x86_64),
+          operatingsystem: operatingsystem
+        )
+      end
+
+      it 'deduced the vsphere guest from the host architecture and os' do
+        assert_equal 'rhel6_64Guest', host.deduced_vsphere_guest&.id
+      end
+    end
+  end
 end

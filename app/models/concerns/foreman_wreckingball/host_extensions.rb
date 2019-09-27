@@ -21,5 +21,29 @@ module ForemanWreckingball
     def action_input_key
       'host'
     end
+
+    def deduced_vsphere_guest
+      return unless architecture && operatingsystem
+
+      selectors = {
+        architecture: architecture.name,
+        osfamily: operatingsystem.family,
+        name: operatingsystem.name,
+        major: operatingsystem.major.to_i
+      }
+
+      deduced_os = VsphereOsIdentifiers.find_by(selectors)
+      deduced_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major))
+      deduced_os ||= VsphereOsIdentifiers.find_by(selectors.except(:release))
+      deduced_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :release))
+      deduced_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name))
+      deduced_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name, :release))
+
+      deduced_os
+    end
+
+    def deduced_vsphere_guest_id
+      deduced_vsphere_guest&.id
+    end
   end
 end
