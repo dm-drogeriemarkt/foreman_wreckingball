@@ -40,8 +40,8 @@ jobs:
       - FOREMAN_TASKS_BRANCH='master'
   - rvm: 2.3
     env:
-      - FOREMAN_CORE_BRANCH=1.21-stable
-      - FOREMAN_TASKS_BRANCH='0.14.x'
+      - FOREMAN_CORE_BRANCH=1.24-stable
+      - FOREMAN_TASKS_BRANCH='0.17.x'
 addons:
   apt:
     packages:
