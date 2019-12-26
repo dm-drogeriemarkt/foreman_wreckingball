@@ -55,7 +55,8 @@ module ForemanWreckingball
           :managed,
           :with_vmware_facet,
           compute_resource: compute_resource,
-          uuid: uuid
+          uuid: uuid,
+          mac: '00:50:56:a9:00:28'
         )
       end
       let(:vmware_facet) { host.vmware_facet }
@@ -82,6 +83,7 @@ module ForemanWreckingball
         assert_equal false, vmware_facet.cpu_hot_add
         assert_equal ['cpuid.SSE3', 'cpuid.AES', 'cpuid.Intel'], vmware_facet.cpu_features
         assert_equal 'vmx-9', vmware_facet.hardware_version
+        assert_equal 'VirtualE1000', vmware_facet.primary_interface_type
       end
     end
   end

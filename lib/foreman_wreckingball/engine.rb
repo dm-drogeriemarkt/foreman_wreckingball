@@ -12,7 +12,8 @@ module ForemanWreckingball
       'ForemanWreckingball::OperatingsystemStatus',
       'ForemanWreckingball::CpuHotAddStatus',
       'ForemanWreckingball::SpectreV2Status',
-      'ForemanWreckingball::HardwareVersionStatus'
+      'ForemanWreckingball::HardwareVersionStatus',
+      'ForemanWreckingball::PrimaryInterfaceTypeStatus'
     ].freeze
 
     config.autoload_paths += Dir["#{config.root}/app/lib"]
