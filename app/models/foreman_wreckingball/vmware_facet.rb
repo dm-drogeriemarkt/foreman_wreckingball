@@ -53,6 +53,7 @@ module ForemanWreckingball
         cpu_features: []
       }
       data_for_update[:cpu_features] = raw_vm_object.runtime.featureRequirement.map(&:key) if vm.ready?
+      data_for_update[:primary_interface_type] = vm.interfaces.find { |vm_interface| vm_interface.mac == host.primary_interface.mac }&.type&.to_s if host.primary_interface
       update(data_for_update)
     end
 

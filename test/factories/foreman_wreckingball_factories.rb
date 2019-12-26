@@ -35,6 +35,7 @@ FactoryBot.define do
         'cpuid.Intel'
       ]
     end
+    primary_interface_type { 'VirtualE1000' }
     host
   end
 
