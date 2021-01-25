@@ -12,7 +12,7 @@ module ForemanWreckingball
 
     has_one :compute_resource, :inverse_of => :vmware_hypervisor_facets, :through => :vmware_cluster
 
-    has_many :vmware_facets, :class_name => '::ForemanWreckingball::VmwareFacet', :through => :vmware_clusters,
+    has_many :vmware_facets, :class_name => '::ForemanWreckingball::VmwareFacet', :through => :vmware_cluster,
                              :inverse_of => :vmware_hypervisor_facets
 
     serialize :feature_capabilities, JSON

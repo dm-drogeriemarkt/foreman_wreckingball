@@ -26,7 +26,7 @@ class Host::ManagedTest < ActiveSupport::TestCase
       ]
       actual = Host::Managed.owned_by_current_user_or_group_with_current_user
 
-      assert_equal expected, actual
+      assert_same_elements expected, actual
     end
   end
 

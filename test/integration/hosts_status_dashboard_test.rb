@@ -23,28 +23,28 @@ class HostsStatusDashboardTest < ActionDispatch::IntegrationTest
     lists = find_all('div.list-view-pf-main-info')
 
     # VMWare Tools
-    assert_text lists[0].text, '1 OK'
-    assert_text lists[0].text, '0 Warning'
-    assert_text lists[0].text, '0 Critical'
+    assert_includes lists[0].text, '1 OK'
+    assert_includes lists[0].text, '0 Warning'
+    assert_includes lists[0].text, '0 Critical'
 
     # VMWare Operating System
-    assert_text lists[1].text, '2 OK'
-    assert_text lists[1].text, '0 Warning'
-    assert_text lists[1].text, '0 Critical'
+    assert_includes lists[1].text, '2 OK'
+    assert_includes lists[1].text, '0 Warning'
+    assert_includes lists[1].text, '0 Critical'
 
     # VMWare CPU Hot Plug
-    assert_text lists[2].text, '3 OK'
-    assert_text lists[2].text, '0 Warning'
-    assert_text lists[2].text, '0 Critical'
+    assert_includes lists[2].text, '3 OK'
+    assert_includes lists[2].text, '0 Warning'
+    assert_includes lists[2].text, '0 Critical'
 
     # VMWare Spectre V2
-    assert_text lists[3].text, '4 OK'
-    assert_text lists[3].text, '0 Warning'
-    assert_text lists[3].text, '5 Critical'
+    assert_includes lists[3].text, '4 OK'
+    assert_includes lists[3].text, '0 Warning'
+    assert_includes lists[3].text, '5 Critical'
 
     # VMWare Hardware Version
-    assert_text lists[4].text, '6 OK'
-    assert_text lists[4].text, '7 Warning'
-    assert_text lists[4].text, '0 Critical'
+    assert_includes lists[4].text, '6 OK'
+    assert_includes lists[4].text, '7 Warning'
+    assert_includes lists[4].text, '0 Critical'
   end
 end

@@ -44,6 +44,16 @@ module ForemanWreckingball
       Foreman::Plugin.register :foreman_wreckingball do
         requires_foreman '>= 1.21'
 
+        automatic_assets(false)
+        precompile_assets([
+          'foreman_wreckingball/modal.js',
+          'foreman_wreckingball/status_hosts_table.js',
+          'foreman_wreckingball/status_managed_hosts_dashboard.js',
+          'foreman_wreckingball/status_row.js',
+          'foreman_wreckingball/status_hosts_table.css',
+          'foreman_wreckingball/status_managed_hosts_dashboard.css',
+        ])
+
         security_block :foreman_wreckingball do
           permission :refresh_vmware_status_hosts, {
             :'foreman_wreckingball/hosts' => [:refresh_status_dashboard]
