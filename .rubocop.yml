@@ -1,5 +1,5 @@
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
   TargetRailsVersion: 5.1
   Exclude:
     - '*.spec'
@@ -64,6 +64,7 @@ Metrics/BlockLength:
   Max: 35
   Exclude:
     - 'test/**/*'
+    - 'lib/foreman_wreckingball/engine.rb'
 
 Metrics/ClassLength:
   Max: 200

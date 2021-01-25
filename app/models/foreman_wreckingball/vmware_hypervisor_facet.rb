@@ -6,14 +6,11 @@ module ForemanWreckingball
 
     validates_lengths_from_database
 
-    validates :host, :presence => true, :allow_blank => false
+    validates :host, presence: true, allow_blank: false
 
-    belongs_to :vmware_cluster, :inverse_of => :vmware_hypervisor_facets, :class_name => 'ForemanWreckingball::VmwareCluster'
-
-    has_one :compute_resource, :inverse_of => :vmware_hypervisor_facets, :through => :vmware_cluster
-
-    has_many :vmware_facets, :class_name => '::ForemanWreckingball::VmwareFacet', :through => :vmware_clusters,
-                             :inverse_of => :vmware_hypervisor_facets
+    belongs_to :vmware_cluster, inverse_of: :vmware_hypervisor_facets, class_name: '::ForemanWreckingball::VmwareCluster'
+    has_one :compute_resource, inverse_of: :vmware_hypervisor_facets, through: :vmware_cluster
+    has_many :vmware_facets, inverse_of: :vmware_hypervisor_facets, through: :vmware_cluster
 
     serialize :feature_capabilities, JSON
 

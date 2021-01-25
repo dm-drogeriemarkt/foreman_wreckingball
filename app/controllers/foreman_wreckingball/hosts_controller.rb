@@ -4,11 +4,7 @@ module ForemanWreckingball
   class HostsController < ::HostsController
     include ::ForemanTasks::Concerns::Parameters::Triggering
     include ::HostsHelper
-    if Gem::Version.new(SETTINGS[:version].short) < Gem::Version.new('1.20')
-      include ::ApplicationHelper
-    else
-      include ::AuthorizeHelper
-    end
+    include ::AuthorizeHelper
 
     AJAX_REQUESTS = [:status_hosts].freeze
     before_action :ajax_request, :only => AJAX_REQUESTS
@@ -48,12 +44,10 @@ module ForemanWreckingball
 
       # NOTE The call to ComputeResource#vms may slow things down
       vms_by_compute_resource_id = vmware_compute_resources.each_with_object({}) do |cr, memo|
-        begin
-          memo[cr.id] = cr.vms.all
-        rescue StandardError => e
-          @errors[cr.name] = e.message
-          Foreman::Logging.exception("Failed to load VMs from compute resource #{cr.name}", e)
-        end
+        memo[cr.id] = cr.vms.all
+      rescue StandardError => e
+        @errors[cr.name] = e.message
+        Foreman::Logging.exception("Failed to load VMs from compute resource #{cr.name}", e)
       end
 
       # Get all VM UUIDs found in any of the compute resources
