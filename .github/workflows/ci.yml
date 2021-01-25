@@ -5,8 +5,23 @@ env:
   DATABASE_URL: postgresql://postgres:@localhost/test
   DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
 jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.5
+      - name: Setup
+        run: |
+          gem install bundler
+          bundle install --jobs=3 --retry=3
+      - name: Run rubocop
+        run: bundle exec rubocop
   test:
     runs-on: ubuntu-latest
+    needs: rubocop
     services:
       postgres:
         image: postgres:12.1
@@ -15,23 +30,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, develop]
-        foreman-tasks-branch: [0.14.x, 0.15.x, 0.16.x, 0.17.x, 1.1.x, master]
-        ruby-version: [2.3, 2.5, 2.6]
+        foreman-core-branch: [1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, 2.2-stable, 2.3-stable, develop]
+        foreman-tasks-branch: [0.14.x, 0.15.x, 0.16.x, 0.17.x, 1.1.x, 2.0.x, 3.0.x, master]
+        ruby-version: [2.5, 2.6]
         node-version: [10]
         exclude:
+          # 1.21-stable
           - foreman-core-branch: 1.21-stable
             foreman-tasks-branch: 0.17.x
           - foreman-core-branch: 1.21-stable
             foreman-tasks-branch: 1.1.x
           - foreman-core-branch: 1.21-stable
+            foreman-tasks-branch: 2.0.x
+          - foreman-core-branch: 1.21-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 1.21-stable
             foreman-tasks-branch: master
+          # 1.22-stable
           - foreman-core-branch: 1.22-stable
             foreman-tasks-branch: 0.17.x
           - foreman-core-branch: 1.22-stable
             foreman-tasks-branch: 1.1.x
           - foreman-core-branch: 1.22-stable
+            foreman-tasks-branch: 2.0.x
+          - foreman-core-branch: 1.22-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 1.22-stable
             foreman-tasks-branch: master
+          # 1.23-stable
           - foreman-core-branch: 1.23-stable
             foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 1.23-stable
@@ -39,17 +65,32 @@ jobs:
           - foreman-core-branch: 1.23-stable
             foreman-tasks-branch: 1.1.x
           - foreman-core-branch: 1.23-stable
+            foreman-tasks-branch: 2.0.x
+          - foreman-core-branch: 1.23-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 1.23-stable
             foreman-tasks-branch: master
+          # 1.24-stable
           - foreman-core-branch: 1.24-stable
             foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 1.24-stable
             foreman-tasks-branch: 1.1.x
           - foreman-core-branch: 1.24-stable
+            foreman-tasks-branch: 2.0.x
+          - foreman-core-branch: 1.24-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 1.24-stable
             foreman-tasks-branch: master
+          # 2.0-stable
           - foreman-core-branch: 2.0-stable
             foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 2.0-stable
+            foreman-tasks-branch: 2.0.x
+          - foreman-core-branch: 2.0-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 2.0-stable
             foreman-tasks-branch: master
+          # 2.1-stable
           - foreman-core-branch: 2.1-stable
             foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 2.1-stable
@@ -58,6 +99,29 @@ jobs:
             foreman-tasks-branch: 0.16.x
           - foreman-core-branch: 2.1-stable
             foreman-tasks-branch: 0.17.x
+          - foreman-core-branch: 2.1-stable
+            foreman-tasks-branch: 3.0.x
+          - foreman-core-branch: 2.1-stable
+            foreman-tasks-branch: master
+          # 2.2-stable
+          - foreman-core-branch: 2.2-stable
+            foreman-tasks-branch: 0.14.x
+          - foreman-core-branch: 2.2-stable
+            foreman-tasks-branch: 0.15.x
+          - foreman-core-branch: 2.2-stable
+            foreman-tasks-branch: 0.16.x
+          - foreman-core-branch: 2.2-stable
+            foreman-tasks-branch: 0.17.x
+          # 2.3-stable
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-branch: 0.14.x
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-branch: 0.15.x
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-branch: 0.16.x
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-branch: 0.17.x
+          # develop
           - foreman-core-branch: develop
             foreman-tasks-branch: 0.14.x
           - foreman-core-branch: develop
@@ -66,12 +130,6 @@ jobs:
             foreman-tasks-branch: 0.16.x
           - foreman-core-branch: develop
             foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 2.0-stable
-            ruby-version: 2.3
-          - foreman-core-branch: 2.1-stable
-            ruby-version: 2.3
-          - foreman-core-branch: develop
-            ruby-version: 2.3
     steps:
       - name: Install dependencies
         run: |
@@ -98,14 +156,33 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version:  ${{ matrix.node-version }}
-      - name: Setup Plugin
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Setup Bundler
         working-directory: foreman
         run: |
           echo "gem 'foreman_wreckingball', path: '../foreman_wreckingball'" > bundler.d/foreman_wreckingball.local.rb
           echo "gem 'foreman-tasks-core', path: '../foreman-tasks'" > bundler.d/foreman-tasks-core.local.rb
           echo "gem 'foreman-tasks', path: '../foreman-tasks'" > bundler.d/foreman-tasks.local.rb
           gem install bundler
+          bundle config path vendor/bundle
           bundle config set without journald development console mysql2 sqlite
+          bundle lock --update
+      - name: Cache gems
+        uses: actions/cache@v2
+        with:
+          path: foreman/vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Setup Plugin
+        working-directory: foreman
+        run: |
           bundle install --jobs=3 --retry=3
           bundle exec rake db:create
           bundle exec rake db:migrate

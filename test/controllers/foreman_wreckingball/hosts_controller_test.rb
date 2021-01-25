@@ -4,8 +4,6 @@ require 'test_plugin_helper'
 
 module ForemanWreckingball
   class HostsControllerTest < ActionController::TestCase
-    include ForemanWreckingball::StatusHelper
-
     let(:fake_task) { OpenStruct.new(id: 123) }
 
     setup do
@@ -238,7 +236,7 @@ module ForemanWreckingball
 
         test 'remediate selected statuses' do
           get :schedule_remediate, params: { status_ids: status_ids }, session: set_session_user
-          assert_statuses HostStatus::Status.find(status_ids)
+          assert_same_elements HostStatus::Status.find(status_ids), assigns['statuses']
         end
       end
 
@@ -254,7 +252,7 @@ module ForemanWreckingball
 
         test 'remediate all statuses' do
           get :schedule_remediate, params: { host_association: host_association }, session: set_session_user
-          assert_statuses statuses
+          assert_same_elements statuses, assigns['statuses']
         end
 
         context 'with owned_only' do
@@ -265,7 +263,7 @@ module ForemanWreckingball
 
           test 'remediate only those statuses where the user is the owner of the host' do
             get :schedule_remediate, params: { host_association: host_association, owned_only: true }, session: set_session_user
-            assert_statuses statuses
+            assert_same_elements statuses, assigns['statuses']
           end
         end
       end
@@ -296,7 +294,7 @@ module ForemanWreckingball
 
         test 'remediate selected statuses' do
           post :submit_remediate, params: { status_ids: status_ids }, session: set_session_user
-          assert_statuses HostStatus::Status.find(status_ids)
+          assert_same_elements HostStatus::Status.find(status_ids), assigns['statuses']
         end
       end
 
@@ -312,7 +310,7 @@ module ForemanWreckingball
 
         test 'remediate all statuses' do
           post :submit_remediate, params: { host_association: host_association }, session: set_session_user
-          assert_statuses statuses
+          assert_same_elements statuses, assigns['statuses']
         end
 
         context 'with owned_only' do
@@ -323,7 +321,7 @@ module ForemanWreckingball
 
           test 'remediate only those statuses where the user is the owner of the host' do
             post :submit_remediate, params: { host_association: host_association, owned_only: true }, session: set_session_user
-            assert_statuses statuses
+            assert_same_elements statuses, assigns['statuses']
           end
         end
       end
