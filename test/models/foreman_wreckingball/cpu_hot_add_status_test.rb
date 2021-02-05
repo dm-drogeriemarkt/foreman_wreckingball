@@ -21,30 +21,30 @@ module ForemanWreckingball
     end
 
     describe 'status labels' do
-      test 'with possible performance degration' do
-        status.status = CpuHotAddStatus::PERFORMANCE_DEGRATION
-        assert_equal 'Possible performance degration', status.to_label
+      test 'with possible performance degradation' do
+        status.status = CpuHotAddStatus::PERFORMANCE_DEGRADATION
+        assert_equal 'Possible performance degradation', status.to_label
       end
 
-      test 'without performance degration' do
+      test 'without performance degradation' do
         status.status = CpuHotAddStatus::OK
         assert_equal 'No Impact', status.to_label
       end
     end
 
     describe 'global status' do
-      test 'with possible performance degration' do
-        status.status = CpuHotAddStatus::PERFORMANCE_DEGRATION
+      test 'with possible performance degradation' do
+        status.status = CpuHotAddStatus::PERFORMANCE_DEGRADATION
         assert_equal HostStatus::Global::ERROR, status.to_global
       end
 
-      test 'without performance degration' do
+      test 'without performance degradation' do
         status.status = CpuHotAddStatus::OK
         assert_equal HostStatus::Global::OK, status.to_global
       end
     end
 
-    describe '#performance_degration?' do
+    describe '#performance_degradation?' do
       context 'with cpu hot add disabled' do
         setup do
           host.vmware_facet.cpu_hot_add = false
@@ -54,8 +54,8 @@ module ForemanWreckingball
           refute status.relevant?
         end
 
-        test 'no performance degration is indicated' do
-          refute status.performance_degration?
+        test 'no performance degradation is indicated' do
+          refute status.performance_degradation?
         end
       end
 
@@ -68,10 +68,10 @@ module ForemanWreckingball
           assert status.relevant?
         end
 
-        test 'no performance degration is indicated' do
+        test 'no performance degradation is indicated' do
           FactoryBot.create(:vmware_hypervisor_facet, cpu_cores: 4, vmware_cluster: host.vmware_facet.vmware_cluster)
           host.vmware_facet.cpus = 100
-          assert status.performance_degration?
+          assert status.performance_degradation?
         end
       end
     end
