@@ -73,6 +73,11 @@ module ForemanWreckingball
       return false if vsphere_os.name && vsphere_os.name != host.operatingsystem.name
       return false if vsphere_os.major && ![vsphere_os.major].flatten.include?(host.operatingsystem.major.to_i)
       return false if vsphere_os.release && ![vsphere_os.release].flatten.include?(host.facts['os::release::full'])
+
+      deduced_guest_id = host.deduced_vsphere_guest_id
+
+      return false if deduced_guest_id && deduced_guest_id != guest_id
+
       true
     end
   end
