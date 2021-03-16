@@ -388,6 +388,13 @@ rhel7_64Guest:
   :name: RedHat
   :major: 7
   :since: 5.5
+rhel8_64Guest:
+  :description: Red Hat Enterprise Linux 8 (64-bit)
+  :architecture: x86_64
+  :osfamily: Redhat
+  :name: RedHat
+  :major: 8
+  :since: 6.5
 sjdsGuest:
   :description: Sun Java Desktop System
 sles10Guest:
@@ -426,6 +433,13 @@ sles12_64Guest:
   :name: SLES
   :major: 12
   :since: 5.5
+sles15_64Guest:
+  :description: SUSE Linux Enterprise 15 (64-bit)
+  :architecture: x86_64
+  :osfamily: Suse
+  :name: SLES
+  :major: 15
+  :since: 6.0
 sles64Guest:
   :description: SUSE Linux Enterprise 8/9 (64-bit)
   :architecture: x86_64
