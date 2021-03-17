@@ -30,49 +30,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [1.21-stable, 1.22-stable, 1.23-stable, 1.24-stable, 2.0-stable, 2.1-stable, 2.2-stable, 2.3-stable, develop]
-        foreman-tasks-branch: [0.14.x, 0.15.x, 0.16.x, 0.17.x, 1.1.x, 2.0.x, 3.0.x, master]
+        foreman-core-branch: [1.24-stable, 2.0-stable, 2.1-stable, 2.2-stable, 2.3-stable, 2.4-stable, develop]
+        foreman-tasks-branch: [0.15.x, 0.16.x, 0.17.x, 1.1.x, 2.0.x, 3.0.x, master]
         ruby-version: [2.5, 2.6]
         node-version: [10]
         exclude:
-          # 1.21-stable
-          - foreman-core-branch: 1.21-stable
-            foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 1.21-stable
-            foreman-tasks-branch: 1.1.x
-          - foreman-core-branch: 1.21-stable
-            foreman-tasks-branch: 2.0.x
-          - foreman-core-branch: 1.21-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 1.21-stable
-            foreman-tasks-branch: master
-          # 1.22-stable
-          - foreman-core-branch: 1.22-stable
-            foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 1.22-stable
-            foreman-tasks-branch: 1.1.x
-          - foreman-core-branch: 1.22-stable
-            foreman-tasks-branch: 2.0.x
-          - foreman-core-branch: 1.22-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 1.22-stable
-            foreman-tasks-branch: master
-          # 1.23-stable
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: 0.14.x
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: 1.1.x
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: 2.0.x
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 1.23-stable
-            foreman-tasks-branch: master
           # 1.24-stable
-          - foreman-core-branch: 1.24-stable
-            foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 1.24-stable
             foreman-tasks-branch: 1.1.x
           - foreman-core-branch: 1.24-stable
@@ -83,16 +46,12 @@ jobs:
             foreman-tasks-branch: master
           # 2.0-stable
           - foreman-core-branch: 2.0-stable
-            foreman-tasks-branch: 0.14.x
-          - foreman-core-branch: 2.0-stable
             foreman-tasks-branch: 2.0.x
           - foreman-core-branch: 2.0-stable
             foreman-tasks-branch: 3.0.x
           - foreman-core-branch: 2.0-stable
             foreman-tasks-branch: master
           # 2.1-stable
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: 0.14.x
           - foreman-core-branch: 2.1-stable
             foreman-tasks-branch: 0.15.x
           - foreman-core-branch: 2.1-stable
@@ -105,25 +64,30 @@ jobs:
             foreman-tasks-branch: master
           # 2.2-stable
           - foreman-core-branch: 2.2-stable
-            foreman-tasks-branch: 0.14.x
-          - foreman-core-branch: 2.2-stable
             foreman-tasks-branch: 0.15.x
           - foreman-core-branch: 2.2-stable
             foreman-tasks-branch: 0.16.x
           - foreman-core-branch: 2.2-stable
             foreman-tasks-branch: 0.17.x
+          - foreman-core-branch: 2.2-stable
+            foreman-tasks-branch: master
           # 2.3-stable
           - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: 0.14.x
-          - foreman-core-branch: 2.3-stable
             foreman-tasks-branch: 0.15.x
           - foreman-core-branch: 2.3-stable
             foreman-tasks-branch: 0.16.x
           - foreman-core-branch: 2.3-stable
             foreman-tasks-branch: 0.17.x
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-branch: master
+          # 2.4-stable
+          - foreman-core-branch: 2.4-stable
+            foreman-tasks-branch: 0.15.x
+          - foreman-core-branch: 2.4-stable
+            foreman-tasks-branch: 0.16.x
+          - foreman-core-branch: 2.4-stable
+            foreman-tasks-branch: 0.17.x
           # develop
-          - foreman-core-branch: develop
-            foreman-tasks-branch: 0.14.x
           - foreman-core-branch: develop
             foreman-tasks-branch: 0.15.x
           - foreman-core-branch: develop
