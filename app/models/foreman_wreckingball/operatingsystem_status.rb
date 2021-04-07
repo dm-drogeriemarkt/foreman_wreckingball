@@ -1,67 +1,40 @@
 # frozen_string_literal: true
 
 module ForemanWreckingball
-  class OperatingsystemStatus < ::HostStatus::Status
+  class OperatingsystemStatus < ::ForemanWreckingball::Status
+    NAME = N_('VM Operatingsystem').freeze
+    DESCRIPTION = N_('The VM operatingsystem should match the operatingsystem installed.').freeze
+    HOST_ASSOCIATION = :vmware_operatingsystem_status_object
+
     OK = 0
     MISMATCH = 1
 
-    def self.status_name
-      N_('VM Operatingsystem')
-    end
+    OK_STATUSES = [OK].freeze
+    WARN_STATUSES = [MISMATCH].freeze
+    ERROR_STATUSES = [].freeze
 
-    def self.host_association
-      :vmware_operatingsystem_status_object
-    end
+    LABELS = {
+      OK => N_('OK'),
+      MISMATCH => N_('VM OS is incorrect')
+    }.freeze
 
-    def self.description
-      N_('The VM operatingsystem should match the operatingsystem installed.')
-    end
+    SEARCH_VALUES = {
+      ok: OK,
+      mismatch: MISMATCH
+    }.freeze
 
-    def self.supports_remediate?
-      true
-    end
-
-    def self.dangerous_remediate?
-      true
-    end
-
-    def self.remediate_action
-      ::Actions::ForemanWreckingball::Host::RemediateVmwareOperatingsystem
-    end
+    REMEDIATE_ACTION = ::Actions::ForemanWreckingball::Host::RemediateVmwareOperatingsystem
+    DANGEROUS_REMEDIATE = true
 
     def to_status(_options = {})
       os_matches_identifier? ? OK : MISMATCH
     end
 
-    def to_global(_options = {})
-      self.class.to_global(status)
-    end
-
-    def self.to_global(status)
-      case status
-      when MISMATCH
-        HostStatus::Global::WARN
-      else
-        HostStatus::Global::OK
-      end
-    end
-
-    def self.global_ok_list
-      [OK]
-    end
-
-    def to_label(_options = {})
-      case status
-      when MISMATCH
-        N_('VM OS is incorrect')
-      else
-        N_('OK')
-      end
-    end
-
     def relevant?(_options = {})
       host&.vmware_facet
     end
+
+    private
 
     def os_matches_identifier?
       guest_id = host.vmware_facet.guest_id

@@ -24,19 +24,6 @@ module ForemanWreckingball
 
     serialize :cpu_features, JSON
 
-    def tools_state_label
-      case tools_state.to_sym
-      when :toolsNotInstalled
-        N_('Not installed')
-      when :toolsNotRunning
-        N_('Not running')
-      when :toolsOk
-        N_('OK')
-      when :toolsOld
-        N_('Out of date')
-      end
-    end
-
     def refresh!
       vm = host.compute_object
       return unless vm

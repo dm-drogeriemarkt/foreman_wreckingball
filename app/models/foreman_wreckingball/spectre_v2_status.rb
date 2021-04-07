@@ -1,67 +1,40 @@
 # frozen_string_literal: true
 
 module ForemanWreckingball
-  class SpectreV2Status < ::HostStatus::Status
+  class SpectreV2Status < ::ForemanWreckingball::Status
+    NAME = N_('Spectre v2 Guest Mitigation Enabled').freeze
+    DESCRIPTION = N_('In order to use hardware based branch target injection mitigation within virtual machines, Hypervisor-Assisted Guest Mitigation must be enabled.').freeze
+    HOST_ASSOCIATION = :vmware_spectre_v2_status_object
+
     ENABLED = 0
     MISSING = 1
 
-    def self.status_name
-      N_('Spectre v2 Guest Mitigation Enabled')
-    end
+    OK_STATUSES = [ENABLED].freeze
+    WARN_STATUSES = [].freeze
+    ERROR_STATUSES = [MISSING].freeze
 
-    def self.host_association
-      :vmware_spectre_v2_status_object
-    end
+    LABELS = {
+      ENABLED => N_('Guest Mitigation Enabled'),
+      MISSING => N_('Guest Mitigation Missing')
+    }.freeze
 
-    def self.description
-      N_('In order to use hardware based branch target injection mitigation within virtual machines, Hypervisor-Assisted Guest Mitigation must be enabled.')
-    end
+    SEARCH_VALUES = {
+      enabled: ENABLED,
+      missing: MISSING
+    }.freeze
 
-    def self.supports_remediate?
-      true
-    end
-
-    def self.dangerous_remediate?
-      true
-    end
-
-    def self.remediate_action
-      ::Actions::ForemanWreckingball::Host::RemediateSpectreV2
-    end
+    REMEDIATE_ACTION = ::Actions::ForemanWreckingball::Host::RemediateSpectreV2
+    DANGEROUS_REMEDIATE = true
 
     def to_status(_options = {})
       guest_mitigation_enabled? ? ENABLED : MISSING
     end
 
-    def to_global(_options = {})
-      self.class.to_global(status)
-    end
-
-    def self.to_global(status)
-      case status
-      when MISSING
-        HostStatus::Global::ERROR
-      else
-        HostStatus::Global::OK
-      end
-    end
-
-    def self.global_ok_list
-      [ENABLED]
-    end
-
-    def to_label(_options = {})
-      case status
-      when MISSING
-        N_('Guest Mitigation Missing')
-      else
-        N_('Guest Mitigation Enabled')
-      end
-    end
-
     def relevant?(_options = {})
       host && host&.vmware_facet && host.vmware_facet.hardware_version.present? && host.vmware_facet.cpu_features.any?
     end
+
+    private
 
     def guest_mitigation_enabled?
       recent_hw_version? && required_cpu_features_present?

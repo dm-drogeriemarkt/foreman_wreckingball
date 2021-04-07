@@ -1,61 +1,39 @@
 # frozen_string_literal: true
 
 module ForemanWreckingball
-  class CpuHotAddStatus < ::HostStatus::Status
+  class CpuHotAddStatus < ::ForemanWreckingball::Status
+    NAME = N_('CPU Hot Plug').freeze
+    DESCRIPTION = N_('Enabling CPU hot-add disables vNUMA, the virtual machine will instead use UMA. This might cause a performance degradation.').freeze
+    HOST_ASSOCIATION = :vmware_cpu_hot_add_status_object
+
     OK = 0
-    PERFORMANCE_DEGRATION = 1
+    PERFORMANCE_DEGRADATION = 1
 
-    def self.status_name
-      N_('CPU Hot Plug')
-    end
+    OK_STATUSES = [OK].freeze
+    WARN_STATUSES = [].freeze
+    ERROR_STATUSES = [PERFORMANCE_DEGRADATION].freeze
 
-    def self.host_association
-      :vmware_cpu_hot_add_status_object
-    end
+    LABELS = {
+      OK => N_('No Impact'),
+      PERFORMANCE_DEGRADATION => N_('Possible performance degradation')
+    }.freeze
 
-    def self.description
-      N_('Enabling CPU hot-add disables vNUMA, the virtual machine will instead use UMA. This might cause a performance degration.')
-    end
-
-    def self.supports_remediate?
-      false
-    end
+    SEARCH_VALUES = {
+      ok: OK,
+      performance_degradation: PERFORMANCE_DEGRADATION
+    }.freeze
 
     def to_status(_options = {})
-      performance_degration? ? PERFORMANCE_DEGRATION : OK
-    end
-
-    def to_global(_options = {})
-      self.class.to_global(status)
-    end
-
-    def self.to_global(status)
-      case status
-      when PERFORMANCE_DEGRATION
-        HostStatus::Global::ERROR
-      else
-        HostStatus::Global::OK
-      end
-    end
-
-    def self.global_ok_list
-      [OK]
-    end
-
-    def to_label(_options = {})
-      case status
-      when PERFORMANCE_DEGRATION
-        N_('Possible performance degration')
-      else
-        N_('No Impact')
-      end
+      performance_degradation? ? PERFORMANCE_DEGRADATION : OK
     end
 
     def relevant?(_options = {})
       host&.vmware_facet && host.vmware_facet.try(:cpu_hot_add?)
     end
 
-    def performance_degration?
+    private
+
+    def performance_degradation?
       min_cores = hypervisor_min_cores
       return false unless min_cores
       host.vmware_facet.cpu_hot_add? && host.vmware_facet.cpus > min_cores
