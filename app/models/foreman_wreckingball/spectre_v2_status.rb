@@ -72,7 +72,7 @@ module ForemanWreckingball
     end
 
     def required_cpu_features_present?
-      !(host.vmware_facet.cpu_features & ['cpuid.IBRS', 'cpuid.IBPB', 'cpuid.STIBP']).empty?
+      !(host.vmware_facet.cpu_features.map(&:downcase) & ['cpuid.ibrs', 'cpuid.ibpb', 'cpuid.stibp']).empty?
     end
   end
 end
