@@ -30,70 +30,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [1.24-stable, 2.0-stable, 2.1-stable, 2.2-stable, 2.3-stable, 2.4-stable, develop]
-        foreman-tasks-branch: [0.15.x, 0.16.x, 0.17.x, 1.1.x, 2.0.x, 3.0.x, master]
-        ruby-version: [2.5, 2.6]
+        foreman-core-branch: [2.3-stable, 2.4-stable, 2.5-stable, develop]
+        foreman-tasks-branch: [3.0.x, 4.0.x, master]
+        ruby-version: [2.5, 2.6, 2.7]
         node-version: [10]
         exclude:
-          # 1.24-stable
-          - foreman-core-branch: 1.24-stable
-            foreman-tasks-branch: 1.1.x
-          - foreman-core-branch: 1.24-stable
-            foreman-tasks-branch: 2.0.x
-          - foreman-core-branch: 1.24-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 1.24-stable
-            foreman-tasks-branch: master
-          # 2.0-stable
-          - foreman-core-branch: 2.0-stable
-            foreman-tasks-branch: 2.0.x
-          - foreman-core-branch: 2.0-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 2.0-stable
-            foreman-tasks-branch: master
-          # 2.1-stable
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: 0.15.x
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: 0.16.x
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: 3.0.x
-          - foreman-core-branch: 2.1-stable
-            foreman-tasks-branch: master
-          # 2.2-stable
-          - foreman-core-branch: 2.2-stable
-            foreman-tasks-branch: 0.15.x
-          - foreman-core-branch: 2.2-stable
-            foreman-tasks-branch: 0.16.x
-          - foreman-core-branch: 2.2-stable
-            foreman-tasks-branch: 0.17.x
-          - foreman-core-branch: 2.2-stable
-            foreman-tasks-branch: master
           # 2.3-stable
           - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: 0.15.x
-          - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: 0.16.x
-          - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: 0.17.x
+            foreman-tasks-branch: 4.0.x
           - foreman-core-branch: 2.3-stable
             foreman-tasks-branch: master
           # 2.4-stable
           - foreman-core-branch: 2.4-stable
-            foreman-tasks-branch: 0.15.x
-          - foreman-core-branch: 2.4-stable
-            foreman-tasks-branch: 0.16.x
-          - foreman-core-branch: 2.4-stable
-            foreman-tasks-branch: 0.17.x
-          # develop
-          - foreman-core-branch: develop
-            foreman-tasks-branch: 0.15.x
-          - foreman-core-branch: develop
-            foreman-tasks-branch: 0.16.x
-          - foreman-core-branch: develop
-            foreman-tasks-branch: 0.17.x
+            foreman-tasks-branch: master
+          # 2.5-stable
+          - foreman-core-branch: 2.5-stable
+            foreman-tasks-branch: master
     steps:
       - name: Install dependencies
         run: |
@@ -127,11 +79,15 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      - name: Include foreman-tasks-core for old foreman-tasks versions
+        if: ${{ matrix.foreman-tasks-branch == '3.0.x' || matrix.foreman-tasks-branch == '4.0.x' }}
+        working-directory: foreman
+        run: |
+          echo "gem 'foreman-tasks-core', path: '../foreman-tasks'" > bundler.d/foreman-tasks-core.local.rb
       - name: Setup Bundler
         working-directory: foreman
         run: |
           echo "gem 'foreman_wreckingball', path: '../foreman_wreckingball'" > bundler.d/foreman_wreckingball.local.rb
-          echo "gem 'foreman-tasks-core', path: '../foreman-tasks'" > bundler.d/foreman-tasks-core.local.rb
           echo "gem 'foreman-tasks', path: '../foreman-tasks'" > bundler.d/foreman-tasks.local.rb
           gem install bundler
           bundle config path vendor/bundle
