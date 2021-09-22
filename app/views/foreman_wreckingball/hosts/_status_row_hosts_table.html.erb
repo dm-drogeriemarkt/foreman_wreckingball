@@ -1,7 +1,7 @@
 <%= render :partial => 'status_row_hosts_table_actions', locals: { supports_remediate: supports_remediate } %>
 
 <%= content_tag :table, id: status,
-                        class: 'table table-striped table-fixed status-hosts',
+                        class: "table table-striped table-fixed status-hosts #{Host::Managed.reflect_on_environment? ? '' : 'hide-puppet-environment'}",
                         'data-hosts-url': ajax_status_dashboard_hosts_path(status, owned_only: params[:owned_only]) do %>
   <%= content_tag :thead do %>
     <%= content_tag :tr do %>

@@ -8,8 +8,10 @@ child owner: :owner do
   attribute :name
 end
 
-child :environment do
-  attribute :name
+if Host::Managed.reflect_on_environment?
+  child :environment do
+    attribute :name
+  end
 end
 
 node(:path) { |host| host_path(host) }

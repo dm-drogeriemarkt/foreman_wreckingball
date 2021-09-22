@@ -30,22 +30,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [2.3-stable, 2.4-stable, 2.5-stable, develop]
-        foreman-tasks-branch: [3.0.x, 4.0.x, master]
-        ruby-version: [2.5, 2.6, 2.7]
+        foreman-core-branch: [2.3-stable, 2.4-stable, 2.5-stable, 3.0-stable, develop]
+        foreman-tasks-version: [3.0.6, 4.1.5, 5.1.0]
+        foreman-puppet-version: [null, 1.0.3, 2.0.0.alpha.2]
+        ruby-version: [2.7]
         node-version: [10]
         exclude:
-          # 2.3-stable
           - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: 4.0.x
+            foreman-puppet-version: 1.0.3
           - foreman-core-branch: 2.3-stable
-            foreman-tasks-branch: master
-          # 2.4-stable
+            foreman-puppet-version: 2.0.0.alpha.2
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-version: 4.1.5
+          - foreman-core-branch: 2.3-stable
+            foreman-tasks-version: 5.1.0
           - foreman-core-branch: 2.4-stable
-            foreman-tasks-branch: master
-          # 2.5-stable
+            foreman-puppet-version: 1.0.3
+          - foreman-core-branch: 2.4-stable
+            foreman-puppet-version: 2.0.0.alpha.2
+          - foreman-core-branch: 2.4-stable
+            foreman-tasks-version: 5.1.0
           - foreman-core-branch: 2.5-stable
-            foreman-tasks-branch: master
+            foreman-puppet-version: 2.0.0.alpha.2
+          - foreman-core-branch: 2.5-stable
+            foreman-tasks-version: 5.1.0
+          - foreman-core-branch: 3.0-stable
+            foreman-puppet-version: null
+          - foreman-core-branch: develop
+            foreman-puppet-version: 1.0.3
+          - foreman-core-branch: develop
+            foreman-puppet-version: null
     steps:
       - name: Install dependencies
         run: |
@@ -56,11 +70,6 @@ jobs:
           repository: theforeman/foreman
           ref: ${{ matrix.foreman-core-branch }}
           path: foreman
-      - uses: actions/checkout@v2
-        with:
-          repository: theforeman/foreman-tasks
-          ref: ${{ matrix.foreman-tasks-branch }}
-          path: foreman-tasks
       - uses: actions/checkout@v2
         with:
           path: foreman_wreckingball
@@ -76,19 +85,25 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('foreman/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: Include foreman-tasks-core for old foreman-tasks versions
-        if: ${{ matrix.foreman-tasks-branch == '3.0.x' || matrix.foreman-tasks-branch == '4.0.x' }}
+      - name: Add foreman_puppet
+        working-directory: foreman
+        run: echo "gem 'foreman_puppet', '~> ${{ matrix.foreman-puppet-version }}'" > bundler.d/foreman_puppet.local.rb
+        if: ${{ matrix.foreman-puppet-version != null }}
+      - name: Add foreman-tasks
+        working-directory: foreman
+        run: echo "gem 'foreman-tasks', '~> ${{ matrix.foreman-tasks-version }}'" > bundler.d/foreman-tasks.local.rb
+      - name: Add smart_proxy_dynflow
         working-directory: foreman
         run: |
-          echo "gem 'foreman-tasks-core', path: '../foreman-tasks'" > bundler.d/foreman-tasks-core.local.rb
+          echo 'gem "smart_proxy_dynflow", "~> 0.3.0", require: false' > bundler.d/smart_proxy_dynflow.local.rb
+        if: ${{ matrix.foreman-tasks-version != '5.1.0' }}
       - name: Setup Bundler
         working-directory: foreman
         run: |
           echo "gem 'foreman_wreckingball', path: '../foreman_wreckingball'" > bundler.d/foreman_wreckingball.local.rb
-          echo "gem 'foreman-tasks', path: '../foreman-tasks'" > bundler.d/foreman-tasks.local.rb
           gem install bundler
           bundle config path vendor/bundle
           bundle config set without journald development console mysql2 sqlite
@@ -97,7 +112,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: foreman/vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-${{ hashFiles('foreman/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
       - name: Setup Plugin
@@ -110,9 +125,11 @@ jobs:
           bundle exec rake webpack:compile
       - name: Run plugin tests
         working-directory: foreman
-        run: |
-          bundle exec rake test:foreman_wreckingball
-          bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
+        run: bundle exec rake test:foreman_wreckingball
+      - name: Run permissions tests
+        working-directory: foreman
+        run: bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
+        if: ${{ matrix.foreman-puppet-version != '1.0.3' || matrix.foreman-core-branch != '2.5-stable' }}
       - name: Precompile plugin assets
         working-directory: foreman
         run: bundle exec rake 'plugin:assets:precompile[foreman_wreckingball]'

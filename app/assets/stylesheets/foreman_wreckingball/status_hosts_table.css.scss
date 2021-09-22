@@ -11,3 +11,10 @@ div.status-hosts-container.ajax-error div.dataTables_wrapper,
 div.status-hosts-container.ajax-error p {
   display: none;
 }
+
+table.status-hosts.hide-puppet-environment {
+  th:nth-child(5),
+  td:nth-child(5) {
+    display: none;
+  }
+}
