@@ -94,7 +94,7 @@ module ForemanWreckingball
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
                       .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
-                      .includes(@status.host_association, :vmware_facet, :environment)
+                      .includes([*(:environment if Host::Managed.reflect_on_environment?), @status.host_association, :vmware_facet])
                       .where.not('host_status.status': @status.global_ok_list)
                       .preload(:owner)
                       .order(:name)
