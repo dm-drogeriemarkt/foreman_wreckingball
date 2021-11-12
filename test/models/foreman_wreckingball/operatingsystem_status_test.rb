@@ -92,6 +92,11 @@ module ForemanWreckingball
       test 'when architecture, osfamily, name and major match' do
         assert status.os_matches_identifier?
       end
+
+      test 'when os identifier is other os but a proper os is set' do
+        host.vmware_facet.update(guest_id: 'otherGuest64')
+        refute status.os_matches_identifier?
+      end
     end
   end
 end
