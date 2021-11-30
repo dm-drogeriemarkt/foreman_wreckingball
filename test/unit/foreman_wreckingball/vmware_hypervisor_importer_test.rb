@@ -74,11 +74,11 @@ module ForemanWreckingball
         assert_not_nil Host::Managed.find_by(id: host_on_other_cluster.id).vmware_hypervisor_facet
       end
 
-      test 'updates host by katello name' do
+      test 'does not touch hosts created by katello/virt-who' do
         host = FactoryBot.create(:host,  organization: organization)
         host.update!(:name => "virt-who-host1.example.com-#{organization.id}")
         importer.import!
-        assert_equal 'host1.example.com', host.reload.name
+        assert_equal "virt-who-host1.example.com-#{organization.id}", host.reload.name
       end
     end
   end
