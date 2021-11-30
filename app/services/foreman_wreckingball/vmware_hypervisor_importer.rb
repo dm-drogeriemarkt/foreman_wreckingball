@@ -11,7 +11,6 @@ module ForemanWreckingball
     end
 
     def import!
-      logger.info "Can not determine organization for compute resource #{compute_resource}."
       compute_resource.refresh_cache
       compute_resource.vmware_clusters.each do |cluster|
         import_hypervisors(cluster)
@@ -82,14 +81,10 @@ module ForemanWreckingball
       name = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name(hypervisor.name)
       hostname = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name([hypervisor.hostname, hypervisor.domainname].join('.'))
       hostname = nil if hostname.blank?
-      katello_name = katello_hypervisor_hostname(hostname || name)
-      katello_uuid = katello_hypervisor_hostname(hypervisor.uuid)
 
       host = ::ForemanWreckingball::VmwareHypervisorFacet.find_by(:uuid => hypervisor.uuid).try(:host)
       host ||= ::Host.find_by(:name => hostname) if hostname
       host ||= ::Host.find_by(:name => name)
-      host ||= ::Host.find_by(:name => katello_name) if katello_name
-      host ||= ::Host.find_by(:name => katello_uuid) if katello_uuid
       host ||= create_host_for_hypervisor(hostname || name)
       host
     end
@@ -118,11 +113,6 @@ module ForemanWreckingball
 
     def location
       compute_resource.locations.first
-    end
-
-    def katello_hypervisor_hostname(hostname)
-      return unless organization
-      "virt-who-#{hostname}-#{organization.id}"
     end
 
     private
