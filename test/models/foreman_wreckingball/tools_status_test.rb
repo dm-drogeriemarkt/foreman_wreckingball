@@ -53,7 +53,23 @@ module ForemanWreckingball
       end
 
       test 'shows ok message' do
+        status.status = ForemanWreckingball::ToolsStatus::TOOLS_OK
         assert_equal 'OK', status.to_label
+      end
+
+      test 'shows not installed message' do
+        status.status = ForemanWreckingball::ToolsStatus::TOOLS_NOT_INSTALLED
+        assert_equal 'Not installed', status.to_label
+      end
+
+      test 'shows not running message' do
+        status.status = ForemanWreckingball::ToolsStatus::TOOLS_NOT_RUNNING
+        assert_equal 'Not running', status.to_label
+      end
+
+      test 'shows out of date message' do
+        status.status = ForemanWreckingball::ToolsStatus::TOOLS_OLD
+        assert_equal 'Out of date', status.to_label
       end
     end
   end
