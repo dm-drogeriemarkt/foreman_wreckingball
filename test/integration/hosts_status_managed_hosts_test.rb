@@ -4,7 +4,6 @@ require 'integration_test_plugin_helper'
 
 class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
   setup do
-    Setting::Wreckingball.load_defaults
     Fog.mock!
   end
 

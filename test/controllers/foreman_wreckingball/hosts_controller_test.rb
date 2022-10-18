@@ -6,10 +6,6 @@ module ForemanWreckingball
   class HostsControllerTest < ActionController::TestCase
     let(:fake_task) { OpenStruct.new(id: 123) }
 
-    setup do
-      Setting::Wreckingball.load_defaults
-    end
-
     describe '#status_dashboard' do
       context 'when there are no hosts with wreckingball statuses' do
         test 'shows an empty status page' do

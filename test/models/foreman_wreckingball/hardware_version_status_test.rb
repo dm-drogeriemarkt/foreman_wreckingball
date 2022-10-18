@@ -6,7 +6,6 @@ module ForemanWreckingball
   class HardwareVersionStatusTest < ActiveSupport::TestCase
     setup do
       User.current = users(:admin)
-      Setting::Wreckingball.load_defaults
     end
 
     should belong_to(:host)

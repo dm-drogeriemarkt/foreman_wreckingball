@@ -3,10 +3,6 @@
 require 'integration_test_plugin_helper'
 
 class HostsStatusDashboardTest < ActionDispatch::IntegrationTest
-  setup do
-    Setting::Wreckingball.load_defaults
-  end
-
   test 'shows different vmware host statuses' do
     FactoryBot.create_list(:host, 10)
     FactoryBot.create_list(:vmware_tools_status, 1)

@@ -14,7 +14,6 @@ module Actions
           ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:hardware_version).returns('vmx-13')
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           ::PowerManager::Virt.any_instance.stubs(:ready?).returns(true)
-          Setting::Wreckingball.load_defaults
         end
         teardown { ::Fog.unmock! }
 

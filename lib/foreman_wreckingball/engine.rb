@@ -31,18 +31,18 @@ module ForemanWreckingball
       end
     end
 
-    initializer 'foreman_wreckingball.load_default_settings', before: :load_config_initializers do
-      table_exists = begin
-                       Setting.table_exists?
-                     rescue StandardError
-                       false
-                     end
-      require_dependency File.expand_path('../../app/models/setting/wreckingball.rb', __dir__) if table_exists
-    end
-
     initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
-        requires_foreman '>= 2.3'
+        requires_foreman '>= 3.1'
+
+        settings do
+          category :wreckingball, N_('Wreckingball') do
+            setting :min_vsphere_hardware_version,
+              type: :integer,
+              default: 13,
+              description: _('Minimum required Hardware version for vSphere VMs')
+          end
+        end
 
         automatic_assets(false)
         precompile_assets(
