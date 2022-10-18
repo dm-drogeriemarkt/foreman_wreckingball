@@ -10,7 +10,7 @@ module ForemanWreckingball
     end
     teardown { Fog.unmock! }
 
-    let(:compute_resource) { FactoryBot.create(:vmware_cr, :uuid => 'Solutions') }
+    let(:compute_resource) { FactoryBot.create(:vmware_cr, uuid: 'Solutions') }
     let(:importer) do
       VmwareClusterImporter.new(
         compute_resource: compute_resource
@@ -28,10 +28,10 @@ module ForemanWreckingball
 
       test 'removes old clusters without associated records' do
         old_cluster = FactoryBot.create(:vmware_cluster,
-                                        :with_hosts,
-                                        :with_vmware_facets,
-                                        :with_vmware_hypervisor_facets,
-                                        compute_resource: compute_resource)
+          :with_hosts,
+          :with_vmware_facets,
+          :with_vmware_hypervisor_facets,
+          compute_resource: compute_resource)
 
         compute_resource_id = old_cluster.compute_resource.id
         host_ids = old_cluster.hosts.pluck(:id)
@@ -39,7 +39,7 @@ module ForemanWreckingball
         vmware_hypervisor_facet_ids = old_cluster.vmware_hypervisor_facets.pluck(:id)
 
         importer.import!
-        refute ForemanWreckingball::VmwareCluster.find_by(id: old_cluster.id)
+        assert_not ForemanWreckingball::VmwareCluster.find_by(id: old_cluster.id)
 
         assert Foreman::Model::Vmware.find_by(id: compute_resource_id)
         assert_equal host_ids.count, Host.where(id: host_ids).count

@@ -8,7 +8,8 @@ module ForemanWreckingball
       elsif vmware_hypervisor_facet.provides_spectre_features?
         icon_text('ok', '', kind: 'pficon', title: _('CPU-Features are present on this host.'))
       else
-        icon_text('error-circle-o', '', kind: 'pficon', title: _('Required CPU features are missing. This host is most likely vulnerable.'))
+        icon_text('error-circle-o', '', kind: 'pficon',
+                                        title: _('Required CPU features are missing. This host is most likely vulnerable.')) # rubocop:disable Layout/LineLength
       end
     end
   end

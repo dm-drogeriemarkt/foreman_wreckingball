@@ -14,7 +14,7 @@ module ForemanWreckingball
     end
 
     def self.description
-      N_('In order to use hardware based branch target injection mitigation within virtual machines, Hypervisor-Assisted Guest Mitigation must be enabled.')
+      N_('In order to use hardware based branch target injection mitigation within virtual machines, Hypervisor-Assisted Guest Mitigation must be enabled.') # rubocop:disable Layout/LineLength
     end
 
     def self.supports_remediate?
@@ -60,7 +60,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && host&.vmware_facet && host.vmware_facet.hardware_version.present? && host.vmware_facet.cpu_features.any?
+      host&.vmware_facet && host.vmware_facet.hardware_version.present? && host.vmware_facet.cpu_features.any?
     end
 
     def guest_mitigation_enabled?

@@ -7,13 +7,16 @@ module ForemanWreckingball
     include ::AuthorizeHelper
 
     AJAX_REQUESTS = [:status_hosts].freeze
-    before_action :ajax_request, :only => AJAX_REQUESTS
-    before_action :find_statuses, :only => [:schedule_remediate, :submit_remediate]
+    before_action :ajax_request, only: AJAX_REQUESTS
+    before_action :find_statuses, only: %i[schedule_remediate submit_remediate]
 
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     def status_dashboard
       @newest_data = Host.authorized(:view_hosts).joins(:vmware_facet).maximum('vmware_facets.updated_at')
       host_ids = Host.authorized(:view_hosts)
-                     .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+                     .try do |query|
+                       params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query
+                     end
                      .pluck(:id)
 
       @data = HostStatus.wreckingball_statuses.map do |status|
@@ -31,18 +34,20 @@ module ForemanWreckingball
           counter: {
             ok: counter[HostStatus::Global::OK] || 0,
             warning: counter[HostStatus::Global::WARN] || 0,
-            critical: counter[HostStatus::Global::ERROR] || 0
-          }
+            critical: counter[HostStatus::Global::ERROR] || 0,
+          },
         }
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def status_managed_hosts_dashboard
       vmware_compute_resources = Foreman::Model::Vmware.unscoped.all
 
       @errors = {}
 
-      # NOTE The call to ComputeResource#vms may slow things down
+      # NOTE: The call to ComputeResource#vms may slow things down
       vms_by_compute_resource_id = vmware_compute_resources.each_with_object({}) do |cr, memo|
         memo[cr.id] = cr.vms.all
       rescue StandardError => e
@@ -68,7 +73,6 @@ module ForemanWreckingball
                    .where(compute_resource: vmware_compute_resources)
                    .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
                    .each do |host|
-
         compute_resources = @vm_compute_resource_mapping[host.uuid]
 
         if compute_resources.empty?
@@ -86,15 +90,20 @@ module ForemanWreckingball
       @compute_resource_authorizer = Authorizer.new(User.current, collection: vmware_compute_resources)
       @host_authorizer = Authorizer.new(User.current)
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # ajax method
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     def status_hosts
       @status = HostStatus.find_wreckingball_status_by_host_association(params.fetch(:status))
 
       all_hosts = Host.authorized(:view_hosts, Host)
                       .joins(@status.host_association)
-                      .try { |query| params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
-                      .includes([*(:environment if Host::Managed.reflect_on_environment?), @status.host_association, :vmware_facet])
+                      .try do |query|
+                        params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query
+                      end
+                      .includes([*(:environment if Host::Managed.reflect_on_environment?), @status.host_association,
+                                 :vmware_facet])
                       .where.not('host_status.status': @status.global_ok_list)
                       .preload(:owner)
                       .order(:name)
@@ -105,12 +114,14 @@ module ForemanWreckingball
       respond_to do |format|
         format.json do
           Rabl::Renderer.json(@hosts, 'foreman_wreckingball/hosts/status_hosts',
-                              view_path: "#{ForemanWreckingball::Engine.root}/app/views",
-                              scope: self)
+            view_path: "#{ForemanWreckingball::Engine.root}/app/views",
+            scope: self)
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     def refresh_status_dashboard
       if ForemanTasks::Task.active.where(label: ::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync.to_s).empty?
         flash[:success] = _('Refresh Compute Resource data task was successfully scheduled.')
@@ -119,15 +130,18 @@ module ForemanWreckingball
         end
         redirect_to(foreman_tasks_task_path(task.id))
       else
-        flash[:warning] = _('Refresh Compute Resource data task is already running. Please wait for the running task to finish.')
+        flash[:warning] =
+          _('Refresh Compute Resource data task is already running. Please wait for the running task to finish.')
         redirect_to status_dashboard_hosts_path
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def schedule_remediate
       @triggering = ForemanTasks::Triggering.new(mode: :immediate)
     end
 
+    # rubocop:todo Metrics/MethodLength
     def submit_remediate
       return not_found unless @statuses.any?
 
@@ -145,6 +159,7 @@ module ForemanWreckingball
 
       redirect_to foreman_tasks_task_path(task.id)
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
 
@@ -158,6 +173,7 @@ module ForemanWreckingball
       @statuses_params ||= params.permit(:host_association, :owned_only, status_ids: [])
     end
 
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     def find_statuses
       @statuses = begin
         host_association = statuses_params[:host_association]
@@ -166,7 +182,7 @@ module ForemanWreckingball
           Host.authorized(:remediate_vmware_status_hosts, Host)
               .joins(status_class.host_association)
               .includes(status_class.host_association)
-              .try { |query| statuses_params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query }
+              .try { |query| statuses_params[:owned_only] ? query.owned_by_current_user_or_group_with_current_user : query } # rubocop:disable Layout/LineLength
               .where.not('host_status.status': status_class.global_ok_list)
               .map { |host| host.send(status_class.host_association) }
         else
@@ -176,6 +192,7 @@ module ForemanWreckingball
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def action_permission
       case params[:action]

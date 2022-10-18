@@ -12,7 +12,7 @@ module ForemanWreckingball
       'ForemanWreckingball::OperatingsystemStatus',
       'ForemanWreckingball::CpuHotAddStatus',
       'ForemanWreckingball::SpectreV2Status',
-      'ForemanWreckingball::HardwareVersionStatus'
+      'ForemanWreckingball::HardwareVersionStatus',
     ].freeze
 
     config.autoload_paths += Dir["#{config.root}/app/lib"]
@@ -31,7 +31,7 @@ module ForemanWreckingball
       end
     end
 
-    initializer 'foreman_wreckingball.register_plugin', :before => :finisher_hook do |_app|
+    initializer 'foreman_wreckingball.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
         requires_foreman '>= 3.1'
 
@@ -52,37 +52,41 @@ module ForemanWreckingball
             'foreman_wreckingball/status_managed_hosts_dashboard.js',
             'foreman_wreckingball/status_row.js',
             'foreman_wreckingball/status_hosts_table.css',
-            'foreman_wreckingball/status_managed_hosts_dashboard.css'
+            'foreman_wreckingball/status_managed_hosts_dashboard.css',
           ]
         )
 
         security_block :foreman_wreckingball do
           permission :refresh_vmware_status_hosts, {
-            :'foreman_wreckingball/hosts' => [:refresh_status_dashboard]
-          }, :resource_type => 'Host'
+            'foreman_wreckingball/hosts': %i[refresh_status_dashboard],
+          }, resource_type: 'Host'
           permission :remediate_vmware_status_hosts, {
-            :'foreman_wreckingball/hosts' => [:schedule_remediate, :submit_remediate]
-          }, :resource_type => 'Host'
+            'foreman_wreckingball/hosts': %i[schedule_remediate submit_remediate],
+          }, resource_type: 'Host'
         end
 
         # Extend built in permissions
         Foreman::AccessControl.permission(:view_hosts).actions.concat [
           'foreman_wreckingball/hosts/status_dashboard',
           'foreman_wreckingball/hosts/status_managed_hosts_dashboard',
-          'foreman_wreckingball/hosts/status_hosts'
+          'foreman_wreckingball/hosts/status_hosts',
         ]
 
-        menu :top_menu, :wreckingball_status_dashboard, :url_hash => { :controller => :'foreman_wreckingball/hosts', :action => :status_dashboard },
-                                                        :caption => N_('VMware Status'),
-                                                        :parent => :hosts_menu,
-                                                        :after => :hosts
+        menu :top_menu,
+          :wreckingball_status_dashboard,
+          url_hash: { controller: :'foreman_wreckingball/hosts', action: :status_dashboard },
+          caption: N_('VMware Status'),
+          parent: :hosts_menu,
+          after: :hosts
 
         WRECKINGBALL_STATUSES.each { |status| register_custom_status(status.constantize) }
 
-        menu :top_menu, :wreckingball_status_managed_hosts_dashboard, url_hash: { :controller => :'foreman_wreckingball/hosts', :action => :status_managed_hosts_dashboard },
-                                                                      caption: N_('VMware Managed Status'),
-                                                                      parent: :monitor_menu,
-                                                                      after: :audits
+        menu :top_menu,
+          :wreckingball_status_managed_hosts_dashboard,
+          url_hash: { controller: :'foreman_wreckingball/hosts', action: :status_managed_hosts_dashboard },
+          caption: N_('VMware Managed Status'),
+          parent: :monitor_menu,
+          after: :audits
 
         register_facet(ForemanWreckingball::VmwareFacet, :vmware_facet)
 
@@ -93,9 +97,9 @@ module ForemanWreckingball
         # extend host show page
         extend_page('compute_resources/show') do |context|
           context.add_pagelet :main_tabs,
-                              :name => N_('Hypervisors'),
-                              :partial => 'compute_resources/hypervisors_tab',
-                              :onlyif => proc { |cr| cr.provider_friendly_name == 'VMware' && cr.vmware_hypervisor_facets.any? }
+            name: N_('Hypervisors'),
+            partial: 'compute_resources/hypervisors_tab',
+            onlyif: proc { |cr| cr.provider_friendly_name == 'VMware' && cr.vmware_hypervisor_facets.any? }
         end
 
         # add custom logger
@@ -103,7 +107,7 @@ module ForemanWreckingball
       end
     end
 
-    initializer 'foreman_wreckingball.dynflow_world', :before => 'foreman_tasks.initialize_dynflow' do |_app|
+    initializer 'foreman_wreckingball.dynflow_world', before: 'foreman_tasks.initialize_dynflow' do |_app|
       ::ForemanTasks.dynflow.require!
     end
 
@@ -111,20 +115,20 @@ module ForemanWreckingball
     config.to_prepare do
       ::HostStatus.extend(ForemanWreckingball::HostStatusExtensions)
 
-      ::ComputeResource.send(:include, ForemanWreckingball::ComputeResourceExtensions)
-      ::Foreman::Model::Vmware.send(:include, ForemanWreckingball::VmwareExtensions)
-      ::Host::Managed.send(:include, ForemanWreckingball::HostExtensions)
-      ::Host::Managed.send(:include, ForemanWreckingball::VmwareFacetHostExtensions)
-      ::Host::Managed.send(:include, ForemanWreckingball::VmwareHypervisorFacetHostExtensions)
-      ::HostsHelper.send(:include, ForemanWreckingball::HostsHelperExtensions)
-      ::User.send(:include, ForemanWreckingball::UserExtensions)
-      ::Usergroup.send(:include, ForemanWreckingball::UsergroupExtensions)
+      ::ComputeResource.include(ForemanWreckingball::ComputeResourceExtensions)
+      ::Foreman::Model::Vmware.include(ForemanWreckingball::VmwareExtensions)
+      ::Host::Managed.include(ForemanWreckingball::HostExtensions)
+      ::Host::Managed.include(ForemanWreckingball::VmwareFacetHostExtensions)
+      ::Host::Managed.include(ForemanWreckingball::VmwareHypervisorFacetHostExtensions)
+      ::HostsHelper.include(ForemanWreckingball::HostsHelperExtensions)
+      ::User.include(ForemanWreckingball::UserExtensions)
+      ::Usergroup.include(ForemanWreckingball::UsergroupExtensions)
 
       if ForemanWreckingball.fog_patches_required?
-        ForemanWreckingball.fog_vsphere_namespace::Host.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Host)
-        ForemanWreckingball.fog_vsphere_namespace::Server.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Server)
-        ForemanWreckingball.fog_vsphere_namespace::Real.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Real)
-        ForemanWreckingball.fog_vsphere_namespace::Mock.send(:include, FogExtensions::ForemanWreckingball::Vsphere::Mock)
+        ForemanWreckingball.fog_vsphere_namespace::Host.include(FogExtensions::ForemanWreckingball::Vsphere::Host)
+        ForemanWreckingball.fog_vsphere_namespace::Server.include(FogExtensions::ForemanWreckingball::Vsphere::Server)
+        ForemanWreckingball.fog_vsphere_namespace::Real.include(FogExtensions::ForemanWreckingball::Vsphere::Real)
+        ForemanWreckingball.fog_vsphere_namespace::Mock.include(FogExtensions::ForemanWreckingball::Vsphere::Mock)
       end
     rescue StandardError => e
       Rails.logger.warn "ForemanWreckingball: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"

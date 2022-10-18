@@ -27,7 +27,7 @@ module Actions
             action.stubs(:action_subject).returns(compute_resource)
             action.input.update(
               compute_resource: {
-                id: compute_resource.id
+                id: compute_resource.id,
               }
             )
           end
@@ -41,7 +41,7 @@ module Actions
           test 'syncs a compute resource' do
             assert ::ForemanWreckingball::VmwareCluster.count.zero?
             assert_equal :success, runned_action.state
-            refute ::ForemanWreckingball::VmwareCluster.count.zero?
+            assert_not ::ForemanWreckingball::VmwareCluster.count.zero?
           end
         end
       end

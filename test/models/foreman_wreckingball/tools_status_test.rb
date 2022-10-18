@@ -23,12 +23,12 @@ module ForemanWreckingball
       assert status.relevant?
 
       host.build = true
-      refute status.relevant?
+      assert_not status.relevant?
     end
 
     test '#relevant is only for hosts with a vmware facet' do
       h = FactoryBot.build(:host, :managed)
-      refute ForemanWreckingball::ToolsStatus.new(host: h).relevant?
+      assert_not ForemanWreckingball::ToolsStatus.new(host: h).relevant?
     end
 
     describe 'status calculation' do

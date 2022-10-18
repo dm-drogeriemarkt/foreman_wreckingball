@@ -63,6 +63,7 @@ module ForemanWreckingball
       host&.vmware_facet
     end
 
+    # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def os_matches_identifier?
       guest_id = host.vmware_facet.guest_id
       vsphere_os = VsphereOsIdentifiers.lookup(guest_id)
@@ -75,5 +76,6 @@ module ForemanWreckingball
       return false if vsphere_os.release && ![vsphere_os.release].flatten.include?(host.facts['os::release::full'])
       true
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   end
 end

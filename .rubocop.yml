@@ -1,84 +1,19 @@
-AllCops:
-  TargetRubyVersion: 2.5
-  TargetRailsVersion: 5.1
-  Exclude:
-    - '*.spec'
-    - 'Rakefile'
-    - 'app/lib/fog_extensions/**/*'
+inherit_gem:
+  theforeman-rubocop:
+    - default.yml
 
-Rails:
-  Enabled: true
-
-# Don't enforce documentation
-Style/Documentation:
-  Enabled: false
-
-Metrics/MethodLength:
-  Max: 40
-
-Metrics/LineLength:
-  Max: 190
-
-Style/WordArray:
-  Enabled: false
-
-Style/SymbolArray:
-  Enabled: false
-
-Style/RegexpLiteral:
-  Enabled: false
-
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Lint/BooleanSymbol:
-  Enabled: false
-
-Style/MultilineBlockChain:
-  Enabled: false
-
-# Support both ruby19 and hash_rockets
-Style/HashSyntax:
-  EnforcedStyle: no_mixed_keys
-
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/CyclomaticComplexity:
-  Enabled: false
-
-Metrics/PerceivedComplexity:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
-
-Naming/AccessorMethodName:
-  Enabled: false
-
-Performance/FixedSize:
+Layout/LineLength:
   Exclude:
     - 'test/**/*'
 
 Metrics/BlockLength:
-  Max: 35
   Exclude:
-    - 'test/**/*'
     - 'lib/foreman_wreckingball/engine.rb'
+    - 'test/**/*'
 
 Metrics/ClassLength:
-  Max: 200
   Exclude:
+    - 'app/controllers/foreman_wreckingball/hosts_controller.rb'
+    - 'app/services/foreman_wreckingball/vmware_hypervisor_importer.rb'
+    - 'lib/foreman_wreckingball/engine.rb'
     - 'test/**/*'
-
-Lint/AmbiguousBlockAssociation:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'test/**/*'
-    - 'app/controllers/concerns/foreman/**/*'
-
-Style/SignalException:
-  Exclude:
-    - 'app/lib/actions/**/*'

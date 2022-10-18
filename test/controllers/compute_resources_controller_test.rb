@@ -11,9 +11,9 @@ class ComputeResourcesControllerTest < ActionController::TestCase
       skip if Gem::Version.new(Foreman::Version.new.to_s) < Gem::Version.new('1.19.0')
       FactoryBot.create_list(:vmware_hypervisor_facet, 5, vmware_cluster: vmware_cluster)
 
-      get :show, params: { :id => compute_resource.to_param }, session: set_session_user
+      get :show, params: { id: compute_resource.to_param }, session: set_session_user
       assert_response :success
-      assert @response.body.match(/Hypervisors/)
+      assert_match @response.body, /Hypervisors/
     end
   end
 end

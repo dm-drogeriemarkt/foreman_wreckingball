@@ -43,8 +43,8 @@ module ForemanWreckingball
           let(:search) { "owner = current_user or (owner_type = Usergroup and owner_id = #{user.usergroups.first.id}) or hostgroup_id = #{hostgroup.id} or name ~ #{host_name_prefix}" }
           let(:filter) do
             FactoryBot.create(:filter,
-                              search: search,
-                              permissions: Permission.where(name: 'view_hosts'))
+              search: search,
+              permissions: Permission.where(name: 'view_hosts'))
           end
           let(:role) { FactoryBot.create(:role) }
           let(:user) { FactoryBot.create(:user, :with_mail, :with_usergroup, admin: false, roles: [role]) }
@@ -127,7 +127,7 @@ module ForemanWreckingball
 
       test 'should filter host with vm' do
         get :status_managed_hosts_dashboard, session: set_session_user
-        refute_includes assigns[:missing_hosts], @managed_host
+        assert_not_includes assigns[:missing_hosts], @managed_host
       end
     end
 
@@ -136,8 +136,9 @@ module ForemanWreckingball
         FactoryBot.create_list(:vmware_hardware_version_status, 3, :with_ok_status)
         FactoryBot.create_list(:vmware_hardware_version_status, 4, :with_out_of_date_status)
 
-        get :status_hosts, params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
-                           session: set_session_user, xhr: true
+        get :status_hosts,
+          params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
+          session: set_session_user, xhr: true
 
         assert_response :ok
         json = JSON.parse(response.body)
@@ -150,8 +151,9 @@ module ForemanWreckingball
         ok_status = FactoryBot.create(:vmware_hardware_version_status, :with_ok_status)
         out_of_date_status = FactoryBot.create(:vmware_hardware_version_status, :with_out_of_date_status)
 
-        get :status_hosts, params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
-                           session: set_session_user, xhr: true
+        get :status_hosts,
+          params: { status: ::ForemanWreckingball::HardwareVersionStatus.host_association },
+          session: set_session_user, xhr: true
 
         assert_response :ok
 
@@ -160,15 +162,16 @@ module ForemanWreckingball
         hosts_names = data.map { |host| host['name'] }
         assert_equal 1, data.size
         assert_includes hosts_names, out_of_date_status.host.name
-        refute_includes hosts_names, ok_status.host.name
+        assert_not_includes hosts_names, ok_status.host.name
       end
 
       test 'returns hosts for spectre v2 status' do
         FactoryBot.create_list(:vmware_spectre_v2_status, 1, :with_enabled)
         FactoryBot.create_list(:vmware_spectre_v2_status, 2, :with_missing)
 
-        get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
-                           session: set_session_user, xhr: true
+        get :status_hosts,
+          params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
+          session: set_session_user, xhr: true
 
         data = JSON.parse(response.body)['data']
         assert_equal 2, data.size
@@ -183,14 +186,16 @@ module ForemanWreckingball
         end
 
         test 'should show all hosts' do
-          get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
-                             session: set_session_user, xhr: true
+          get :status_hosts,
+            params: { status: ::ForemanWreckingball::SpectreV2Status.host_association },
+            session: set_session_user, xhr: true
           assert_equal 4, JSON.parse(response.body)['data'].count
         end
 
         test 'should show only owned hosts' do
-          get :status_hosts, params: { status: ::ForemanWreckingball::SpectreV2Status.host_association, owned_only: true },
-                             session: set_session_user, xhr: true
+          get :status_hosts,
+            params: { status: ::ForemanWreckingball::SpectreV2Status.host_association, owned_only: true },
+            session: set_session_user, xhr: true
           assert_equal 2, JSON.parse(response.body)['data'].count
         end
       end

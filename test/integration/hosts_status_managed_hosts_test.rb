@@ -32,7 +32,7 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
 
     list = page.find('#missing_vms')
     assert_includes list.text, missing_host.name
-    refute_includes list.text, managed_host.name
+    assert_not_includes list.text, managed_host.name
   end
 
   test 'shows hosts associated to wrong compute resource' do
@@ -61,7 +61,7 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     visit status_managed_hosts_dashboard_hosts_path
 
     list = page.find('#wrong_hosts')
-    refute_includes list.text, correct_host.name
+    assert_not_includes list.text, correct_host.name
     assert_includes list.text, incorrect_host.name
   end
 
@@ -97,8 +97,8 @@ class HostsStatusManagedHostsTest < ActionDispatch::IntegrationTest
     visit status_managed_hosts_dashboard_hosts_path
 
     list = page.find('#more_than_one_hosts')
-    refute_includes list.text, managed1_host.name
+    assert_not_includes list.text, managed1_host.name
     assert_includes list.text, managed2_host.name
-    refute_includes list.text, managed3_host.name
+    assert_not_includes list.text, managed3_host.name
   end
 end

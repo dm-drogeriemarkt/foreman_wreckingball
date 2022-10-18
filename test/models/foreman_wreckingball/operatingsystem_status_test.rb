@@ -38,7 +38,7 @@ module ForemanWreckingball
 
     test '#relevant is only for hosts with a vmware facet' do
       h = FactoryBot.build(:host, :managed)
-      refute ForemanWreckingball::ToolsStatus.new(host: h).relevant?
+      assert_not ForemanWreckingball::ToolsStatus.new(host: h).relevant?
       assert status.relevant?
     end
 
@@ -81,12 +81,12 @@ module ForemanWreckingball
     describe '#os_matches_identifier?' do
       test 'when architecture does not match' do
         host.architecture = architectures(:sparc)
-        refute status.os_matches_identifier?
+        assert_not status.os_matches_identifier?
       end
 
       test 'when operatingsystem does not match' do
         host.operatingsystem = operatingsystems(:ubuntu1210)
-        refute status.os_matches_identifier?
+        assert_not status.os_matches_identifier?
       end
 
       test 'when architecture, osfamily, name and major match' do

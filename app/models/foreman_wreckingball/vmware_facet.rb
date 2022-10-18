@@ -4,23 +4,25 @@ module ForemanWreckingball
   class VmwareFacet < ApplicationRecord
     include Facets::Base
 
-    VALID_GUEST_STATUSES = [:toolsNotInstalled, :toolsNotRunning, :toolsOk, :toolsOld].freeze
+    VALID_GUEST_STATUSES = %i[toolsNotInstalled toolsNotRunning toolsOk toolsOld].freeze
 
-    enum :tools_state => VALID_GUEST_STATUSES
+    enum tools_state: VALID_GUEST_STATUSES
 
-    VALID_POWER_STATES = [:poweredOff, :poweredOn, :suspended].freeze
-    enum :power_state => VALID_POWER_STATES
+    VALID_POWER_STATES = %i[poweredOff poweredOn suspended].freeze
+    enum power_state: VALID_POWER_STATES
 
-    belongs_to :vmware_cluster, :class_name => '::ForemanWreckingball::VmwareCluster',
-                                :inverse_of => :vmware_facets
+    belongs_to :vmware_cluster,
+      class_name: '::ForemanWreckingball::VmwareCluster',
+      inverse_of: :vmware_facets
 
-    has_many :vmware_hypervisor_facets, :class_name => '::ForemanWreckingball::VmwareHypervisorFacet',
-                                        :through => :vmware_cluster,
-                                        :inverse_of => :vmware_facets
+    has_many :vmware_hypervisor_facets,
+      class_name: '::ForemanWreckingball::VmwareHypervisorFacet',
+      through: :vmware_cluster,
+      inverse_of: :vmware_facets
 
     validates_lengths_from_database
 
-    validates :host, :presence => true, :allow_blank => false
+    validates :host, presence: true, allow_blank: false
 
     serialize :cpu_features, JSON
 
@@ -37,11 +39,14 @@ module ForemanWreckingball
       end
     end
 
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     def refresh!
       vm = host.compute_object
       return unless vm
       data_for_update = {
-        vmware_cluster: ::ForemanWreckingball::VmwareCluster.find_by(name: vm.cluster, compute_resource: host.compute_resource),
+        vmware_cluster: ::ForemanWreckingball::VmwareCluster.find_by(
+          name: vm.cluster, compute_resource: host.compute_resource
+        ),
         cpus: vm.cpus,
         corespersocket: vm.corespersocket,
         memory_mb: vm.memory_mb,
@@ -50,11 +55,12 @@ module ForemanWreckingball
         guest_id: vm.guest_id,
         cpu_hot_add: vm.cpuHotAddEnabled,
         hardware_version: vm.hardware_version,
-        cpu_features: []
+        cpu_features: [],
       }
       data_for_update[:cpu_features] = raw_vm_object.runtime.featureRequirement.map(&:key) if vm.ready?
       update(data_for_update)
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def refresh_statuses
       ::HostStatus.wreckingball_statuses.each { |status| host.get_status(status).refresh! }

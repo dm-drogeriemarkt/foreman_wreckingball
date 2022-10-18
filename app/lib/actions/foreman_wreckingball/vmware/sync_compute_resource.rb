@@ -14,11 +14,11 @@ module Actions
         def run
           compute_resource = ComputeResource.find(input[:compute_resource][:id])
           ::ForemanWreckingball::VmwareClusterImporter.new(
-            :compute_resource => compute_resource
+            compute_resource: compute_resource
           ).import!
 
           ::ForemanWreckingball::VmwareHypervisorImporter.new(
-            :compute_resource => compute_resource.reload
+            compute_resource: compute_resource.reload
           ).import!
 
           compute_resource.hosts.each(&:refresh_vmware_facet!)

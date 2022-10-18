@@ -16,6 +16,7 @@ module Actions
           plan_self
         end
 
+        # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
         def run
           host = ::Host.find(input[:host][:id])
 
@@ -29,7 +30,7 @@ module Actions
           if initially_powered_on
             vm.stop
             vm.wait_for { power_state == 'poweredOff' }
-            fail _('Could not shut down VM.') if vm.ready?
+            raise _('Could not shut down VM.') if vm.ready?
           end
 
           vm.vm_upgrade_hardware
@@ -40,6 +41,7 @@ module Actions
         ensure
           vm.start if vm && initially_powered_on
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def humanized_name
           _('Upgrade VM Hardware Version')
