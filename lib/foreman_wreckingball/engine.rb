@@ -18,7 +18,6 @@ module ForemanWreckingball
     config.autoload_paths += Dir["#{config.root}/app/lib"]
     config.autoload_paths += Dir["#{config.root}/app/services"]
     config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
-    config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
 
     initializer 'foreman_wreckingball.register_paths' do |_app|
       ::ForemanTasks.dynflow.config.eager_load_paths.concat(%W[#{ForemanWreckingball::Engine.root}/app/lib/actions])
@@ -120,7 +119,6 @@ module ForemanWreckingball
       ::Host::Managed.include(ForemanWreckingball::HostExtensions)
       ::Host::Managed.include(ForemanWreckingball::VmwareFacetHostExtensions)
       ::Host::Managed.include(ForemanWreckingball::VmwareHypervisorFacetHostExtensions)
-      ::HostsHelper.include(ForemanWreckingball::HostsHelperExtensions)
       ::User.include(ForemanWreckingball::UserExtensions)
       ::Usergroup.include(ForemanWreckingball::UsergroupExtensions)
 
