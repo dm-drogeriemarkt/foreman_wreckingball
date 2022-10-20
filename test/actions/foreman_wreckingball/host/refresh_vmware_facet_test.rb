@@ -13,11 +13,11 @@ module Actions
 
         setup do
           ::Fog.mock!
-          ::ForemanWreckingball.fog_vsphere_namespace::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:ready?).returns(false)
+          Fog::Vsphere::Compute::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:ready?).returns(false)
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           # this is not stubbed correctly in fog-vsphere
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
         end
         teardown { ::Fog.unmock! }
 

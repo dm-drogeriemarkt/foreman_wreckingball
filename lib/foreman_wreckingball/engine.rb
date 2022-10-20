@@ -123,10 +123,10 @@ module ForemanWreckingball
       ::Usergroup.include(ForemanWreckingball::UsergroupExtensions)
 
       if ForemanWreckingball.fog_patches_required?
-        ForemanWreckingball.fog_vsphere_namespace::Host.include(FogExtensions::ForemanWreckingball::Vsphere::Host)
-        ForemanWreckingball.fog_vsphere_namespace::Server.include(FogExtensions::ForemanWreckingball::Vsphere::Server)
-        ForemanWreckingball.fog_vsphere_namespace::Real.include(FogExtensions::ForemanWreckingball::Vsphere::Real)
-        ForemanWreckingball.fog_vsphere_namespace::Mock.include(FogExtensions::ForemanWreckingball::Vsphere::Mock)
+        Fog::Vsphere::Compute::Host.include(FogExtensions::ForemanWreckingball::Vsphere::Host)
+        Fog::Vsphere::Compute::Server.include(FogExtensions::ForemanWreckingball::Vsphere::Server)
+        Fog::Vsphere::Compute::Real.include(FogExtensions::ForemanWreckingball::Vsphere::Real)
+        Fog::Vsphere::Compute::Mock.include(FogExtensions::ForemanWreckingball::Vsphere::Mock)
       end
     rescue StandardError => e
       Rails.logger.warn "ForemanWreckingball: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
@@ -144,17 +144,9 @@ module ForemanWreckingball
     require 'fog/vsphere'
     require 'fog/vsphere/compute'
     require 'fog/vsphere/models/compute/host'
+    require 'fog/vsphere/models/compute/server'
     true
   rescue LoadError
     false
-  end
-
-  def self.fog_vsphere_namespace
-    require 'fog/vsphere/version'
-    @fog_vsphere_namespace ||= if Gem::Version.new(Fog::Vsphere::VERSION) >= Gem::Version.new('3.0.0')
-                                 Fog::Vsphere::Compute
-                               else
-                                 Fog::Compute::Vsphere
-                               end
   end
 end

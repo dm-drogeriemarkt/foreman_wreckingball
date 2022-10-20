@@ -10,8 +10,8 @@ module Actions
         setup do
           ::Fog.mock!
           # this is not stubbed correctly in fog-vsphere
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:hardware_version).returns('vmx-13')
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:hardware_version).returns('vmx-13')
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           ::PowerManager::Virt.any_instance.stubs(:ready?).returns(true)
         end

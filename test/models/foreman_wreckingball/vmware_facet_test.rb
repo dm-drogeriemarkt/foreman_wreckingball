@@ -62,12 +62,12 @@ module ForemanWreckingball
 
       setup do
         ::Fog.mock!
-        ::ForemanWreckingball.fog_vsphere_namespace::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
+        Fog::Vsphere::Compute::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
         # this is not stubbed correctly in fog-vsphere
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:hardware_version).returns('vmx-9')
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:corespersocket).returns(1)
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:power_state).returns('poweredOn')
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:hardware_version).returns('vmx-9')
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:corespersocket).returns(1)
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:power_state).returns('poweredOn')
       end
       teardown { ::Fog.unmock! }
 
