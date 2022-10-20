@@ -13,7 +13,7 @@ class ComputeResourcesControllerTest < ActionController::TestCase
 
       get :show, params: { id: compute_resource.to_param }, session: set_session_user
       assert_response :success
-      assert_match @response.body, /Hypervisors/
+      assert_includes @response.body, 'Hypervisors'
     end
   end
 end
