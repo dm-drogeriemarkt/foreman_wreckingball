@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :vmware_facet, class: 'ForemanWreckingball::VmwareFacet' do
     vmware_cluster
-    tools_state { 2 } #:toolsOk
-    power_state { 1 } #:poweredOn
+    tools_state { 2 } # :toolsOk
+    power_state { 1 } # :poweredOn
     cpus { 2 }
     corespersocket { 1 }
     memory_mb { 8192 }
@@ -32,7 +32,7 @@ FactoryBot.define do
         'cpuid.NX',
         'cpuid.RDTSCP',
         'cpuid.LM',
-        'cpuid.Intel'
+        'cpuid.Intel',
       ]
     end
     host
@@ -127,14 +127,14 @@ FactoryBot.define do
         'vpmc.numFixedCtrs',
         'vpmc.numGenCtrs',
         'vpmc.version',
-        'vt.realmode'
+        'vt.realmode',
       ]
     end
   end
 
   factory :vmware_cluster, class: 'ForemanWreckingball::VmwareCluster' do
     sequence(:name) { |n| "Cluster #{n}" }
-    association :compute_resource, factory: [:compute_resource, :vmware]
+    association :compute_resource, factory: %i[compute_resource vmware]
 
     trait(:with_hosts) do
       after(:create) do |vmware_cluster|
@@ -156,25 +156,25 @@ FactoryBot.define do
   end
 
   factory :vmware_tools_status, class: 'ForemanWreckingball::ToolsStatus' do
-    association :host, factory: [:host, :with_vmware_facet]
+    association :host, factory: %i[host with_vmware_facet]
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
   end
 
   factory :vmware_operatingsystem_status, class: 'ForemanWreckingball::OperatingsystemStatus' do
-    association :host, factory: [:host, :with_vmware_facet]
+    association :host, factory: %i[host with_vmware_facet]
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
   end
 
   factory :vmware_cpu_hot_add_status, class: 'ForemanWreckingball::CpuHotAddStatus' do
-    association :host, factory: [:host, :with_vmware_facet]
+    association :host, factory: %i[host with_vmware_facet]
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
   end
 
   factory :vmware_spectre_v2_status, class: 'ForemanWreckingball::SpectreV2Status' do
-    association :host, factory: [:host, :with_vmware_facet]
+    association :host, factory: %i[host with_vmware_facet]
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
 
@@ -188,7 +188,7 @@ FactoryBot.define do
   end
 
   factory :vmware_hardware_version_status, class: 'ForemanWreckingball::HardwareVersionStatus' do
-    association :host, factory: [:host, :with_vmware_facet]
+    association :host, factory: %i[host with_vmware_facet]
     reported_at { Time.now.utc }
     after(:build) { |status| status.status = status.to_status }
 

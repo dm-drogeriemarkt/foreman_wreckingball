@@ -12,7 +12,6 @@ module Actions
       let(:action) { create_action(action_class) }
 
       setup do
-        Setting::Wreckingball.load_defaults
         FactoryBot.create_list(:host, 2, :managed, :with_wreckingball_statuses)
       end
 

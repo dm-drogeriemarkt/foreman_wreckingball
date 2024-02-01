@@ -20,22 +20,22 @@ module ForemanWreckingball
 
       test 'should be true when IBRS is available' do
         facet.feature_capabilities = ['cpuid.IBRS']
-        assert_equal true, facet.provides_spectre_features?
+        assert facet.provides_spectre_features?
       end
 
       test 'should be true when IBPB is available' do
         facet.feature_capabilities = ['cpuid.IBPB']
-        assert_equal true, facet.provides_spectre_features?
+        assert facet.provides_spectre_features?
       end
 
       test 'should be true when STIBP is available' do
         facet.feature_capabilities = ['cpuid.STIBP']
-        assert_equal true, facet.provides_spectre_features?
+        assert facet.provides_spectre_features?
       end
 
       test 'should be false when neither IBRS, IBPB nor STIBP is available' do
         facet.feature_capabilities = ['cpuid.WHATEVER']
-        assert_equal false, facet.provides_spectre_features?
+        assert_not facet.provides_spectre_features?
       end
     end
   end

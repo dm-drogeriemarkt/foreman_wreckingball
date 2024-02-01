@@ -10,15 +10,14 @@ module Actions
         setup do
           ::Fog.mock!
           # this is not stubbed correctly in fog-vsphere
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           ::PowerManager::Virt.any_instance.stubs(:ready?).returns(true)
-          Setting::Wreckingball.load_defaults
         end
         teardown { ::Fog.unmock! }
 
         let(:compute_resource) do
-          cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, :uuid => 'Solutions')
+          cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, uuid: 'Solutions')
           ComputeResource.find(cr.id)
         end
         let(:uuid) { '5032c8a5-9c5e-ba7a-3804-832a03e16381' }
@@ -45,7 +44,7 @@ module Actions
             compute_resource: compute_resource,
             uuid: uuid
           ).tap do |host|
-            host.vmware_facet.update_attribute(:guest_id, 'asianux4_64Guest')
+            host.vmware_facet.update_attribute(:guest_id, 'asianux4_64Guest') # rubocop:disable Rails/SkipsModelValidations
           end
         end
 
@@ -55,7 +54,7 @@ module Actions
             action.stubs(:action_subject).returns(host)
             action.input.update(
               host: {
-                id: host.id
+                id: host.id,
               }
             )
           end
@@ -69,8 +68,8 @@ module Actions
           assert_equal :success, runned_action.state
           assert_equal 'asianux4_64Guest', runned_action.output.fetch('old_operatingsystem_id')
           assert_equal 'rhel6_64Guest', runned_action.output.fetch('new_operatingsytem_id')
-          assert_equal true, runned_action.output.fetch('state')
-          assert_equal true, runned_action.output.fetch('initially_powered_on')
+          assert runned_action.output.fetch('state')
+          assert runned_action.output.fetch('initially_powered_on')
           assert_equal 'rhel6_64Guest', host.reload.vmware_facet.guest_id
         end
       end

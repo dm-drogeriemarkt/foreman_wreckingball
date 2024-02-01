@@ -8,7 +8,9 @@ module ForemanWreckingball
 
     validates :host, presence: true, allow_blank: false
 
-    belongs_to :vmware_cluster, inverse_of: :vmware_hypervisor_facets, class_name: '::ForemanWreckingball::VmwareCluster'
+    belongs_to :vmware_cluster,
+      inverse_of: :vmware_hypervisor_facets,
+      class_name: '::ForemanWreckingball::VmwareCluster'
     has_one :compute_resource, inverse_of: :vmware_hypervisor_facets, through: :vmware_cluster
     has_many :vmware_facets, inverse_of: :vmware_hypervisor_facets, through: :vmware_cluster
 

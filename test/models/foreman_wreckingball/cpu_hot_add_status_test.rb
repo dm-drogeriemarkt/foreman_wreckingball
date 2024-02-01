@@ -51,11 +51,11 @@ module ForemanWreckingball
         end
 
         test 'status is not relevant' do
-          refute status.relevant?
+          assert_not status.relevant?
         end
 
         test 'no performance degration is indicated' do
-          refute status.performance_degration?
+          assert_not status.performance_degration?
         end
       end
 

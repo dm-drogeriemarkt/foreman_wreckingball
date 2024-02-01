@@ -19,12 +19,12 @@ module ForemanWreckingball
       let(:vmware_facet) { host.vmware_facet }
 
       test 'is true when vm is powered on' do
-        assert_equal true, vmware_facet.vm_ready?
+        assert vmware_facet.vm_ready?
       end
 
       test 'is false when vm is not powered on' do
         vmware_facet.power_state = 'suspended'
-        assert_equal false, vmware_facet.vm_ready?
+        assert_not vmware_facet.vm_ready?
       end
     end
 
@@ -36,7 +36,7 @@ module ForemanWreckingball
             featureRequirement: [
               'cpuid.SSE3',
               'cpuid.AES',
-              'cpuid.Intel'
+              'cpuid.Intel',
             ].map do |cpu_feature|
               OpenStruct.new(key: cpu_feature)
             end
@@ -45,7 +45,7 @@ module ForemanWreckingball
       end
 
       let(:compute_resource) do
-        cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, :uuid => 'Solutions')
+        cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, uuid: 'Solutions')
         ComputeResource.find(cr.id)
       end
 
@@ -62,12 +62,12 @@ module ForemanWreckingball
 
       setup do
         ::Fog.mock!
-        ::ForemanWreckingball.fog_vsphere_namespace::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
+        Fog::Vsphere::Compute::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
         # this is not stubbed correctly in fog-vsphere
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:hardware_version).returns('vmx-9')
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:corespersocket).returns(1)
-        ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:power_state).returns('poweredOn')
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:hardware_version).returns('vmx-9')
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:corespersocket).returns(1)
+        Fog::Vsphere::Compute::Server.any_instance.stubs(:power_state).returns('poweredOn')
       end
       teardown { ::Fog.unmock! }
 
@@ -79,7 +79,7 @@ module ForemanWreckingball
         assert_equal 'rhel6_64Guest', vmware_facet.guest_id
         assert_equal 'toolsOk', vmware_facet.tools_state
         assert_equal 'poweredOn', vmware_facet.power_state
-        assert_equal false, vmware_facet.cpu_hot_add
+        assert_not vmware_facet.cpu_hot_add
         assert_equal ['cpuid.SSE3', 'cpuid.AES', 'cpuid.Intel'], vmware_facet.cpu_features
         assert_equal 'vmx-9', vmware_facet.hardware_version
       end

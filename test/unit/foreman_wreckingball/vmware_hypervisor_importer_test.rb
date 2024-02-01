@@ -44,7 +44,7 @@ module ForemanWreckingball
 
       test 'imports hypervisors' do
         importer.import!
-        host = Host::Managed.joins(:vmware_hypervisor_facet).find_by(:name => 'host1.example.com')
+        host = Host::Managed.joins(:vmware_hypervisor_facet).find_by(name: 'host1.example.com')
 
         # Test host attributes are set correctly
         assert_equal 'example.com', host.domain.name
@@ -76,7 +76,7 @@ module ForemanWreckingball
 
       test 'does not touch hosts created by katello/virt-who' do
         host = FactoryBot.create(:host,  organization: organization)
-        host.update!(:name => "virt-who-host1.example.com-#{organization.id}")
+        host.update!(name: "virt-who-host1.example.com-#{organization.id}")
         importer.import!
         assert_equal "virt-who-host1.example.com-#{organization.id}", host.reload.name
       end

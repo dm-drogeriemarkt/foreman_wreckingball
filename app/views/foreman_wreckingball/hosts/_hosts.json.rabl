@@ -22,7 +22,7 @@ node(:status) do |host|
     id: status.id,
     label: status.to_label,
     icon_class: host_global_status_icon_class(status.to_global),
-    status_class: host_global_status_class(status.to_global)
+    status_class: host_global_status_class(status.to_global),
   }
 end
 
@@ -32,6 +32,6 @@ end) do
   {
     label: _('Remediate'),
     title: _('Remediate Host OS'),
-    path: schedule_remediate_hosts_path
+    path: schedule_remediate_hosts_path,
   }
 end

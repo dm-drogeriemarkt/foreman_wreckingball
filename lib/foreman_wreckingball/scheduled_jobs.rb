@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # First, we check if there's a job already enqueued
-pending_jobs = ::Foreman::Application.dynflow.world.persistence.find_execution_plans(filters: { :state => 'scheduled' })
+pending_jobs = ::Foreman::Application.dynflow.world.persistence.find_execution_plans(filters: { state: 'scheduled' })
 scheduled_job = pending_jobs.select do |job|
   delayed_plan = ::Foreman::Application.dynflow.world.persistence.load_delayed_plan(job.id)
   next if delayed_plan.blank?

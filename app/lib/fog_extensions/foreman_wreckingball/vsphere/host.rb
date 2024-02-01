@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FogExtensions
   module ForemanWreckingball
     module Vsphere

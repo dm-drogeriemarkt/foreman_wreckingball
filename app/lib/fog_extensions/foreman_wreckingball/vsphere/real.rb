@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FogExtensions
   module ForemanWreckingball
     module Vsphere
@@ -12,7 +14,10 @@ module FogExtensions
           end
 
           def list_hosts(filters = {})
-            super.map { |h| h[:feature_capabilities] = h[:feature_capabilities].map(&:key); h }
+            super.map do |h|
+              h[:feature_capabilities] = h[:feature_capabilities].map(&:key)
+              h
+            end
           end
         end
 
@@ -20,7 +25,7 @@ module FogExtensions
           prepend Overrides
         end
 
-        def vm_upgrade_hardware(version: nil, instance_uuid:)
+        def vm_upgrade_hardware(instance_uuid:, version: nil)
           vm_mob_ref = get_vm_ref(instance_uuid)
           task = vm_mob_ref.UpgradeVM_Task(version: version)
           task.wait_for_completion

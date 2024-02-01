@@ -16,6 +16,7 @@ module Actions
           plan_self
         end
 
+        # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
         def run
           host = ::Host.find(input[:host][:id])
 
@@ -27,7 +28,7 @@ module Actions
           if initially_powered_on
             vm.stop
             vm.wait_for { power_state == 'poweredOff' }
-            fail _('Could not shut down VM.') if vm.ready?
+            raise _('Could not shut down VM.') if vm.ready?
           end
 
           vm.start if vm && initially_powered_on
@@ -35,6 +36,7 @@ module Actions
           state = host.refresh_vmware_facet!
           output[:state] = state
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def humanized_name
           _('Power-Cycle VM')

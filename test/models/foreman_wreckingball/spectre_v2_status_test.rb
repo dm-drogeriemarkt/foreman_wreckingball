@@ -26,14 +26,14 @@ module ForemanWreckingball
 
     test '#relevant is only for hosts with a vmware facet' do
       h = FactoryBot.build(:host, :managed)
-      refute ForemanWreckingball::ToolsStatus.new(host: h).relevant?
+      assert_not ForemanWreckingball::ToolsStatus.new(host: h).relevant?
       assert status.relevant?
     end
 
     test '#relevant is for hosts with cpu features' do
       assert status.relevant?
       host.vmware_facet.cpu_features = []
-      refute status.relevant?
+      assert_not status.relevant?
     end
 
     describe 'status calculation' do
@@ -84,14 +84,14 @@ module ForemanWreckingball
 
       test 'is false when hw version is ancient' do
         host.vmware_facet.hardware_version = 'vmx-3'
-        refute status.recent_hw_version?
+        assert_not status.recent_hw_version?
       end
     end
 
     describe '#required_cpu_features_present?' do
       test 'is false when neither cpuid.IBRS, cpuid.IBPB nor cpuid.STIBP is present' do
         host.vmware_facet.cpu_features = ['cpuid.SSE42']
-        refute status.required_cpu_features_present?
+        assert_not status.required_cpu_features_present?
       end
 
       test 'is true when cpuid.IBRS is present' do

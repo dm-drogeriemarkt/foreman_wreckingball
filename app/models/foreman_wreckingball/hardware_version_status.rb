@@ -60,7 +60,7 @@ module ForemanWreckingball
     end
 
     def relevant?(_options = {})
-      host && host&.vmware_facet && host.vmware_facet.hardware_version.present?
+      host&.vmware_facet && host.vmware_facet.hardware_version.present?
     end
 
     def recent_hw_version?

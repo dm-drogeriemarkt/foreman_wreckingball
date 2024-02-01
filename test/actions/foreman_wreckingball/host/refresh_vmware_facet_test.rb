@@ -13,17 +13,16 @@ module Actions
 
         setup do
           ::Fog.mock!
-          ::ForemanWreckingball.fog_vsphere_namespace::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:ready?).returns(false)
+          Fog::Vsphere::Compute::Mock.any_instance.stubs(:get_vm_ref).returns(vm)
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:ready?).returns(false)
           ::ForemanWreckingball::SpectreV2Status.any_instance.stubs(:recent_hw_version?).returns(true)
           # this is not stubbed correctly in fog-vsphere
-          ::ForemanWreckingball.fog_vsphere_namespace::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
-          Setting::Wreckingball.load_defaults
+          Fog::Vsphere::Compute::Server.any_instance.stubs(:cpuHotAddEnabled).returns(false)
         end
         teardown { ::Fog.unmock! }
 
         let(:compute_resource) do
-          cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, :uuid => 'Solutions')
+          cr = FactoryBot.create(:compute_resource, :vmware, :with_taxonomy, uuid: 'Solutions')
           ComputeResource.find(cr.id)
         end
 
@@ -35,7 +34,7 @@ module Actions
             compute_resource: compute_resource,
             uuid: uuid
           ).tap do |host|
-            host.vmware_facet.update_attribute(:guest_id, 'asianux4_64Guest')
+            host.vmware_facet.update_attribute(:guest_id, 'asianux4_64Guest') # rubocop:disable Rails/SkipsModelValidations
           end
         end
 
@@ -45,7 +44,7 @@ module Actions
             action.stubs(:action_subject).returns(host)
             action.input.update(
               host: {
-                id: host.id
+                id: host.id,
               }
             )
           end

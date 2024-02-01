@@ -14,18 +14,21 @@ module ForemanWreckingball
         delete_removed_clusters
         create_new_clusters
       end
-      logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters")
+      logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters") # rubocop:disable Metrics/LineLength
     end
 
     def delete_removed_clusters
-      counters[:deleted] = ::ForemanWreckingball::VmwareCluster.where(compute_resource: compute_resource).where.not(name: cluster_names).destroy_all
+      counters[:deleted] =
+        ::ForemanWreckingball::VmwareCluster.where(compute_resource: compute_resource)
+                                            .where.not(name: cluster_names)
+                                            .destroy_all
     end
 
     def create_new_clusters
-      existing_clusters = ::ForemanWreckingball::VmwareCluster.where(:compute_resource => compute_resource).pluck(:name)
+      existing_clusters = ::ForemanWreckingball::VmwareCluster.where(compute_resource: compute_resource).pluck(:name)
       clusters_to_create = cluster_names - existing_clusters
       clusters_to_create.each do |cluster_name|
-        ::ForemanWreckingball::VmwareCluster.create(:name => cluster_name, :compute_resource => compute_resource)
+        ::ForemanWreckingball::VmwareCluster.create(name: cluster_name, compute_resource: compute_resource)
       end
       counters[:added] = clusters_to_create.size
     end

@@ -16,11 +16,12 @@ module Actions
           plan_self
         end
 
+        # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def run
           host = ::Host.find(input[:host][:id])
 
-          fail _('Foreman does not know the Architecture of this host.') unless host.architecture
-          fail _('Foreman does not know the Operatingsystem of this host.') unless host.operatingsystem
+          raise _('Foreman does not know the Architecture of this host.') unless host.architecture
+          raise _('Foreman does not know the Operatingsystem of this host.') unless host.operatingsystem
 
           initially_powered_on = host.power.ready?
           output[:initially_powered_on] = initially_powered_on
@@ -29,11 +30,11 @@ module Actions
           current_os = VsphereOsIdentifiers.lookup(current_os_id)
 
           selectors = {
-            :architecture => host.architecture.name,
-            :osfamily => host.operatingsystem.family,
-            :name => host.operatingsystem.name,
-            :major => host.operatingsystem.major.to_i,
-            :release => host.facts['os::release::full']
+            architecture: host.architecture.name,
+            osfamily: host.operatingsystem.family,
+            name: host.operatingsystem.name,
+            major: host.operatingsystem.major.to_i,
+            release: host.facts['os::release::full'],
           }
 
           desired_os = VsphereOsIdentifiers.find_by(selectors)
@@ -43,9 +44,11 @@ module Actions
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name))
           desired_os ||= VsphereOsIdentifiers.find_by(selectors.except(:major, :name, :release))
 
-          fail _('Could not auto detect desired operatingsystem.') unless desired_os
+          raise _('Could not auto detect desired operatingsystem.') unless desired_os
 
-          fail _('VMs current and desired OS (%s) already match. No update necessary.') % current_os.description if current_os == desired_os
+          if current_os == desired_os
+            raise _('VMs current and desired OS (%s) already match. No update necessary.') % current_os.description
+          end
 
           output[:old_operatingsystem] = current_os.description
           output[:old_operatingsystem_id] = current_os.id
@@ -57,7 +60,7 @@ module Actions
           if initially_powered_on
             vm.stop
             vm.wait_for { power_state == 'poweredOff' }
-            fail _('Could not shut down VM.') if vm.ready?
+            raise _('Could not shut down VM.') if vm.ready?
           end
 
           vm.vm_reconfig_hardware('guestId' => desired_os.id)
@@ -67,6 +70,7 @@ module Actions
         ensure
           vm.start if vm && initially_powered_on
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def humanized_name
           _('Correct VM Operatingsystem')

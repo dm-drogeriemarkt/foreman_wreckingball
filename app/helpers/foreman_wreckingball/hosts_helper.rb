@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ForemanWreckingball
-  module HostsHelperExtensions
+  module HostsHelper
     extend ActiveSupport::Concern
 
     def classes_for_vmware_status_row(counter)

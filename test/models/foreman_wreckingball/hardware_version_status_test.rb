@@ -6,7 +6,6 @@ module ForemanWreckingball
   class HardwareVersionStatusTest < ActiveSupport::TestCase
     setup do
       User.current = users(:admin)
-      Setting::Wreckingball.load_defaults
     end
 
     should belong_to(:host)
@@ -27,14 +26,14 @@ module ForemanWreckingball
 
     test '#relevant is only for hosts with a vmware facet' do
       h = FactoryBot.build(:host, :managed)
-      refute ForemanWreckingball::ToolsStatus.new(host: h).relevant?
+      assert_not ForemanWreckingball::ToolsStatus.new(host: h).relevant?
       assert status.relevant?
     end
 
     test '#relevant is for hosts with a hardware version' do
       assert status.relevant?
       host.vmware_facet.hardware_version = nil
-      refute status.relevant?
+      assert_not status.relevant?
     end
 
     describe 'status calculation' do
@@ -81,7 +80,7 @@ module ForemanWreckingball
 
       test 'is false when hw version is ancient' do
         status.host.vmware_facet.hardware_version = 'vmx-3'
-        refute status.recent_hw_version?
+        assert_not status.recent_hw_version?
       end
     end
   end
