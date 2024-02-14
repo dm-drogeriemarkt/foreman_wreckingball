@@ -13,11 +13,20 @@ Gem::Specification.new do |s|
   # also update locale/gemspec.rb
   s.description = 'Adds status checks of the VMWare VMs to Foreman.'
 
+  s.required_ruby_version = '>= 2.5', '< 4'
+
   s.files = Dir['{app,config,db,lib,locale}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'foreman_puppet'
-  s.add_dependency 'foreman-tasks', '>= 3.0.0'
+
+  case ENV['FOREMAN_VERSION']
+  when '3.7-stable', '3.8-stable'
+    s.add_dependency 'foreman-tasks', '>= 8.0.0', '< 9.0.0'
+  else
+    s.add_dependency 'foreman-tasks'
+  end
+
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.54.0'
+  s.add_development_dependency 'theforeman-rubocop', '~> 0.1.2'
 end

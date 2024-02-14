@@ -6,7 +6,7 @@ require 'rake/testtask'
 namespace :foreman_wreckingball do
   namespace :vmware do
     desc 'Synchonize VMware compute resource data'
-    task :sync => ['environment', 'dynflow:client'] do
+    task sync: ['environment', 'dynflow:client'] do
       User.as_anonymous_admin do
         ::ForemanTasks.sync_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
       end
@@ -27,23 +27,16 @@ namespace :test do
 end
 
 namespace :foreman_wreckingball do
-  task :rubocop do
-    begin
-      require 'rubocop/rake_task'
-      RuboCop::RakeTask.new(:rubocop_foreman_wreckingball) do |task|
-        task.patterns = ["#{ForemanWreckingball::Engine.root}/app/**/*.rb",
-                         "#{ForemanWreckingball::Engine.root}/lib/**/*.rb",
-                         "#{ForemanWreckingball::Engine.root}/test/**/*.rb"]
-      end
-    rescue StandardError
-      puts 'Rubocop not loaded.'
-    end
-
-    Rake::Task['rubocop_foreman_wreckingball'].invoke
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:rubocop) do |task|
+    task.patterns = ["#{ForemanWreckingball::Engine.root}/app/**/*.rb",
+                     "#{ForemanWreckingball::Engine.root}/lib/**/*.rb",
+                     "#{ForemanWreckingball::Engine.root}/test/**/*.rb"]
   end
+rescue LoadError => e
+  raise e unless Rails.env.production?
 end
 
 Rake::Task[:test].enhance ['test:foreman_wreckingball']
 
-load 'tasks/jenkins.rake'
-Rake::Task['jenkins:unit'].enhance ['test:foreman_wreckingball', 'foreman_wreckingball:rubocop'] if Rake::Task.task_defined?(:'jenkins:unit')
+require 'rubocop/rake_task'

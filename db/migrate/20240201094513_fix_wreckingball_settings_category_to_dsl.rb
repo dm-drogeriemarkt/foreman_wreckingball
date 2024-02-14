@@ -6,6 +6,8 @@ class FixWreckingballSettingsCategoryToDsl < ActiveRecord::Migration[6.0]
   end
 
   def up
-    MigrationSettings.where(category: 'Setting::Wreckingball').update_all(category: 'Setting') if column_exists?(:settings, :category)
+    MigrationSettings.where(category: 'Setting::Wreckingball').update_all(category: 'Setting') if column_exists?(
+      :settings, :category
+    )
   end
 end

@@ -1,138 +1,35 @@
-name: CI
-on: [push, pull_request]
-env:
-  RAILS_ENV: test
-  DATABASE_URL: postgresql://postgres:@localhost/test
-  DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+name: Ruby test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.ref_name }}-${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
+  rubocop:
+    uses: theforeman/actions/.github/workflows/rubocop.yml@v0
+    with:
+      command: bundle exec rubocop --parallel --format github
+
   test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:12.1
-        ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    name: Ruby
+    needs: rubocop
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch:
-          - 3.1-stable
-          - 3.2-stable
-          - 3.3-stable
-          - 3.4-stable
-          - 3.5-stable
-          - 3.6-stable
-          - 3.7-stable
-          - 3.8-stable
-          - 3.9-stable
-          - develop
-        ruby-version: [2.7]
-        node-version: [14]
-        include:
-          - foreman-core-branch: 3.1-stable
-            foreman-puppet-version: 2.0.7
-            foreman-tasks-version: 5.3.0
-          - foreman-core-branch: 3.2-stable
-            foreman-puppet-version: 3.0.7
-            foreman-tasks-version: 6.0.3
-          - foreman-core-branch: 3.3-stable
-            foreman-puppet-version: 4.0.4
-            foreman-tasks-version: 7.2.1
-          - foreman-core-branch: 3.4-stable
-            foreman-puppet-version: 4.1.1
-            foreman-tasks-version: 7.2.1
-          - foreman-core-branch: 3.5-stable
-            foreman-puppet-version: 5.1.3
-            foreman-tasks-version: 7.2.1
-          - foreman-core-branch: 3.6-stable
-            foreman-puppet-version: 5.1.3
-            foreman-tasks-version: 7.2.1
-          - foreman-core-branch: 3.7-stable
-            foreman-puppet-version: 6.2.0
-            foreman-tasks-version: 8.3.3
-          - foreman-core-branch: 3.8-stable
-            foreman-puppet-version: 6.2.0
-            foreman-tasks-version: 8.3.3
-          - foreman-core-branch: 3.9-stable
-            foreman-puppet-version: 6.2.0
-            foreman-tasks-version: 9.0.2
-          - foreman-core-branch: develop
-            foreman-puppet-version: 6.2.0
-            foreman-tasks-version: 9.0.2
-    steps:
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential libcurl4-openssl-dev libvirt-dev ruby-libvirt zlib1g-dev libpq-dev
-      - uses: actions/checkout@v3
-        with:
-          repository: theforeman/foreman
-          ref: ${{ matrix.foreman-core-branch }}
-          path: foreman
-          fetch-depth: 0
-      - uses: actions/checkout@v3
-        with:
-          path: foreman_wreckingball
-      - name: Apply patches for Foreman < 3.2
-        if: ${{ contains(fromJson('["3.1-stable"]'), matrix.foreman-core-branch) }}
-        run: |
-          git cherry-pick -n b1f03b375e18c8da498ba0944b2565f53441833c # use minitest-reporters (required for the following PRs on Foreman 3.0 and 3.1; see https://github.com/theforeman/foreman/pull/8960)
-        working-directory: foreman
-      - name: Apply patches for Foreman < 3.3
-        if: ${{ contains(fromJson('["3.1-stable", "3.2-stable"]'), matrix.foreman-core-branch) }}
-        run: |
-          git cherry-pick -n f9cbe74d09c1244821553ef86aecc8e52cab9150 # Remove duplicate puma gem declaration (see https://github.com/theforeman/foreman/pull/9154)
-          git cherry-pick -n a439e1e92e9f98f3dbc8ed2f204bd53cc861565e # pin rack-test to < 2.0 (see https://github.com/theforeman/foreman/pull/9288)
-          git cherry-pick -n c3c697fa131aa54c11918bcc563a7789f3c08ef7 # drop rack-test and bump show_me_the_cookies to ~ 6.0 (see https://github.com/theforeman/foreman/pull/9353)
-        working-directory: foreman
-      - name: Apply patches for Foreman >= 3.2 and <= 3.7
-        if: ${{ contains(fromJson('["3.2-stable", "3.3-stable", "3.4-stable", "3.5-stable", "3.6-stable", "3.7-stable"]'), matrix.foreman-core-branch) }}
-        run: |
-          git cherry-pick -n 1c3a4155f286352e0abbf0d0b298e47e81c2d6c5 # Pin minitest < 5.19 to resolve test failures (see https://github.com/theforeman/foreman/pull/9781)
-        working-directory: foreman
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Add foreman_puppet
-        working-directory: foreman
-        run: echo "gem 'foreman_puppet', '~> ${{ matrix.foreman-puppet-version }}'" > bundler.d/foreman_puppet.local.rb
-      - name: Add foreman-tasks
-        working-directory: foreman
-        run: echo "gem 'foreman-tasks', '~> ${{ matrix.foreman-tasks-version }}'" > bundler.d/foreman-tasks.local.rb
-      - name: Setup Bundler
-        working-directory: foreman
-        run: |
-          echo "gem 'foreman_wreckingball', path: '../foreman_wreckingball'" > bundler.d/foreman_wreckingball.local.rb
-          gem install bundler -v 2.4.22
-          bundle config path vendor/bundle
-          bundle config set without journald development console mysql2 sqlite
-          bundle lock --update
-      - name: Setup Plugin
-        working-directory: foreman
-        run: |
-          bundle install --jobs=3 --retry=3
-          bundle exec rake db:create
-          bundle exec rake db:migrate
-          npm install
-          bundle exec rake webpack:compile
-      - name: Run rubocop
-        working-directory: foreman
-        run: bundle exec rake foreman_wreckingball:rubocop
-        if: ${{ matrix.foreman-core-branch == 'develop' }}
-      - name: Run plugin tests
-        working-directory: foreman
-        run: bundle exec rake test:foreman_wreckingball
-      - name: Run permissions tests
-        working-directory: foreman
-        run: bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
-      - name: Precompile plugin assets
-        working-directory: foreman
-        run: bundle exec rake 'plugin:assets:precompile[foreman_wreckingball]'
-        env:
-          RAILS_ENV: production
+        foreman:
+          - "develop"
+          - "3.9-stable"
+          - "3.8-stable"
+          - "3.7-stable"
+    uses: theforeman/actions/.github/workflows/foreman_plugin.yml@v0
+    with:
+      plugin: foreman_wreckingball
+      foreman_version: ${{ matrix.foreman }}
+      environment_variables: |
+        FOREMAN_VERSION=${{ matrix.foreman }}

@@ -33,10 +33,10 @@ module ForemanWreckingball
 
       ipaddress6 = hypervisor.ipaddress6
       ipaddress6 = nil if begin
-                            IPAddr.new('fe80::/10').include?(ipaddress6)
-                          rescue StandardError
-                            false
-                          end
+        IPAddr.new('fe80::/10').include?(ipaddress6)
+      rescue StandardError
+        false
+      end
 
       hostname = hypervisor.hostname
       domainname = hypervisor.domainname
@@ -79,7 +79,7 @@ module ForemanWreckingball
       @hypervisors[cluster.name.to_sym] ||= compute_resource.hypervisors(cluster_id: cluster.name)
     end
 
-    def find_host_for_hypervisor(hypervisor)
+    def find_host_for_hypervisor(hypervisor) # rubocop:disable Metrics/AbcSize
       name = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name(hypervisor.name)
       hostname = ::ForemanWreckingball::VmwareHypervisorFacet.sanitize_name([hypervisor.hostname,
                                                                              hypervisor.domainname].join('.'))

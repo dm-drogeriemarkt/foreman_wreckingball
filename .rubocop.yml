@@ -17,3 +17,19 @@ Metrics/ClassLength:
     - 'app/services/foreman_wreckingball/vmware_hypervisor_importer.rb'
     - 'lib/foreman_wreckingball/engine.rb'
     - 'test/**/*'
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - Rakefile
+
+Metrics/AbcSize:
+  Exclude:
+    - db/**/*
+
+Metrics/MethodLength:
+  Exclude:
+    - db/**/*
+
+Rails/ApplicationRecord:
+  Exclude:
+    - db/**/*
