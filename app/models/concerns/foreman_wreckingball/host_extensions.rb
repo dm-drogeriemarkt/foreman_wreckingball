@@ -9,7 +9,7 @@ module ForemanWreckingball
       ForemanWreckingball::Engine::WRECKINGBALL_STATUSES.map(&:constantize).each do |status|
         has_one(
           status.host_association,
-          class_name: status.to_s, # rubocop:disable Rails/ReflectionClassName
+          class_name: status.to_s,
           foreign_key: 'host_id',
           inverse_of: :host,
           dependent: :destroy

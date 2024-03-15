@@ -26,7 +26,7 @@ module Actions
         let(:operatingsystem) do
           FactoryBot.create(
             :operatingsystem,
-            architectures: [architectures(:x86_64)],
+            architectures: [architectures(:x86_64)], # rubocop:disable Naming/VariableNumber
             major: 6,
             minor: 1,
             type: 'Redhat',
@@ -39,7 +39,7 @@ module Actions
             :host,
             :managed,
             :with_vmware_facet,
-            architecture: architectures(:x86_64),
+            architecture: architectures(:x86_64), # rubocop:disable Naming/VariableNumber
             operatingsystem: operatingsystem,
             compute_resource: compute_resource,
             uuid: uuid
