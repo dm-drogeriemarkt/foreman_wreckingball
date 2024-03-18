@@ -16,7 +16,7 @@ module ForemanWreckingball
         import_hypervisors(cluster)
         delete_removed_hypervisors(cluster)
       end
-      logger.info("Import hypervisors for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} hypervisors") # rubocop:disable Metrics/LineLength
+      logger.info("Import hypervisors for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} hypervisors") # rubocop:disable Layout/LineLength
     end
 
     def import_hypervisors(cluster)

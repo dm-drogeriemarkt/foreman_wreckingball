@@ -14,7 +14,7 @@ module ForemanWreckingball
     end
 
     def self.description
-      N_('Enabling CPU hot-add disables vNUMA, the virtual machine will instead use UMA. This might cause a performance degration.') # rubocop:disable Metrics/LineLength
+      N_('Enabling CPU hot-add disables vNUMA, the virtual machine will instead use UMA. This might cause a performance degration.') # rubocop:disable Layout/LineLength
     end
 
     def self.supports_remediate?
