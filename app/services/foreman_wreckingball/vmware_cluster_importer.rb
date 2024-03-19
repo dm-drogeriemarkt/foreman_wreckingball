@@ -14,7 +14,7 @@ module ForemanWreckingball
         delete_removed_clusters
         create_new_clusters
       end
-      logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters") # rubocop:disable Metrics/LineLength
+      logger.info("Import clusters for '#{compute_resource}' completed. Added: #{counters[:added] || 0}, Updated: #{counters[:updated] || 0}, Deleted: #{counters[:deleted] || 0} clusters") # rubocop:disable Layout/LineLength
     end
 
     def delete_removed_clusters
