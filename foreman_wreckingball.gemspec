@@ -19,13 +19,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir['test/**/*']
 
   s.add_dependency 'foreman_puppet'
-
-  case ENV['FOREMAN_VERSION']
-  when '3.7-stable', '3.8-stable'
-    s.add_dependency 'foreman-tasks', '>= 8.0.0', '< 9.0.0'
-  else
-    s.add_dependency 'foreman-tasks'
-  end
+  s.add_dependency 'foreman-tasks'
 
   s.add_development_dependency 'rdoc'
   s.add_development_dependency 'theforeman-rubocop', '~> 0.1.2'
