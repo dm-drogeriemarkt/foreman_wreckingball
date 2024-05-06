@@ -24,9 +24,8 @@ jobs:
       matrix:
         foreman:
           - "develop"
+          - "3.10-stable"
           - "3.9-stable"
-          - "3.8-stable"
-          - "3.7-stable"
     uses: theforeman/actions/.github/workflows/foreman_plugin.yml@v0
     with:
       plugin: foreman_wreckingball
