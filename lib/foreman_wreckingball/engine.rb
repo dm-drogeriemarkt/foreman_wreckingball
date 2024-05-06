@@ -32,7 +32,7 @@ module ForemanWreckingball
 
     initializer 'foreman_wreckingball.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_wreckingball do
-        requires_foreman '>= 3.1'
+        requires_foreman '>= 3.9'
 
         settings do
           category :wreckingball, N_('Wreckingball') do
