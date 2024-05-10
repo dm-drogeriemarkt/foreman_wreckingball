@@ -26,17 +26,4 @@ namespace :test do
   end
 end
 
-namespace :foreman_wreckingball do
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new(:rubocop) do |task|
-    task.patterns = ["#{ForemanWreckingball::Engine.root}/app/**/*.rb",
-                     "#{ForemanWreckingball::Engine.root}/lib/**/*.rb",
-                     "#{ForemanWreckingball::Engine.root}/test/**/*.rb"]
-  end
-rescue LoadError => e
-  raise e unless Rails.env.production?
-end
-
 Rake::Task[:test].enhance ['test:foreman_wreckingball']
-
-require 'rubocop/rake_task'
