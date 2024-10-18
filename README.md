@@ -1,6 +1,6 @@
 # ForemanWreckingball
 
-[<img src="https://opensourcelogos.aws.dmtech.cloud/dmTECH_opensource_logo%401x.svg" height="21" width="130">](https://www.dmtech.de/)
+[<img src="https://raw.githubusercontent.com/dm-drogeriemarkt/.github/refs/heads/main/assets/dmtech-open-source-badge.svg">](https://www.dmtech.de/)
 
 This is a plugin for Foreman that adds several VMware related status checks to your Hosts in Foreman. For performance reasons, these checks are only run periodically.
 
