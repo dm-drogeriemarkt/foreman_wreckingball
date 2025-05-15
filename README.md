@@ -14,6 +14,7 @@ This is a plugin for Foreman that adds several VMware related status checks to y
 | >= 1.21         | ~> 3.0         |
 | >= 2.3          | ~> 4.0         |
 | >= 3.9          | ~> 5.0         |
+| >= 3.13         | ~> 6.0         |
 
 ## Installation
 
