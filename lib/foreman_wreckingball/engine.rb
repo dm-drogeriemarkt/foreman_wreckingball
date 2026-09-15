@@ -28,15 +28,22 @@ module ForemanWreckingball
 
     initializer 'foreman_wreckingball.register_plugin', before: :finisher_hook do |app|
       app.reloader.to_prepare do
+        require 'foreman/cron'
         Foreman::Plugin.register :foreman_wreckingball do
-          requires_foreman '>= 3.13'
+          requires_foreman '>= 3.19'
 
           settings do
             category :wreckingball, N_('Wreckingball') do
               setting :min_vsphere_hardware_version,
+                full_name: N_('Minimal VSphere Hardware Version'),
                 type: :integer,
                 default: 13,
                 description: _('Minimum required Hardware version for vSphere VMs')
+              setting :vsphere_compute_resource_sync,
+                full_name: N_('VSphere compute resource sync Cronjob enabled'),
+                type: :boolean,
+                default: false,
+                description: _('Enable or disable the daily sync of your VSphere compute resources')
             end
           end
 
@@ -100,6 +107,9 @@ module ForemanWreckingball
 
           # add custom logger
           logger :import, enabled: true
+
+          # Register recurring task with Foreman::Cron framework
+          Foreman::Cron.register(:daily, 'foreman_wreckingball:vmware:sync')
         end
       end
     end
