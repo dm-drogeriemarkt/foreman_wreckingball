@@ -8,6 +8,7 @@ namespace :foreman_wreckingball do
     desc 'Synchonize VMware compute resource data'
     task sync: ['environment', 'dynflow:client'] do
       User.as_anonymous_admin do
+        next unless Setting['vsphere_compute_resource_sync']
         ::ForemanTasks.sync_task(::Actions::ForemanWreckingball::Vmware::ScheduleVmwareSync)
       end
     end
